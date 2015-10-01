@@ -9,6 +9,11 @@ body {
 	background-color:grey;
 }
 
+.logo-container {
+	margin:auto;
+	width:75%;
+}
+
 .container nav {
 	margin-top:20px;
 	background-color:black;
@@ -29,6 +34,7 @@ body {
 
 .main {
 	padding:25px;
+	font-family:sans-serif;
 }
 
 img {
