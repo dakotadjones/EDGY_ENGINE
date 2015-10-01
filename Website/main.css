@@ -1,12 +1,12 @@
 body {
-	background-color:grey;
+	background-color:white;
 }
 
 .container {
-	font-family:sans-serif;
+	font-family:serif;
 	margin:auto;
 	width:75%;
-	background-color:white;
+	background-color:grey;
 }
 
 .container nav {
@@ -25,6 +25,10 @@ body {
 
 .selected {
 	top:-10px;
+}
+
+.main {
+	padding:25px;
 }
 
 img {
