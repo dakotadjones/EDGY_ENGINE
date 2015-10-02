@@ -37,7 +37,8 @@ body {
 	font-family:sans-serif;
 }
 
-img {
+.main img {
+	border: 10px solid white;	
 	
 }
 
