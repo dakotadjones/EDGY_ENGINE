@@ -39,7 +39,16 @@ body {
 
 .main img {
 	border: 10px solid white;	
-	
+	display:block;
+	margin:10px;
+}
+
+.right {
+	float:right;
+}
+
+.left {
+	float:left;
 }
 
 
