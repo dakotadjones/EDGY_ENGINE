@@ -5,13 +5,13 @@ body {
 .container {
 	font-family:serif;
 	margin:auto;
-	width:75%;
+	width:700px;
 	background-color:grey;
 }
 
 .logo-container {
 	margin:auto;
-	width:75%;
+	width:700px;
 }
 
 .container nav {
@@ -51,4 +51,12 @@ body {
 	float:left;
 }
 
+.clear {
+	clear:both;
+}
+
+a {
+	color:white;
+	text-decoration: none;
+}
 
