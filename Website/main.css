@@ -3,15 +3,21 @@ body {
 }
 
 .container {
-	font-family:serif;
+	font-family:sans-serif;
 	margin:auto;
 	width:700px;
 	background-color:grey;
+	
 }
 
 .logo-container {
-	margin:auto;
+	margin:0 auto;
 	width:700px;
+}
+
+.logo-container img {
+	display:block;
+	margin:0 auto;
 }
 
 .container nav {
@@ -40,7 +46,7 @@ body {
 .main img {
 	border: 10px solid white;	
 	display:block;
-	margin:10px;
+	margin:10px 20px 10px 0px;
 }
 
 .right {
@@ -60,3 +66,25 @@ a {
 	text-decoration: none;
 }
 
+.title {
+	font-weight:bold;
+	font-size:1.2em;
+	font-family:sans-serif;
+}
+
+.subtitle {
+	font-weight:bold;
+	margin-left:10px;
+	font-size:1.1em;
+	font-family:sans-serif
+}
+
+.first {
+	margin-left:20px;
+	font-family:"Cambria";
+}
+
+.second {
+	margin-left:30px;
+	font-family:"Cambria";	
+}
