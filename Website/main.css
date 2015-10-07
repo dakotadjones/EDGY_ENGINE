@@ -1,58 +1,73 @@
-body {
-	background-color:white;
+html, body {
+	background-color:#D0D0D0;
+	margin:0;
+	height:100%;
 }
 
 .container {
 	font-family:sans-serif;
 	margin:auto;
-	width:700px;
-	background-color:#D0D0D0;
-	
+	height:100%;
+	overflow-x:hidden;
+	overflow-y:scroll;
 }
 
 .logo-container {
 	margin:0 auto;
-	width:700px;
 }
 
-.logo-container img {
-	display:block;
-	margin:0 auto;
+.scrollbar-hider {
+	position:fixed;
+	right:0;
+	height:100%;
+	width:20px;
+	background-color:#D0D0D0;
+	z-index:1;
 }
 
-.container nav {
-	margin-top:20px;
+nav {
+	position:absolute;
+	width:100%;
 	background-color:black;
-	padding:10px 0 10px 0;
+	padding-top:5px;
+	padding-bottom:5px;
+	z-index:2;
 }
 
-.container nav a {
+ nav a {
+	padding:5px;
 	position:relative;
 	background-color:black;
 	color:white;
 	text-decoration: none;
-	padding:10px;
 }
 
-.container nav a:hover {
-	top:-10px;
-	padding-bottom:20px;
+ nav a:hover {
+	top:10px;
+	padding-top:20px;
 }
 
 .selected {
-	top:-10px;
+	top:10px;
 }
 
 .main {
-	padding:24px;
+	margin:50px 100px 20px 100px;
 	font-family:sans-serif;
 }
 
 .main img {
 	display:block;
-	margin:auto;
 	border-radius:20px;
 	margin-right:20px;
+}
+
+.logo-container img {
+	display:block;
+	margin-right:auto;
+	margin-left:auto;
+	margin-bottom:50px;
+	border-radius:0;
 }
 
 .right {
