@@ -6,7 +6,7 @@ body {
 	font-family:sans-serif;
 	margin:auto;
 	width:700px;
-	background-color:grey;
+	background-color:#D0D0D0;
 	
 }
 
@@ -39,14 +39,15 @@ body {
 }
 
 .main {
-	padding:25px;
+	padding:24px;
 	font-family:sans-serif;
 }
 
 .main img {
-	border: 10px solid white;	
 	display:block;
-	margin:10px 20px 10px 0px;
+	margin:auto;
+	border-radius:20px;
+	margin-right:20px;
 }
 
 .right {
@@ -62,7 +63,7 @@ body {
 }
 
 a {
-	color:white;
+	color:blue;
 	text-decoration: none;
 }
 
