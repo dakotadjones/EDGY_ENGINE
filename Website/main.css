@@ -5,11 +5,13 @@ html, body {
 }
 
 .container {
-	font-family:sans-serif;
 	margin:auto;
 	height:100%;
 	overflow-x:hidden;
 	overflow-y:scroll;
+	font-family:sans-serif;
+	font-size:14px;
+	line-height:1.428;
 }
 
 .logo-container {
@@ -67,6 +69,7 @@ nav {
 	margin-right:auto;
 	margin-left:auto;
 	margin-bottom:50px;
+	margin-top:50px;
 	border-radius:0;
 }
 
