@@ -112,3 +112,19 @@ a {
 	margin-left:30px;
 	font-family:"Cambria";	
 }
+
+h1 {
+	font-family:"Cambria", serif;
+	font-size:3em;
+}
+
+.team {
+	margin:0 auto;
+	width:50%;
+	min-width:300px;
+	text-align:center;
+}
+
+.team img {
+	margin:0 auto;
+}
