@@ -116,6 +116,7 @@ a {
 h1 {
 	font-family:"Cambria", serif;
 	font-size:3em;
+	text-align:center;
 }
 
 .team {
@@ -126,5 +127,10 @@ h1 {
 }
 
 .team img {
+	margin:0 auto;
+}
+
+.requirements {
+	width:800px;
 	margin:0 auto;
 }
