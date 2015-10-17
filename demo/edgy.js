@@ -80,8 +80,10 @@ function loadImages(urls, callback) {
 }
 function main() {
     loadImages([
-        "test.png",
-        "test-wall.png"
+        "test1.png",
+        "test-wall.png",
+        "test-wall2.png",
+        "test-ceiling.png"
     ], render);
 }
 function render(images) {
@@ -109,7 +111,7 @@ function render(images) {
     gl.enable(gl.BLEND);
     setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
     var positionBuffer = gl.createBuffer();
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 4; i++) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
         var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
@@ -119,8 +121,14 @@ function render(images) {
         if (i == 0) {
             setRectangle(gl, 0, 375, images[i].width, images[i].height);
         }
-        else {
+        else if (i == 1) {
             setRectangle(gl, 375, 0, images[i].width, images[i].height);
+        }
+        else if (i == 2) {
+            setRectangle(gl, 0, 0, images[i].width, images[i].height);
+        }
+        else {
+            setRectangle(gl, 0, 0, images[i].width, images[i].height);
         }
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }

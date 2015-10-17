@@ -31,8 +31,10 @@ function loadImages(urls, callback) {
 
 function main() {
 	loadImages([
-		"test.png",
-		"test-wall.png"
+		"test1.png",
+		"test-wall.png",
+		"test-wall2.png",
+		"test-ceiling.png"
 	], render);
 }
 
@@ -75,23 +77,10 @@ function render(images) {
 	
 	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
- 	// Upload the image into the texture.
-
-	
-	// Create a texture.
-	//var texture = gl.createTexture();
-	/*var textures = [];
-	for (var i = 0; i < 2; ++i) {
-		
-
-	    // add the texture to the array of textures.
-    	textures.push(texture);
-  	}
-	*/
 	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
 	var positionBuffer = gl.createBuffer();
 	
-	for (var i = 0; i < 2; i++) {
+	for (var i = 0; i < 4; i++) {
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
 	
 		// lookup uniforms
@@ -106,8 +95,12 @@ function render(images) {
 		if (i==0) {
 			// Set a rectangle the same size as the image.
 			setRectangle(gl, 0, 375, images[i].width, images[i].height);
-		} else {
+		} else if (i == 1) {
 			setRectangle(gl, 375, 0, images[i].width, images[i].height);
+		} else if (i == 2) {
+			setRectangle(gl, 0, 0, images[i].width, images[i].height);
+		} else {
+			setRectangle(gl, 0, 0, images[i].width, images[i].height);
 		}
 		
 		// Draw the rectangle
