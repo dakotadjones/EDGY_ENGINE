@@ -1,4 +1,4 @@
-![EDGY ENGINE](https://raw.githubusercontent.com/dakotadjones/EDGY_ENGINE/master/website/logo.png)  
+![EDGY ENGINE](https://raw.githubusercontent.com/dakotadjones/EDGY_ENGINE/master/Website/logo.png)  
 Repository for the game engine capstone for 2015.  
 
 Trello page: https://trello.com/edgy3  
