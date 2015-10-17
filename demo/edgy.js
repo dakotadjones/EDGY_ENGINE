@@ -57,15 +57,34 @@ var utils;
     utils.Shader = Shader;
 })(utils || (utils = {}));
 window.onload = main;
-function main() {
+function loadImage(url, callback) {
     var tile = new Image();
-    tile.src = 'test.png';
-    tile.crossOrigin = 'Anonymous';
-    tile.onload = function () {
-        render(tile);
-    };
+    tile.src = url;
+    tile.crossOrigin = 'anonymous';
+    tile.onload = callback;
+    return tile;
 }
-function render(image) {
+function loadImages(urls, callback) {
+    var images = [];
+    var imagesToLoad = urls.length;
+    var onImageLoad = function () {
+        --imagesToLoad;
+        if (imagesToLoad == 0) {
+            callback(images);
+        }
+    };
+    for (var ii = 0; ii < imagesToLoad; ++ii) {
+        var image = loadImage(urls[ii], onImageLoad);
+        images.push(image);
+    }
+}
+function main() {
+    loadImages([
+        "test.png",
+        "test.png"
+    ], render);
+}
+function render(images) {
     var canvas = document.getElementById('edgy');
     var gl = canvas.getContext('webgl');
     var shader = new utils.Shader(gl);
@@ -78,32 +97,37 @@ function render(image) {
     var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
     var texCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        0.0, 0.0,
-        1.0, 0.0,
-        0.0, 1.0,
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0
-    ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(texCoordLocation);
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.enable(gl.BLEND);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    var textures = [];
+    for (var i = 0; i < 2; ++i) {
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+        textures.push(texture);
+    }
     var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+    var image_location = gl.getUniformLocation(program, "u_image");
+    var image2_location = gl.getUniformLocation(program, "u_image2");
     gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-    var buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.uniform1i(image_location, 0);
+    gl.uniform1i(image2_location, 1);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-    setRectangle(gl, 0, 375, image.width, image.height);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND);
+    setRectangle(gl, 0, 375, images[1].width, images[1].height);
+    setRectangle(gl, 0, 375, images[0].width, images[0].height);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 }
 function setRectangle(gl, x, y, width, height) {
