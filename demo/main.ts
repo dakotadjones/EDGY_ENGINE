@@ -32,7 +32,7 @@ function loadImages(urls, callback) {
 function main() {
 	loadImages([
 		"test.png",
-		"test.png"
+		"test-wall.png"
 	], render);
 }
 
@@ -58,17 +58,11 @@ function render(images) {
 	var texCoordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
 	
-	/*gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-  	  0.0,  0.0,
-      1.0,  0.0,
-      0.0,  1.0,
-      0.0,  1.0,
-      1.0,  0.0,
-      1.0,  1.0		
-		]), gl.STATIC_DRAW);*/
-	
 	gl.enableVertexAttribArray(texCoordLocation);
 	gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+	
+	var texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
 	
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
    	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -81,55 +75,44 @@ function render(images) {
 	
 	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
+ 	// Upload the image into the texture.
+
+	
 	// Create a texture.
 	//var texture = gl.createTexture();
 	/*var textures = [];
 	for (var i = 0; i < 2; ++i) {
-		var texture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-			
-		// Set the parameters so we can render any size image.
-
- 	   	// Upload the image into the texture.
-    	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+		
 
 	    // add the texture to the array of textures.
     	textures.push(texture);
   	}
 	*/
-	// lookup uniforms
-	var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-	
-	// look up samplers
-	var image_location = gl.getUniformLocation(program, "u_image");
-	var image2_location = gl.getUniformLocation(program, "u_image2");
-	
-	// set the resolution
-	gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-	
-	 // set which texture units to render with.
-	gl.uniform1i(image_location, 0);  // texture unit 0
-  	gl.uniform1i(image2_location, 1);  // texture unit 1
-
-	// Set each texture unit to use a particular texture.
-  	gl.activeTexture(gl.TEXTURE0);
-  	gl.bindTexture(gl.TEXTURE_2D, textures[0]);
-  	gl.activeTexture(gl.TEXTURE1);
-  	gl.bindTexture(gl.TEXTURE_2D, textures[1]);
-	
-	// Create a buffer for the position of the rectangle corners.
+	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
 	var positionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-	gl.enableVertexAttribArray(positionLocation);
-	gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 	
+	for (var i = 0; i < 2; i++) {
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
 	
+		// lookup uniforms
+		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+		// set the resolution
+		gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
 	
-	// Set a rectangle the same size as the image.
-	setRectangle(gl, 0, 375, images[1].width, images[1].height);
-	setRectangle(gl, 0, 375, images[0].width, images[0].height);
-	// Draw the rectangle
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
+		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+		gl.enableVertexAttribArray(positionLocation);
+		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+		
+		if (i==0) {
+			// Set a rectangle the same size as the image.
+			setRectangle(gl, 0, 375, images[i].width, images[i].height);
+		} else {
+			setRectangle(gl, 375, 0, images[i].width, images[i].height);
+		}
+		
+		// Draw the rectangle
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+	}
 }
 
 function setRectangle(gl, x, y, width, height) {
