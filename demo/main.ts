@@ -1,17 +1,43 @@
-
 window.onload = main;
 
-function main() {
+function loadImage(url, callback) {
 	var tile = new Image();
-	tile.src = 'test.png';
-	tile.crossOrigin = 'Anonymous';
-	tile.onload = function() {
-		render(tile);
-	}
+	tile.src = url;
+	tile.crossOrigin = 'anonymous';
+	tile.onload = callback;
+	return tile;
 }
 
-function render(image) {
-	
+function loadImages(urls, callback) {
+  var images = [];
+  var imagesToLoad = urls.length;
+ 
+  // Called each time an image finished
+  // loading.
+  var onImageLoad = function() {
+    --imagesToLoad;
+    // If all the images are loaded call the callback.
+    if (imagesToLoad == 0) {
+      callback(images);
+    }
+  };
+ 
+  for (var ii = 0; ii < imagesToLoad; ++ii) {
+    var image = loadImage(urls[ii], onImageLoad);
+    images.push(image);
+  }
+}
+
+
+function main() {
+	loadImages([
+		"test.png",
+		"test.png"
+	], render);
+}
+
+
+function render(images) {
 	// get canvas
 	var canvas = <HTMLCanvasElement>document.getElementById('edgy');
 	var gl = <WebGLRenderingContext>canvas.getContext('webgl');
@@ -31,44 +57,77 @@ function render(image) {
 	// provide texture coordinates for the rectangle.
 	var texCoordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+	
+	/*gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
   	  0.0,  0.0,
       1.0,  0.0,
       0.0,  1.0,
       0.0,  1.0,
       1.0,  0.0,
       1.0,  1.0		
-		]), gl.STATIC_DRAW);
+		]), gl.STATIC_DRAW);*/
+	
 	gl.enableVertexAttribArray(texCoordLocation);
 	gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-	// Create a texture.
-	var texture = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	// Set the parameters so we can render any size image.
+	
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	// for some reason this gets rid of the background
+   	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+	// transparency
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	gl.enable(gl.BLEND);
-	// Upload the image into the texture.
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 	
+	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
+	
+	// Create a texture.
+	//var texture = gl.createTexture();
+	/*var textures = [];
+	for (var i = 0; i < 2; ++i) {
+		var texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+			
+		// Set the parameters so we can render any size image.
+
+ 	   	// Upload the image into the texture.
+    	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+
+	    // add the texture to the array of textures.
+    	textures.push(texture);
+  	}
+	*/
 	// lookup uniforms
 	var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+	
+	// look up samplers
+	var image_location = gl.getUniformLocation(program, "u_image");
+	var image2_location = gl.getUniformLocation(program, "u_image2");
 	
 	// set the resolution
 	gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
 	
+	 // set which texture units to render with.
+	gl.uniform1i(image_location, 0);  // texture unit 0
+  	gl.uniform1i(image2_location, 1);  // texture unit 1
+
+	// Set each texture unit to use a particular texture.
+  	gl.activeTexture(gl.TEXTURE0);
+  	gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+  	gl.activeTexture(gl.TEXTURE1);
+  	gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+	
 	// Create a buffer for the position of the rectangle corners.
-	var buffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	var positionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 	gl.enableVertexAttribArray(positionLocation);
 	gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 	
+	
+	
 	// Set a rectangle the same size as the image.
-	setRectangle(gl, 0, 375, image.width, image.height);
+	setRectangle(gl, 0, 375, images[1].width, images[1].height);
+	setRectangle(gl, 0, 375, images[0].width, images[0].height);
 	// Draw the rectangle
 	gl.drawArrays(gl.TRIANGLES, 0, 6);
 }
