@@ -1,4 +1,12 @@
 window.onload = main;
+var gl;
+var program;
+var positionBuffer;
+var positionLocation;
+var images;
+var canvas;
+var move;
+var movespeed = 0.1;
 
 function loadImage(url, callback) {
 	var tile = new Image();
@@ -9,7 +17,7 @@ function loadImage(url, callback) {
 }
 
 function loadImages(urls, callback) {
-  var images = [];
+  images = [];
   var imagesToLoad = urls.length;
  
   // Called each time an image finished
@@ -34,26 +42,27 @@ function main() {
 		"test1.png",
 		"test-wall.png",
 		"test-wall2.png",
-		"test-ceiling.png"
+		"test-ceiling.png",
+		"test2.png"
 	], render);
 }
 
 
 function render(images) {
 	// get canvas
-	var canvas = <HTMLCanvasElement>document.getElementById('edgy');
-	var gl = <WebGLRenderingContext>canvas.getContext('webgl');
+	canvas = <HTMLCanvasElement>document.getElementById('edgy');
+	gl = <WebGLRenderingContext>canvas.getContext('webgl');
 	
 	// get shaders
 	var shader = new utils.Shader(gl);
 	shader.getShader('shader-fs');
 	shader.getShader('shader-vs');
 	var shaderArray = [shader.fragmentShader, shader.vertexShader];
-	var program = shader.createProgram(shaderArray);
+	program = shader.createProgram(shaderArray);
 	gl.useProgram(program);
 	
 	// look up where the vertex data needs to go.
-	var positionLocation = gl.getAttribLocation(program, "a_position");
+	positionLocation = gl.getAttribLocation(program, "a_position");
 	var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
 	
 	// provide texture coordinates for the rectangle.
@@ -78,29 +87,57 @@ function render(images) {
 	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
 	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
-	var positionBuffer = gl.createBuffer();
+	positionBuffer = gl.createBuffer();
 	
-	for (var i = 0; i < 4; i++) {
+	move=0;
+	
+	drawScene(0);
+}
+
+function drawScene(z) {
+	var scale = .25 * z;
+	//var new_x = ;
+	//var new_y;
+	
+	
+	for (var i = 0; i < 5; i++) {
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
 	
 		// lookup uniforms
 		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
 		// set the resolution
 		gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-	
 		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 		gl.enableVertexAttribArray(positionLocation);
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 		
-		if (i==0) {
-			// Set a rectangle the same size as the image.
-			setRectangle(gl, 0, 375, images[i].width, images[i].height);
-		} else if (i == 1) {
-			setRectangle(gl, 375, 0, images[i].width, images[i].height);
-		} else if (i == 2) {
-			setRectangle(gl, 0, 0, images[i].width, images[i].height);
-		} else {
-			setRectangle(gl, 0, 0, images[i].width, images[i].height);
+		if (i==0) { // bottom
+			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
+							 canvas.height/2+(images[i].height/(Math.pow(2,z))), 
+							 images[i].width/Math.pow(2,z), 
+							 images[i].height/Math.pow(2,z));
+		} else if (i == 1) { // right
+			setRectangle(gl, canvas.width/2+(images[i].width/(Math.pow(2,z))), 
+							 canvas.height/2-(images[i].height/(Math.pow(2,z)*2)), 
+							 images[i].width/Math.pow(2,z), 
+							 images[i].height/Math.pow(2,z));
+		} else if (i == 2) { // left
+			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z-1))), 
+							 canvas.height/2-(images[i].height/(Math.pow(2,z)*2)), 
+							 images[i].width/Math.pow(2,z), 
+							 images[i].height/Math.pow(2,z));
+		} else if (i == 3){ // top
+			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
+							 canvas.height/2-(images[i].height/(Math.pow(2,z-1))), 
+							 images[i].width/Math.pow(2,z), 
+							 images[i].height/Math.pow(2,z));
+		} else if (i == 4){
+			z += 1;
+			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
+							 canvas.height/2+(images[i].height/(Math.pow(2,z))), 
+							 images[i].width/Math.pow(2,z), 
+							 images[i].height/Math.pow(2,z));
+			z -= 1;
 		}
 		
 		// Draw the rectangle
@@ -121,3 +158,18 @@ function setRectangle(gl, x, y, width, height) {
      x2, y1,
      x2, y2]), gl.STATIC_DRAW);
 }
+
+document.addEventListener("keydown", function(event) {
+	switch(event.which) {
+		case 38:
+			move -= movespeed;
+			drawScene(move);
+			break;
+		case 40:
+			move += movespeed;
+			drawScene(move);
+			break;	
+		default:return;
+	}
+	event.preventDefault();
+});
