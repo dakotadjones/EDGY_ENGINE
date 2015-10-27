@@ -3,6 +3,8 @@ var gl;
 var program;
 var positionBuffer;
 var positionLocation;
+var texCoordLocation;
+var texCoordBuffer;
 var images;
 var canvas;
 var move;
@@ -39,11 +41,12 @@ function loadImages(urls, callback) {
 
 function main() {
 	loadImages([
-		"test_floor_center.png",
+		"fake-pack.png"
+		/*"test_floor_center.png",
 		"test_wall_right.png",
 		"test_wall_left.png",
 		"test_ceiling_center.png",
-		"test_floor_center2.png"
+		"test_floor_center2.png"*/
 	], render);
 }
 
@@ -63,10 +66,10 @@ function render(images) {
 	
 	// look up where the vertex data needs to go.
 	positionLocation = gl.getAttribLocation(program, "a_position");
-	var texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
+	texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
 	
 	// provide texture coordinates for the rectangle.
-	var texCoordBuffer = gl.createBuffer();
+	texCoordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
 	
 	gl.enableVertexAttribArray(texCoordLocation);
@@ -84,7 +87,8 @@ function render(images) {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	gl.enable(gl.BLEND);
 	
-	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
+	setRectangle(gl, 0.5, 0.25, 0.5, .25);
+	//setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
 	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
 	positionBuffer = gl.createBuffer();
@@ -101,6 +105,8 @@ function drawScene(z) {
 	
 	
 	for (var i = 0; i < 5; i++) {
+		
+		
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
 	
 		// lookup uniforms
@@ -111,6 +117,14 @@ function drawScene(z) {
 		gl.enableVertexAttribArray(positionLocation);
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 		
+		if (i==0) { // bottom
+			setRectangle(gl, canvas.width/2-(500/(Math.pow(2,z)*2)), 
+							 canvas.height/2+(125/(Math.pow(2,z))), 
+							 500/Math.pow(2,z), 
+							 125/Math.pow(2,z));
+		}
+		
+		/*
 		if (i==0) { // bottom
 			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
 							 canvas.height/2+(images[i].height/(Math.pow(2,z))), 
@@ -139,7 +153,7 @@ function drawScene(z) {
 							 images[i].height/Math.pow(2,z));
 			z -= 1;
 		}
-		
+		*/
 		// Draw the rectangle
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
