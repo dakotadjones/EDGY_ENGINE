@@ -39,11 +39,11 @@ function loadImages(urls, callback) {
 
 function main() {
 	loadImages([
-		"test1.png",
-		"test-wall.png",
-		"test-wall2.png",
-		"test-ceiling.png",
-		"test2.png"
+		"test_floor_center.png",
+		"test_wall_right.png",
+		"test_wall_left.png",
+		"test_ceiling_center.png",
+		"test_floor_center2.png"
 	], render);
 }
 
