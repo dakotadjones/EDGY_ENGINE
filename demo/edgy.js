@@ -64,36 +64,18 @@ var positionLocation;
 var texCoordLocation;
 var texCoordBuffer;
 var images;
+var pack;
 var canvas;
 var move;
 var movespeed = 0.1;
-function loadImage(url, callback) {
-    var tile = new Image();
-    tile.src = url;
-    tile.crossOrigin = 'anonymous';
-    tile.onload = callback;
-    return tile;
-}
-function loadImages(urls, callback) {
-    images = [];
-    var imagesToLoad = urls.length;
-    var onImageLoad = function () {
-        --imagesToLoad;
-        if (imagesToLoad == 0) {
-            callback(images);
-        }
-    };
-    for (var ii = 0; ii < imagesToLoad; ++ii) {
-        var image = loadImage(urls[ii], onImageLoad);
-        images.push(image);
-    }
-}
 function main() {
-    loadImages([
-        "fake-pack.png"
-    ], render);
+    pack = new Image();
+    pack.src = 'fake-pack.png';
+    pack.crossOrigin = 'anonymous';
+    pack.onload = render;
+    return pack;
 }
-function render(images) {
+function render() {
     canvas = document.getElementById('edgy');
     gl = canvas.getContext('webgl');
     var shader = new utils.Shader(gl);
@@ -105,9 +87,6 @@ function render(images) {
     positionLocation = gl.getAttribLocation(program, "a_position");
     texCoordLocation = gl.getAttribLocation(program, "a_texCoord");
     texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.enableVertexAttribArray(texCoordLocation);
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -116,7 +95,6 @@ function render(images) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.BLEND);
-    setRectangle(gl, 0.5, 0.25, 0.5, .25);
     positionBuffer = gl.createBuffer();
     move = 0;
     drawScene(0);
@@ -124,14 +102,46 @@ function render(images) {
 function drawScene(z) {
     var scale = .25 * z;
     for (var i = 0; i < 5; i++) {
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+        gl.enableVertexAttribArray(texCoordLocation);
+        gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+        if (i == 0) {
+            setRectangle(gl, 0.5, 0.5, 0.5, 0.25);
+        }
+        else if (i == 1) {
+            setRectangle(gl, 0.5, 0.25, 0.5, 0.25);
+        }
+        else if (i == 2) {
+            setRectangle(gl, 0.125, 0, 0.125, 1);
+        }
+        else if (i == 3) {
+            setRectangle(gl, 0, 0, 0.125, 1);
+        }
+        else if (i == 4) {
+            setRectangle(gl, 0.5, 0, 0.5, 0.25);
+        }
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pack);
         var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
         if (i == 0) {
+            z += 1;
             setRectangle(gl, canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), canvas.height / 2 + (125 / (Math.pow(2, z))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
+            z -= 1;
+        }
+        else if (i == 1) {
+            setRectangle(gl, canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), canvas.height / 2 + (125 / (Math.pow(2, z))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
+        }
+        else if (i == 2) {
+            setRectangle(gl, canvas.width / 2 + (125 / (Math.pow(2, z))), canvas.height / 2 - (500 / (Math.pow(2, z) * 2)), 125 / Math.pow(2, z), 500 / Math.pow(2, z));
+        }
+        else if (i == 3) {
+            setRectangle(gl, canvas.width / 2 - (125 / (Math.pow(2, z - 1))), canvas.height / 2 - (500 / (Math.pow(2, z) * 2)), 125 / Math.pow(2, z), 500 / Math.pow(2, z));
+        }
+        else if (i == 4) {
+            setRectangle(gl, canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), canvas.height / 2 - (125 / (Math.pow(2, z - 1))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
         }
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }

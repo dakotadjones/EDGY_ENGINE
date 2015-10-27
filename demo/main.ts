@@ -6,10 +6,11 @@ var positionLocation;
 var texCoordLocation;
 var texCoordBuffer;
 var images;
+var pack;
 var canvas;
 var move;
 var movespeed = 0.1;
-
+/*
 function loadImage(url, callback) {
 	var tile = new Image();
 	tile.src = url;
@@ -17,6 +18,7 @@ function loadImage(url, callback) {
 	tile.onload = callback;
 	return tile;
 }
+
 
 function loadImages(urls, callback) {
   images = [];
@@ -41,17 +43,24 @@ function loadImages(urls, callback) {
 
 function main() {
 	loadImages([
-		"fake-pack.png"
-		/*"test_floor_center.png",
+		"test_floor_center.png",
 		"test_wall_right.png",
 		"test_wall_left.png",
 		"test_ceiling_center.png",
-		"test_floor_center2.png"*/
+		"test_floor_center2.png"
 	], render);
 }
+*/
 
+function main() {
+	pack = new Image();
+	pack.src = 'fake-pack.png';
+	pack.crossOrigin = 'anonymous';
+	pack.onload = render;
+	return pack;
+}
 
-function render(images) {
+function render() {
 	// get canvas
 	canvas = <HTMLCanvasElement>document.getElementById('edgy');
 	gl = <WebGLRenderingContext>canvas.getContext('webgl');
@@ -70,10 +79,10 @@ function render(images) {
 	
 	// provide texture coordinates for the rectangle.
 	texCoordBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+	//gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
 	
-	gl.enableVertexAttribArray(texCoordLocation);
-	gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+	//gl.enableVertexAttribArray(texCoordLocation);
+	//gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
 	
 	var texture = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -87,7 +96,7 @@ function render(images) {
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	gl.enable(gl.BLEND);
 	
-	setRectangle(gl, 0.5, 0.25, 0.5, .25);
+
 	//setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
 	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
@@ -105,9 +114,23 @@ function drawScene(z) {
 	
 	
 	for (var i = 0; i < 5; i++) {
-		
-		
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+		// do it in a loop now
+		gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+		gl.enableVertexAttribArray(texCoordLocation);
+		gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+		if(i == 0) { // far tile
+			setRectangle(gl, 0.5, 0.5, 0.5, 0.25);
+		} else if (i == 1) { // close tile
+			setRectangle(gl, 0.5, 0.25, 0.5, 0.25);
+		} else if (i == 2) { // right
+			setRectangle(gl, 0.125, 0, 0.125, 1);
+		} else if (i == 3) { // left
+			setRectangle(gl, 0, 0, 0.125, 1);
+		} else if (i == 4) { // ceil
+			setRectangle(gl, 0.5, 0, 0.5, 0.25);
+		}
+
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pack);
 	
 		// lookup uniforms
 		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
@@ -117,9 +140,34 @@ function drawScene(z) {
 		gl.enableVertexAttribArray(positionLocation);
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 		
-		if (i==0) { // bottom
+		if (i==0) { // far tile
+			z += 1;
 			setRectangle(gl, canvas.width/2-(500/(Math.pow(2,z)*2)), 
 							 canvas.height/2+(125/(Math.pow(2,z))), 
+							 500/Math.pow(2,z), 
+							 125/Math.pow(2,z));
+			z -= 1;
+		} else if (i == 1) { // close tile
+			setRectangle(gl, canvas.width/2-(500/(Math.pow(2,z)*2)), 
+							 canvas.height/2+(125/(Math.pow(2,z))), 
+							 500/Math.pow(2,z), 
+							 125/Math.pow(2,z));
+			
+		} else if (i == 2) { // right
+			setRectangle(gl, canvas.width/2+(125/(Math.pow(2,z))), 
+							 canvas.height/2-(500/(Math.pow(2,z)*2)), 
+							 125/Math.pow(2,z), 
+							 500/Math.pow(2,z));
+			
+		} else if (i == 3) { // left
+			setRectangle(gl, canvas.width/2-(125/(Math.pow(2,z-1))), 
+							 canvas.height/2-(500/(Math.pow(2,z)*2)), 
+							 125/Math.pow(2,z), 
+							 500/Math.pow(2,z));
+			
+		} else if (i == 4) { // ceiling
+			setRectangle(gl, canvas.width/2-(500/(Math.pow(2,z)*2)), 
+							 canvas.height/2-(125/(Math.pow(2,z-1))), 
 							 500/Math.pow(2,z), 
 							 125/Math.pow(2,z));
 		}
