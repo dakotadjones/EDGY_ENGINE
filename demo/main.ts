@@ -10,47 +10,6 @@ var pack;
 var canvas;
 var move;
 var movespeed = 0.1;
-/*
-function loadImage(url, callback) {
-	var tile = new Image();
-	tile.src = url;
-	tile.crossOrigin = 'anonymous';
-	tile.onload = callback;
-	return tile;
-}
-
-
-function loadImages(urls, callback) {
-  images = [];
-  var imagesToLoad = urls.length;
- 
-  // Called each time an image finished
-  // loading.
-  var onImageLoad = function() {
-    --imagesToLoad;
-    // If all the images are loaded call the callback.
-    if (imagesToLoad == 0) {
-      callback(images);
-    }
-  };
- 
-  for (var ii = 0; ii < imagesToLoad; ++ii) {
-    var image = loadImage(urls[ii], onImageLoad);
-    images.push(image);
-  }
-}
-
-
-function main() {
-	loadImages([
-		"test_floor_center.png",
-		"test_wall_right.png",
-		"test_wall_left.png",
-		"test_ceiling_center.png",
-		"test_floor_center2.png"
-	], render);
-}
-*/
 
 function main() {
 	pack = new Image();
@@ -172,36 +131,6 @@ function drawScene(z) {
 							 125/Math.pow(2,z));
 		}
 		
-		/*
-		if (i==0) { // bottom
-			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
-							 canvas.height/2+(images[i].height/(Math.pow(2,z))), 
-							 images[i].width/Math.pow(2,z), 
-							 images[i].height/Math.pow(2,z));
-		} else if (i == 1) { // right
-			setRectangle(gl, canvas.width/2+(images[i].width/(Math.pow(2,z))), 
-							 canvas.height/2-(images[i].height/(Math.pow(2,z)*2)), 
-							 images[i].width/Math.pow(2,z), 
-							 images[i].height/Math.pow(2,z));
-		} else if (i == 2) { // left
-			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z-1))), 
-							 canvas.height/2-(images[i].height/(Math.pow(2,z)*2)), 
-							 images[i].width/Math.pow(2,z), 
-							 images[i].height/Math.pow(2,z));
-		} else if (i == 3){ // top
-			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
-							 canvas.height/2-(images[i].height/(Math.pow(2,z-1))), 
-							 images[i].width/Math.pow(2,z), 
-							 images[i].height/Math.pow(2,z));
-		} else if (i == 4){
-			z += 1;
-			setRectangle(gl, canvas.width/2-(images[i].width/(Math.pow(2,z)*2)), 
-							 canvas.height/2+(images[i].height/(Math.pow(2,z))), 
-							 images[i].width/Math.pow(2,z), 
-							 images[i].height/Math.pow(2,z));
-			z -= 1;
-		}
-		*/
 		// Draw the rectangle
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 	}
