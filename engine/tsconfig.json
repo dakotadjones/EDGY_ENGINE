@@ -1,0 +1,12 @@
+{
+"compilerOptions": {
+        "module": "amd",
+        "removeComments": true,
+        "sourceMap": false,
+        "out":"edgy.js"
+    },
+    "exclude":[
+           "main-old.ts",
+           "assets"
+           ]
+}
