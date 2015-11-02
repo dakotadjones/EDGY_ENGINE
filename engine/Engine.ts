@@ -1,4 +1,5 @@
 /// <reference path="Shader.ts" />
+/// <reference path="assets/texture_locations.ts" />
 
 module engine {
 export class Engine {
@@ -62,7 +63,7 @@ export class Engine {
 	}	
 	
 	draw(z) {
-		console.log("drawing...");
+
 		var e = this;
 		for (var i = 0; i < 5; i++) {
 			// do it in a loop now

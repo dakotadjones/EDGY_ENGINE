@@ -6,3 +6,5 @@ function run() {
 	edgy = new engine.Engine();
 	edgy.load("gameport");
 }
+
+console.log(packJSON)
