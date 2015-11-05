@@ -52,8 +52,8 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
-/* Shader class that creates the programs for specified WebGL context
- *
+/*
+ * Shader class that creates the programs for specified WebGL context
  */
 var utils;
 (function (utils) {
@@ -110,9 +110,8 @@ var utils;
     })();
     utils.Shader = Shader;
 })(utils || (utils = {}));
-var packJSON = { "blue": { "ceiling_center": { "h": 0.06103515625, "w": 0.244140625, "x": 0.4423828125, "y": 0.2490234375 }, "ceiling_left": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.0009765625, "y": 0.0009765625 }, "ceiling_right": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.30712890625, "y": 0.0009765625 }, "floor_center": { "h": 0.06103515625, "w": 0.244140625, "x": 0.24609375, "y": 0.31103515625 }, "floor_left": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.61328125, "y": 0.0009765625 }, "floor_right": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.0009765625, "y": 0.06298828125 }, "front_center": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.24609375 }, "front_left": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.24609375 }, "front_right": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.24609375 }, "left_center": { "h": 0.244140625, "w": 0.06103515625, "x": 0.91943359375, "y": 0.0009765625 }, "left_left": { "h": 0.244140625, "w": 0.1953125, "x": 0.0009765625, "y": 0.736328125 }, "right_center": { "h": 0.244140625, "w": 0.06103515625, "x": 0.30712890625, "y": 0.06298828125 }, "right_right": { "h": 0.244140625, "w": 0.1953125, "x": 0.197265625, "y": 0.736328125 } }, "purple": { "ceiling_center": { "h": 0.06103515625, "w": 0.244140625, "x": 0.24609375, "y": 0.373046875 }, "ceiling_left": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.0009765625, "y": 0.125 }, "ceiling_right": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.3935546875, "y": 0.06298828125 }, "floor_center": { "h": 0.06103515625, "w": 0.244140625, "x": 0.4912109375, "y": 0.31103515625 }, "floor_left": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.3935546875, "y": 0.125 }, "floor_right": { "h": 0.06103515625, "w": 0.30517578125, "x": 0.3935546875, "y": 0.18701171875 }, "front_center": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.4912109375 }, "front_left": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.4912109375 }, "front_right": { "h": 0.244140625, "w": 0.244140625, "x": 0.0009765625, "y": 0.4912109375 }, "left_center": { "h": 0.244140625, "w": 0.06103515625, "x": 0.89599609375, "y": 0.24609375 }, "left_left": { "h": 0.244140625, "w": 0.1953125, "x": 0.69970703125, "y": 0.06298828125 }, "right_center": { "h": 0.244140625, "w": 0.06103515625, "x": 0.3935546875, "y": 0.736328125 }, "right_right": { "h": 0.244140625, "w": 0.1953125, "x": 0.24609375, "y": 0.4912109375 } } };
 /// <reference path="Shader.ts" />
-/// <reference path="assets/texture_locations.ts" />
+/// <reference path="Box.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -122,7 +121,7 @@ var engine;
             var e = this;
             this.id = id;
             this.texturePack = new Image();
-            this.texturePack.src = 'assets/fake-pack.png';
+            this.texturePack.src = SRC + '.png';
             this.texturePack.crossOrigin = 'anonymous';
             this.texturePack.onload = function () { e.init(); };
         };
@@ -215,10 +214,40 @@ function setRectangle(gl, x, y, width, height) {
         x2, y2]), gl.STATIC_DRAW);
 }
 /// <reference path="Engine.ts" />
+var SRC = 'assets/test_package';
+var pack;
 var edgy;
 window.onload = run;
+var request = new XMLHttpRequest();
+request.onload = locationRequestListener;
+request.overrideMimeType("application/json");
+request.open("get", SRC + '.json', true);
+request.send();
+function locationRequestListener() {
+    var pack_json = JSON.parse(this.responseText);
+    getTextureLocations(pack_json);
+}
+function getTextureLocations(pixel_locs) {
+    pack = {};
+    var total_width = pixel_locs['meta']['size']['w'];
+    var total_height = pixel_locs['meta']['size']['h'];
+    for (var key in pixel_locs['frames']) {
+        var key_array = key.split('_');
+        var pattern = key_array[0];
+        var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
+        if (!pack.hasOwnProperty(pattern)) {
+            pack[pattern] = {};
+        }
+        if (!pack[pattern].hasOwnProperty(surface_perspective)) {
+            pack[pattern][surface_perspective] = {};
+        }
+        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][key]['sourceSize']['h'] / total_height;
+        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][key]['sourceSize']['w'] / total_width;
+        pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][key]['frame']['y'] / total_height;
+        pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][key]['frame']['x'] / total_width;
+    }
+}
 function run() {
     edgy = new engine.Engine();
     edgy.load("gameport");
 }
-console.log(packJSON);

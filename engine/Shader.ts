@@ -1,5 +1,5 @@
-/* Shader class that creates the programs for specified WebGL context
- *
+/* 
+ * Shader class that creates the programs for specified WebGL context
  */
 
 module utils {

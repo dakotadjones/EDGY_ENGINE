@@ -1,7 +1,7 @@
 /// <reference path="Shader.ts" />
-/// <reference path="assets/texture_locations.ts" />
-
+/// <reference path="Box.ts" />
 module engine {
+	
 export class Engine {
 	id:string;
 	gl:WebGLRenderingContext;
@@ -17,7 +17,8 @@ export class Engine {
 		var e = this;
 		this.id = id;
 		this.texturePack = new Image();
-		this.texturePack.src = 'assets/fake-pack.png';
+		this.texturePack.src = SRC + '.png';
+		//this.texturePack.src = 'assets/fake-pack.png';
 		this.texturePack.crossOrigin = 'anonymous';
 		this.texturePack.onload = function() { e.init(); };
 	}
@@ -60,8 +61,8 @@ export class Engine {
 		e.texCoordBuffer = e.gl.createBuffer();
 
 		e.draw(0);
-	}	
-	
+	}
+
 	draw(z) {
 
 		var e = this;
