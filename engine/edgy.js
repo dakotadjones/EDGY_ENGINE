@@ -1,3 +1,57 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
+var utils;
+(function (utils) {
+    var Box = (function () {
+        function Box(parts) {
+            this.ceiling_surface = parts['ceil'];
+            this.floor_surface = parts['floor'];
+            this.north_surface = parts['north'];
+            this.south_surface = parts['south'];
+            this.east_surface = parts['east'];
+            this.west_surface = parts['west'];
+        }
+        Box.prototype.setPerspective = function (p) {
+            switch (p) {
+                case 'right':
+                    this.perspective = 'right';
+                    break;
+                case 'left':
+                    this.perspective = 'left';
+                    break;
+                default:
+                    this.perspective = 'center';
+            }
+        };
+        Box.prototype.setDistance = function (z) {
+            this.z = z;
+        };
+        Box.prototype.getDistance = function () {
+            return this.z;
+        };
+        return Box;
+    })();
+    utils.Box = Box;
+})(utils || (utils = {}));
 /* Shader class that creates the programs for specified WebGL context
  *
  */
