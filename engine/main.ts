@@ -1,6 +1,8 @@
 /// <reference path="Engine.ts" />
 var SRC = 'assets/test_package';
+var MAPSRC = 'assets/map.json'
 var pack;
+var map;
 var edgy;
 
 window.onload = run;
@@ -11,9 +13,19 @@ request.overrideMimeType("application/json")
 request.open("get", SRC + '.json', true);
 request.send();
 
+var mapRequest = new XMLHttpRequest();
+request.onload = mapRequestListener;
+request.open("get", MAPSRC, true);
+request.send();
+
+
 function locationRequestListener() {
-	var pack_json = JSON.parse(this.responseText);
-	getTextureLocations(pack_json);
+	var packJson = JSON.parse(this.responseText);
+	getTextureLocations(packJson);
+}
+
+function mapRequestListener() {
+	map = JSON.parse(this.responseText);
 }
 
 function getTextureLocations(pixel_locs) {

@@ -1,7 +1,8 @@
 /// <reference path="Shader.ts" />
 /// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
+
 module engine {
-	
 export class Engine {
 	id:string;
 	gl:WebGLRenderingContext;
@@ -12,6 +13,8 @@ export class Engine {
 	texCoordLocation:number;
 	texCoordBuffer:WebGLBuffer;
 	texturePack:HTMLImageElement;
+	myPlayer:player.Player;
+	boxes:Array<Array<utils.Box>>;
 	
 	load(id:string) {
 		var e = this;
@@ -25,7 +28,6 @@ export class Engine {
 	
 	init() {
 		var e = this;
-
 		// initialize elements
 		// canvas
 		e.canvas = <HTMLCanvasElement>document.getElementById(e.id);
@@ -59,10 +61,39 @@ export class Engine {
 		
 		e.positionBuffer = e.gl.createBuffer();
 		e.texCoordBuffer = e.gl.createBuffer();
+		
+		e.loadBoxes();
+		e.myPlayer = new player.Player();
 
-		e.draw(0);
+		//e.draw(0);
+	}
+	
+	loadBoxes() {
+		console.log("loading boxes");
+		for(var coord in map) {
+			var x = coord.split(',')[0];
+			var y = coord.split(',')[1];
+			var box = new utils.Box(x,y, map[coord]);
+			if (this.boxes === undefined) {
+				this.boxes = [];				
+			}
+			if (this.boxes[x] === undefined) {
+				this.boxes[x] = [];
+			}
+			this.boxes[x].push(box)
+		}
+	}
+	
+	draw() {
+		// TODO
+		var xy = this.getPlayerPosition();
+	}
+	
+	getPlayerPosition() {
+		return this.myPlayer.getCoordinates();
 	}
 
+/*
 	draw(z) {
 
 		var e = this;
@@ -128,6 +159,7 @@ export class Engine {
 			e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 		}
 	}
+	*/
 	
 	
 }

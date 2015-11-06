@@ -22,32 +22,16 @@
 var utils;
 (function (utils) {
     var Box = (function () {
-        function Box(parts) {
-            this.ceiling_surface = parts['ceil'];
-            this.floor_surface = parts['floor'];
-            this.north_surface = parts['north'];
-            this.south_surface = parts['south'];
-            this.east_surface = parts['east'];
-            this.west_surface = parts['west'];
+        function Box(x, y, parts) {
+            this.x = x;
+            this.y = y;
+            this.ceilingSurface = parts['ceil'];
+            this.floorSurface = parts['floor'];
+            this.northSurface = parts['north'];
+            this.southSurface = parts['south'];
+            this.eastSurface = parts['east'];
+            this.westSurface = parts['west'];
         }
-        Box.prototype.setPerspective = function (p) {
-            switch (p) {
-                case 'right':
-                    this.perspective = 'right';
-                    break;
-                case 'left':
-                    this.perspective = 'left';
-                    break;
-                default:
-                    this.perspective = 'center';
-            }
-        };
-        Box.prototype.setDistance = function (z) {
-            this.z = z;
-        };
-        Box.prototype.getDistance = function () {
-            return this.z;
-        };
         return Box;
     })();
     utils.Box = Box;
@@ -110,8 +94,36 @@ var utils;
     })();
     utils.Shader = Shader;
 })(utils || (utils = {}));
+var player;
+(function (player) {
+    var Player = (function () {
+        function Player(x, y, facing) {
+            if (x === void 0) { x = 0; }
+            if (y === void 0) { y = 0; }
+            if (facing === void 0) { facing = "east"; }
+            this.x = x;
+            this.y = y;
+            this.facing = facing;
+        }
+        Player.prototype.setX = function (x) {
+            this.x = x;
+        };
+        Player.prototype.setY = function (y) {
+            this.y = y;
+        };
+        Player.prototype.setFacing = function (facing) {
+            this.facing = facing;
+        };
+        Player.prototype.getCoordinates = function () {
+            return this.x + ',' + this.y;
+        };
+        return Player;
+    })();
+    player.Player = Player;
+})(player || (player = {}));
 /// <reference path="Shader.ts" />
 /// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -147,54 +159,29 @@ var engine;
             e.gl.enable(e.gl.BLEND);
             e.positionBuffer = e.gl.createBuffer();
             e.texCoordBuffer = e.gl.createBuffer();
-            e.draw(0);
+            e.loadBoxes();
+            e.myPlayer = new player.Player();
         };
-        Engine.prototype.draw = function (z) {
-            var e = this;
-            for (var i = 0; i < 5; i++) {
-                e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
-                e.gl.enableVertexAttribArray(e.texCoordLocation);
-                e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
-                if (i == 0) {
-                    setRectangle(e.gl, 0.5, 0.5, 0.5, 0.25);
+        Engine.prototype.loadBoxes = function () {
+            console.log("loading boxes");
+            for (var coord in map) {
+                var x = coord.split(',')[0];
+                var y = coord.split(',')[1];
+                var box = new utils.Box(x, y, map[coord]);
+                if (this.boxes === undefined) {
+                    this.boxes = [];
                 }
-                else if (i == 1) {
-                    setRectangle(e.gl, 0.5, 0.25, 0.5, 0.25);
+                if (this.boxes[x] === undefined) {
+                    this.boxes[x] = [];
                 }
-                else if (i == 2) {
-                    setRectangle(e.gl, 0.125, 0, 0.125, 1);
-                }
-                else if (i == 3) {
-                    setRectangle(e.gl, 0, 0, 0.125, 1);
-                }
-                else if (i == 4) {
-                    setRectangle(e.gl, 0.5, 0, 0.5, 0.25);
-                }
-                e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
-                var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
-                e.gl.uniform2f(resolutionLocation, e.canvas.width, e.canvas.height);
-                e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
-                e.gl.enableVertexAttribArray(e.positionLocation);
-                e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
-                if (i == 0) {
-                    z += 1;
-                    setRectangle(e.gl, e.canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), e.canvas.height / 2 + (125 / (Math.pow(2, z))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
-                    z -= 1;
-                }
-                else if (i == 1) {
-                    setRectangle(e.gl, e.canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), e.canvas.height / 2 + (125 / (Math.pow(2, z))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
-                }
-                else if (i == 2) {
-                    setRectangle(e.gl, e.canvas.width / 2 + (125 / (Math.pow(2, z))), e.canvas.height / 2 - (500 / (Math.pow(2, z) * 2)), 125 / Math.pow(2, z), 500 / Math.pow(2, z));
-                }
-                else if (i == 3) {
-                    setRectangle(e.gl, e.canvas.width / 2 - (125 / (Math.pow(2, z - 1))), e.canvas.height / 2 - (500 / (Math.pow(2, z) * 2)), 125 / Math.pow(2, z), 500 / Math.pow(2, z));
-                }
-                else if (i == 4) {
-                    setRectangle(e.gl, e.canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (125 / (Math.pow(2, z - 1))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
-                }
-                e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+                this.boxes[x].push(box);
             }
+        };
+        Engine.prototype.draw = function () {
+            this.getPlayerPosition();
+        };
+        Engine.prototype.getPlayerPosition = function () {
+            return this.myPlayer.getCoordinates();
         };
         return Engine;
     })();
@@ -215,7 +202,9 @@ function setRectangle(gl, x, y, width, height) {
 }
 /// <reference path="Engine.ts" />
 var SRC = 'assets/test_package';
+var MAPSRC = 'assets/map.json';
 var pack;
+var map;
 var edgy;
 window.onload = run;
 var request = new XMLHttpRequest();
@@ -223,9 +212,16 @@ request.onload = locationRequestListener;
 request.overrideMimeType("application/json");
 request.open("get", SRC + '.json', true);
 request.send();
+var mapRequest = new XMLHttpRequest();
+request.onload = mapRequestListener;
+request.open("get", MAPSRC, true);
+request.send();
 function locationRequestListener() {
-    var pack_json = JSON.parse(this.responseText);
-    getTextureLocations(pack_json);
+    var packJson = JSON.parse(this.responseText);
+    getTextureLocations(packJson);
+}
+function mapRequestListener() {
+    map = JSON.parse(this.responseText);
 }
 function getTextureLocations(pixel_locs) {
     pack = {};

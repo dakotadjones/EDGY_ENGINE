@@ -22,43 +22,27 @@
 
 module utils {
 	export class Box {
-		ceiling_surface:string;
-		floor_surface:string;
-		north_surface:string;
-		east_surface:string;
-		west_surface:string
-		south_surface:string;
-		perspective:string;
+		ceilingSurface:string;
+		floorSurface:string;
+		northSurface:string;
+		eastSurface:string;
+		westSurface:string
+		southSurface:string;
+		x:number;
+		y:number;
 		z:number;
+		occupant:boolean;
 		
-		constructor(parts: JSON) {
-			this.ceiling_surface = parts['ceil'];
-			this.floor_surface = parts['floor'];
-			this.north_surface = parts['north'];
-			this.south_surface = parts['south'];
-			this.east_surface = parts['east'];
-			this.west_surface = parts['west'];
+		constructor(x, y, parts: JSON) {
+			this.x = x;
+			this.y = y;
+			this.ceilingSurface = parts['ceil'];
+			this.floorSurface = parts['floor'];
+			this.northSurface = parts['north'];
+			this.southSurface = parts['south'];
+			this.eastSurface = parts['east'];
+			this.westSurface = parts['west'];
 		}
-		
-		setPerspective(p) {
-			switch(p) {
-				case 'right':
-					this.perspective = 'right';
-					break;
-				case 'left':
-					this.perspective = 'left';
-					break;
-				default:
-					this.perspective = 'center';
-			}
-		}
-				
-		setDistance(z:number) {
-			this.z = z;
-		}
-		
-		getDistance() {
-			return this.z
-		}
+
 	}
 }
