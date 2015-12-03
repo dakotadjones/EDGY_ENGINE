@@ -31,7 +31,7 @@ module utils {
 		x:number;
 		y:number;
 		z:number;
-		occupant:boolean;
+		occupant:boolean; // perhaps an object in the future
 		
 		constructor(x, y, parts: JSON) {
 			this.x = x;
@@ -43,6 +43,5 @@ module utils {
 			this.eastSurface = parts['east'];
 			this.westSurface = parts['west'];
 		}
-
 	}
 }

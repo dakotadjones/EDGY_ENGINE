@@ -95,6 +95,7 @@ function render() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.BLEND);
+    setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
     positionBuffer = gl.createBuffer();
     move = 0;
     drawScene(0);

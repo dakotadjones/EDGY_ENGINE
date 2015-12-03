@@ -56,7 +56,7 @@ function render() {
 	gl.enable(gl.BLEND);
 	
 
-	//setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
+	setRectangle(gl, 0.0, 0.0, 1.0, 1.0);
 	
 	// http://stackoverflow.com/questions/12321781/drawing-multiple-2d-images-in-webgl
 	positionBuffer = gl.createBuffer();

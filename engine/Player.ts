@@ -21,8 +21,12 @@ module player {
 			this.facing = facing;
 		}
 		
+		getFacing() {
+			return this.facing;
+		}
+		
 		getCoordinates() {
-			return this.x + ',' + this.y;
+			return [this.x, this.y];
 		}
 	}
 }

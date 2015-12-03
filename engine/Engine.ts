@@ -18,6 +18,7 @@ export class Engine {
 	
 	load(id:string) {
 		var e = this;
+		e.myPlayer = new player.Player();
 		this.id = id;
 		this.texturePack = new Image();
 		this.texturePack.src = SRC + '.png';
@@ -61,15 +62,13 @@ export class Engine {
 		
 		e.positionBuffer = e.gl.createBuffer();
 		e.texCoordBuffer = e.gl.createBuffer();
-		
+	
 		e.loadBoxes();
-		e.myPlayer = new player.Player();
 
 		//e.draw(0);
 	}
 	
 	loadBoxes() {
-		console.log("loading boxes");
 		for(var coord in map) {
 			var x = coord.split(',')[0];
 			var y = coord.split(',')[1];
@@ -82,15 +81,83 @@ export class Engine {
 			}
 			this.boxes[x].push(box)
 		}
+		// after we load boxes, draw the scene
+		this.draw();
 	}
 	
 	draw() {
-		// TODO
 		var xy = this.getPlayerPosition();
+		var x = xy[0];
+		var y = xy[1];
+		var facing = this.getPlayerFacing();
+		var e = this;
+		switch(facing) {
+			case "east":
+				// get the three tiles in front of us
+				var displayBoxes = [this.boxes[x+3][y], this.boxes[x+2][y], this.boxes[x+1][y]];		
+				e.drawBoxes(displayBoxes);
+				break;
+		}		
+	}
+	
+	drawBoxes(displayBoxes:Array<utils.Box>) {
+		var e = this;
+		for (var i = 0; i < displayBoxes.length; i++) {
+			var box  = displayBoxes[i];
+			
+			// TODO this needs to be more general
+			// Draw surface has to know the position, we have to do the math
+			e.setUpTexture(box.ceilingSurface, "ceiling_center");
+			e.drawSurface(0);
+			
+			//e.setUpTexture(box.floorSurface, "floor_center");
+			//e.drawSurface(0);
+			//e.setUpTexture(box.northSurface, "left_center");
+			
+			//e.setUpTexture(box.southSurface, "right_center");
+		}
+		console.log(pack);
 	}
 	
 	getPlayerPosition() {
 		return this.myPlayer.getCoordinates();
+	}
+	
+	getPlayerFacing() {
+		return this.myPlayer.getFacing();
+	}
+
+	setUpTexture(pattern:string, surfaceType:string) {
+		// this is good
+		var e = this;
+		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
+		e.gl.enableVertexAttribArray(e.texCoordLocation);
+		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
+		var x = pack[pattern][surfaceType]["x"];
+		var y = pack[pattern][surfaceType]["y"];
+		var w = pack[pattern][surfaceType]["w"];
+		var h = pack[pattern][surfaceType]["h"];
+		setRectangle(e.gl, x, y, w, h);
+		//pack[pattern][surfaceType]["x"];			
+	}
+	
+	drawSurface(z:number) {
+		var e = this;
+		e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
+		// lookup uniforms
+		var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
+		// set the resolution
+		e.gl.uniform2f(resolutionLocation, e.canvas.width, e.canvas.height);
+		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
+		e.gl.enableVertexAttribArray(e.positionLocation);
+		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+		
+		// TODO fix hard coding numbers
+		setRectangle(e.gl, e.canvas.width/2-(500/(Math.pow(2,z)*2)), 
+ 					 e.canvas.height/2-(125/(Math.pow(2,z-1))), 
+					 500/Math.pow(2,z), 
+					 125/Math.pow(2,z));
+		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 	}
 
 /*

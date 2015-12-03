@@ -5,18 +5,21 @@ var pack;
 var map;
 var edgy;
 
+// run program when everything loads
 window.onload = run;
 
+// grab the json files for conversion
 var request = new XMLHttpRequest();
 request.onload = locationRequestListener;
-request.overrideMimeType("application/json")
+request.overrideMimeType("application/json");
 request.open("get", SRC + '.json', true);
 request.send();
 
 var mapRequest = new XMLHttpRequest();
-request.onload = mapRequestListener;
-request.open("get", MAPSRC, true);
-request.send();
+mapRequest.onload = mapRequestListener;
+mapRequest.overrideMimeType("application/json");
+mapRequest.open("get", MAPSRC, true);
+mapRequest.send();
 
 
 function locationRequestListener() {
@@ -47,7 +50,6 @@ function getTextureLocations(pixel_locs) {
 		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][key]['frame']['y']/total_height
 		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][key]['frame']['x']/total_width
 	}
-	
 }
 
 function run() {

@@ -114,8 +114,11 @@ var player;
         Player.prototype.setFacing = function (facing) {
             this.facing = facing;
         };
+        Player.prototype.getFacing = function () {
+            return this.facing;
+        };
         Player.prototype.getCoordinates = function () {
-            return this.x + ',' + this.y;
+            return [this.x, this.y];
         };
         return Player;
     })();
@@ -131,6 +134,7 @@ var engine;
         }
         Engine.prototype.load = function (id) {
             var e = this;
+            e.myPlayer = new player.Player();
             this.id = id;
             this.texturePack = new Image();
             this.texturePack.src = SRC + '.png';
@@ -160,10 +164,8 @@ var engine;
             e.positionBuffer = e.gl.createBuffer();
             e.texCoordBuffer = e.gl.createBuffer();
             e.loadBoxes();
-            e.myPlayer = new player.Player();
         };
         Engine.prototype.loadBoxes = function () {
-            console.log("loading boxes");
             for (var coord in map) {
                 var x = coord.split(',')[0];
                 var y = coord.split(',')[1];
@@ -176,12 +178,57 @@ var engine;
                 }
                 this.boxes[x].push(box);
             }
+            this.draw();
         };
         Engine.prototype.draw = function () {
-            this.getPlayerPosition();
+            var xy = this.getPlayerPosition();
+            var x = xy[0];
+            var y = xy[1];
+            var facing = this.getPlayerFacing();
+            var e = this;
+            switch (facing) {
+                case "east":
+                    var displayBoxes = [this.boxes[x + 3][y], this.boxes[x + 2][y], this.boxes[x + 1][y]];
+                    e.drawBoxes(displayBoxes);
+                    break;
+            }
+        };
+        Engine.prototype.drawBoxes = function (displayBoxes) {
+            var e = this;
+            for (var i = 0; i < displayBoxes.length; i++) {
+                var box = displayBoxes[i];
+                e.setUpTexture(box.ceilingSurface, "ceiling_center");
+                e.drawSurface(0);
+            }
+            console.log(pack);
         };
         Engine.prototype.getPlayerPosition = function () {
             return this.myPlayer.getCoordinates();
+        };
+        Engine.prototype.getPlayerFacing = function () {
+            return this.myPlayer.getFacing();
+        };
+        Engine.prototype.setUpTexture = function (pattern, surfaceType) {
+            var e = this;
+            e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
+            e.gl.enableVertexAttribArray(e.texCoordLocation);
+            e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
+            var x = pack[pattern][surfaceType]["x"];
+            var y = pack[pattern][surfaceType]["y"];
+            var w = pack[pattern][surfaceType]["w"];
+            var h = pack[pattern][surfaceType]["h"];
+            setRectangle(e.gl, x, y, w, h);
+        };
+        Engine.prototype.drawSurface = function (z) {
+            var e = this;
+            e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
+            var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
+            e.gl.uniform2f(resolutionLocation, e.canvas.width, e.canvas.height);
+            e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
+            e.gl.enableVertexAttribArray(e.positionLocation);
+            e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+            setRectangle(e.gl, e.canvas.width / 2 - (500 / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (125 / (Math.pow(2, z - 1))), 500 / Math.pow(2, z), 125 / Math.pow(2, z));
+            e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         return Engine;
     })();
@@ -213,9 +260,10 @@ request.overrideMimeType("application/json");
 request.open("get", SRC + '.json', true);
 request.send();
 var mapRequest = new XMLHttpRequest();
-request.onload = mapRequestListener;
-request.open("get", MAPSRC, true);
-request.send();
+mapRequest.onload = mapRequestListener;
+mapRequest.overrideMimeType("application/json");
+mapRequest.open("get", MAPSRC, true);
+mapRequest.send();
 function locationRequestListener() {
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
