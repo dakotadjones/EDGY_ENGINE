@@ -82,6 +82,7 @@ export class Engine {
 			this.boxes[x].push(box)
 		}
 		// after we load boxes, draw the scene
+		// TODO better way to call draw AFTER boxes is loaded
 		this.draw();
 	}
 	
