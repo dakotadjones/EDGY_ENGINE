@@ -195,11 +195,32 @@ export class Engine {
 	}
 	
 	getBoxes(facing:string, myX:number, myY:number) {
+		// TODO optimize
 		var displayBoxes = [];
 		var e = this;
 		switch(facing) {
 			case "north":
+				for (var y = 3; y > 0; y--) {
+						var rowNum = myY - y;
+						for (var x = -1; x <= 1; x++) {
+							var xx = myX + x;
+							var pos  = rowNum.toString() + "," + xx.toString();
+							if (map.hasOwnProperty(pos)) {
+								displayBoxes.push(e.boxes[xx][rowNum]);
+							}
+						}
+				}
 			case "south":
+				for (var y = 3; y > 0; y--) {
+						var rowNum = myY + y;
+						for (var x = -1; x <= 1; x++) {
+							var xx = myX + x;
+							var pos  = rowNum.toString() + "," + xx.toString();
+							if (map.hasOwnProperty(pos)) {
+								displayBoxes.push(e.boxes[xx][rowNum]);
+							}
+						}
+				}
 			case "east":
 				for (var x = 3; x > 0; x--) {
 					var colNum = myX + x;
@@ -260,10 +281,12 @@ export class Engine {
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 		
 		// TODO fix hard coding numbers	
+		/*
 		setRectangle(e.gl, e.canvas.width/2-(500/(Math.pow(2,z)*2)), 
  					 e.canvas.height/2-(125/(Math.pow(2,z-1))), 
 					 500/Math.pow(2,z), 
 					 125/Math.pow(2,z));
+		*/
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 	}
 
