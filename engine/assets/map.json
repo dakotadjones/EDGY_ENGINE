@@ -1,4 +1,6 @@
-{"0,0":{"ceil":"blue",
+{
+"player":{"x":0, "y":0, "facing":"east"},
+"0,0":{"ceil":"blue",
 		"floor":"purple",
 		"north":"blue",
 		"south":"blue",

@@ -43,5 +43,29 @@ module utils {
 			this.eastSurface = parts['east'];
 			this.westSurface = parts['west'];
 		}
+		
+		getPattern(surface:string) {
+			switch(surface) {
+				case "ceiling":
+					return this.ceilingSurface;
+					break;
+				case "floor":
+					return this.floorSurface;
+					break;
+				case "north":
+					return this.northSurface;
+					break;
+				case "south":
+					return this.southSurface;
+					break;
+				case "east":
+					return this.eastSurface;
+					break;				
+				case "west":
+					return this.westSurface;
+					break;				
+			}
+		}
+		
 	}
 }

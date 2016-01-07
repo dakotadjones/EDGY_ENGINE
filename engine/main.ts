@@ -21,7 +21,6 @@ mapRequest.overrideMimeType("application/json");
 mapRequest.open("get", MAPSRC, true);
 mapRequest.send();
 
-
 function locationRequestListener() {
 	var packJson = JSON.parse(this.responseText);
 	getTextureLocations(packJson);

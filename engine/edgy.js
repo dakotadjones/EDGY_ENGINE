@@ -32,6 +32,28 @@ var utils;
             this.eastSurface = parts['east'];
             this.westSurface = parts['west'];
         }
+        Box.prototype.getPattern = function (surface) {
+            switch (surface) {
+                case "ceiling":
+                    return this.ceilingSurface;
+                    break;
+                case "floor":
+                    return this.floorSurface;
+                    break;
+                case "north":
+                    return this.northSurface;
+                    break;
+                case "south":
+                    return this.southSurface;
+                    break;
+                case "east":
+                    return this.eastSurface;
+                    break;
+                case "west":
+                    return this.westSurface;
+                    break;
+            }
+        };
         return Box;
     })();
     utils.Box = Box;
@@ -164,43 +186,153 @@ var engine;
             e.positionBuffer = e.gl.createBuffer();
             e.texCoordBuffer = e.gl.createBuffer();
             e.loadBoxes();
+            e.draw();
         };
         Engine.prototype.loadBoxes = function () {
+            var e = this;
             for (var coord in map) {
-                var x = coord.split(',')[0];
-                var y = coord.split(',')[1];
-                var box = new utils.Box(x, y, map[coord]);
-                if (this.boxes === undefined) {
-                    this.boxes = [];
+                if (coord == "player") {
+                    e.myPlayer.setX(map[coord]["x"]);
+                    e.myPlayer.setY(map[coord]["y"]);
+                    e.myPlayer.setFacing(map[coord]["facing"]);
                 }
-                if (this.boxes[x] === undefined) {
-                    this.boxes[x] = [];
+                else {
+                    var x = coord.split(',')[0];
+                    var y = coord.split(',')[1];
+                    var box = new utils.Box(x, y, map[coord]);
+                    if (this.boxes === undefined) {
+                        this.boxes = [];
+                    }
+                    if (this.boxes[x] === undefined) {
+                        this.boxes[x] = [];
+                    }
+                    this.boxes[x].push(box);
                 }
-                this.boxes[x].push(box);
             }
-            this.draw();
         };
         Engine.prototype.draw = function () {
-            var xy = this.getPlayerPosition();
+            var e = this;
+            var xy = e.getPlayerPosition();
             var x = xy[0];
             var y = xy[1];
-            var facing = this.getPlayerFacing();
+            var facing = e.getPlayerFacing();
+            var displayBoxes = e.getBoxes(facing, x, y);
+            e.drawBoxes(displayBoxes, facing, x, y);
+        };
+        Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
-            switch (facing) {
-                case "east":
-                    var displayBoxes = [this.boxes[x + 3][y], this.boxes[x + 2][y], this.boxes[x + 1][y]];
-                    e.drawBoxes(displayBoxes);
-                    break;
+            var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
+            for (var i = 0; i < boxes.length; i++) {
+                var box = boxes[i];
+                var z;
+                var relSurfaces;
+                var leftRightCenter = null;
+                switch (facing) {
+                    case "north":
+                        if (myX > box.x) {
+                            leftRightCenter = "left";
+                        }
+                        else if (myX < box.x) {
+                            leftRightCenter = "right";
+                        }
+                        else {
+                            leftRightCenter = "center";
+                        }
+                        relSurfaces = ["ceiling", "floor", "frontFar", "front", "right", "left"];
+                        z = myY - box.y;
+                        break;
+                    case "east":
+                        if (myY > box.y) {
+                            leftRightCenter = "left";
+                        }
+                        else if (myY < box.y) {
+                            leftRightCenter = "right";
+                        }
+                        else {
+                            leftRightCenter = "center";
+                        }
+                        relSurfaces = ["ceiling", "floor", "left", "right", "frontFar", "front"];
+                        z = box.x - myX;
+                        break;
+                    case "south":
+                        if (myX > box.x) {
+                            leftRightCenter = "right";
+                        }
+                        else if (myX < box.x) {
+                            leftRightCenter = "left";
+                        }
+                        else {
+                            leftRightCenter = "center";
+                        }
+                        relSurfaces = ["ceiling", "floor", "frontFar", "front", "left", "right"];
+                        absSurfaces = ["ceiling", "floor", "south", "north", "east", "west"];
+                        z = box.y - myY;
+                        break;
+                    case "west":
+                        if (myY > box.y) {
+                            leftRightCenter = "right";
+                        }
+                        else if (myY < box.y) {
+                            leftRightCenter = "left";
+                        }
+                        else {
+                            leftRightCenter = "center";
+                        }
+                        relSurfaces = ["ceiling", "floor", "right", "left", "frontFar", "front"];
+                        absSurfaces = ["ceiling", "floor", "north", "south", "west", "east"];
+                        z = box.x - myX - 1;
+                        break;
+                }
+                for (var j = 0; j <= relSurfaces.length; j++) {
+                    var wasFrontFar = false;
+                    var rsurface = relSurfaces[j];
+                    var asurface = absSurfaces[j];
+                    var pattern = box.getPattern(asurface);
+                    if (pattern == null)
+                        break;
+                    if (rsurface == "frontFar") {
+                        wasFrontFar = true;
+                        rsurface = "front";
+                        z += 1;
+                    }
+                    e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
+                    e.drawSurface(z);
+                    if (wasFrontFar) {
+                        z -= 1;
+                    }
+                }
             }
         };
-        Engine.prototype.drawBoxes = function (displayBoxes) {
+        Engine.prototype.getBoxes = function (facing, myX, myY) {
+            var displayBoxes = [];
             var e = this;
-            for (var i = 0; i < displayBoxes.length; i++) {
-                var box = displayBoxes[i];
-                e.setUpTexture(box.ceilingSurface, "ceiling_center");
-                e.drawSurface(0);
+            switch (facing) {
+                case "north":
+                case "south":
+                case "east":
+                    for (var x = 3; x > 0; x--) {
+                        var colNum = myX + x;
+                        for (var y = -1; y <= 1; y++) {
+                            var yy = myY + y;
+                            var pos = colNum.toString() + "," + yy.toString();
+                            if (map.hasOwnProperty(pos)) {
+                                displayBoxes.push(e.boxes[colNum][yy]);
+                            }
+                        }
+                    }
+                case "west":
+                    for (var x = 3; x > 0; x--) {
+                        var colNum = myX - x;
+                        for (var y = -1; y <= 1; y++) {
+                            var yy = myY + y;
+                            var pos = colNum.toString() + "," + yy.toString();
+                            if (map.hasOwnProperty(pos)) {
+                                displayBoxes.push(e.boxes[colNum][yy]);
+                            }
+                        }
+                    }
             }
-            console.log(pack);
+            return displayBoxes;
         };
         Engine.prototype.getPlayerPosition = function () {
             return this.myPlayer.getCoordinates();
@@ -219,7 +351,8 @@ var engine;
             var h = pack[pattern][surfaceType]["h"];
             setRectangle(e.gl, x, y, w, h);
         };
-        Engine.prototype.drawSurface = function (z) {
+        Engine.prototype.drawSurface = function (z, leftOrRight) {
+            if (leftOrRight === void 0) { leftOrRight = null; }
             var e = this;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
