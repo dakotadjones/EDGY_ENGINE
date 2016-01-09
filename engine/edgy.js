@@ -1,24 +1,3 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -58,9 +37,6 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -146,9 +122,6 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -288,17 +261,17 @@ var engine;
                     var rsurface = relSurfaces[j];
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
-                    if (pattern == null)
-                        break;
-                    if (rsurface == "frontFar") {
-                        wasFrontFar = true;
-                        rsurface = "front";
-                        z += 1;
-                    }
-                    e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
-                    e.drawSurface(z - 1, pattern, rsurface + "_" + leftRightCenter);
-                    if (wasFrontFar) {
-                        z -= 1;
+                    if (pattern != null) {
+                        if (rsurface == "frontFar") {
+                            wasFrontFar = true;
+                            rsurface = "front";
+                            z += 1;
+                        }
+                        e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
+                        e.drawSurface(z - 1, pattern, rsurface + "_" + leftRightCenter);
+                        if (wasFrontFar) {
+                            z -= 1;
+                        }
                     }
                 }
             }
@@ -402,6 +375,7 @@ var engine;
                 case "right_right":
                     break;
                 case "front_center":
+                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
                 case "front_left":
                 case "front_right":
                     setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
@@ -427,7 +401,6 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;

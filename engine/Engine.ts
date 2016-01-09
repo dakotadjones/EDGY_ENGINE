@@ -177,19 +177,18 @@ export class Engine {
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
-				if (pattern == null) 
-					break;
-				
-				if (rsurface == "frontFar"){
-					wasFrontFar = true;
-					rsurface = "front";
-					z += 1;
-				}
-				e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);				
-				e.drawSurface(z-1, pattern, rsurface + "_" + leftRightCenter);
-				
-				if (wasFrontFar){
-					z -= 1;
+				if (pattern != null){
+					if (rsurface == "frontFar"){
+						wasFrontFar = true;
+						rsurface = "front";
+						z += 1;
+					}
+					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);				
+					e.drawSurface(z-1, pattern, rsurface + "_" + leftRightCenter);
+					
+					if (wasFrontFar){
+						z -= 1;
+					}
 				}
 			}
 		}
@@ -316,6 +315,10 @@ export class Engine {
 			case "right_right":
 				break;
 			case "front_center":
+				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
 			case "front_left":
 			case "front_right":
 				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z))), 
