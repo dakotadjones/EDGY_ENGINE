@@ -166,7 +166,7 @@ var engine;
         Engine.prototype.init = function () {
             var e = this;
             e.canvas = document.getElementById(e.id);
-            e.gl = e.canvas.getContext('webgl');
+            e.gl = e.canvas.getContext('webgl') || e.canvas.getContext('experimental-webgl');
             var shader = new utils.Shader(e.gl);
             shader.getShader('shader-fs');
             shader.getShader('shader-vs');
@@ -404,6 +404,7 @@ var engine;
                 case "front_center":
                 case "front_left":
                 case "front_right":
+                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
                     break;
             }
             console.log(surfaceType);
@@ -428,7 +429,7 @@ function setRectangle(gl, x, y, width, height) {
 }
 /// <reference path="Engine.ts" />
 var SRC = 'assets/test_package';
-var MAPSRC = 'assets/map.json';
+var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
 var map;
 var edgy;

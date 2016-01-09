@@ -37,8 +37,8 @@ export class Engine {
 		// canvas
 		e.canvas = <HTMLCanvasElement>document.getElementById(e.id);
 		// graphics library
-		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl');
-		
+		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl') || <WebGLRenderingContext>e.canvas.getContext('experimental-webgl');
+		//e.gl = <WebGLRenderingContext> initWebGL(e.canvas)
 		// shader
 		var shader = new utils.Shader(e.gl);
 		shader.getShader('shader-fs');
@@ -171,6 +171,7 @@ export class Engine {
 					break;
 			}			
 
+			// TODO optimize
 			for (var j = 0; j <= relSurfaces.length; j++) {
 				var wasFrontFar = false;
 				var rsurface = relSurfaces[j];
@@ -317,6 +318,10 @@ export class Engine {
 			case "front_center":
 			case "front_left":
 			case "front_right":
+				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z))), 
+							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
 				break;
 			
 				

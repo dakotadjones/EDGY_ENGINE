@@ -23,14 +23,14 @@
 	"south":"blue",
 	"east":null,
 	"west":"blue"
-}
+},
 "1,0":{
 	"ceil":"blue",
 	"floor":"purple",
 	"north":"blue",
 	"south":null,
 	"east":null,
-	"west":null,
+	"west":null
 },
 "1,1":{
 	"ceil":"blue",
@@ -38,7 +38,7 @@
 	"north":null,
 	"south":null,
 	"east":null,
-	"west":null,
+	"west":null
 },
 "1,2":{
 	"ceil":"blue",
@@ -46,15 +46,15 @@
 	"north":null,
 	"south":"blue",
 	"east":null,
-	"west":null,
-}
+	"west":null
+},
 "2,0":{
 	"ceil":"blue",
 	"floor":"purple",
 	"north":"blue",
 	"south":null,
 	"east":null,
-	"west":null,
+	"west":null
 },
 "2,1":{
 	"ceil":"blue",
@@ -62,7 +62,7 @@
 	"north":null,
 	"south":null,
 	"east":null,
-	"west":null,
+	"west":null
 },
 "2,2":{
 	"ceil":"blue",
@@ -70,30 +70,30 @@
 	"north":null,
 	"south":"blue",
 	"east":null,
-	"west":null,
-}
+	"west":null
+},
 "3,0":{
 	"ceil":"blue",
 	"floor":"purple",
 	"north":"blue",
 	"south":null,
 	"east":"blue",
-	"west":null,
-}
+	"west":null
+},
 "3,1":{
 	"ceil":"blue",
 	"floor":"purple",
 	"north":null,
 	"south":null,
 	"east":"blue",
-	"west":null,
-}
+	"west":null
+},
 "3,2":{
 	"ceil":"blue",
 	"floor":"purple",
 	"north":null,
 	"south":"blue",
 	"east":"blue",
-	"west":null,
+	"west":null
 }
 }
