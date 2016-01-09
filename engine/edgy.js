@@ -296,7 +296,7 @@ var engine;
                         z += 1;
                     }
                     e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
-                    e.drawSurface(z);
+                    e.drawSurface(z - 1, pattern, rsurface + "_" + leftRightCenter);
                     if (wasFrontFar) {
                         z -= 1;
                     }
@@ -304,8 +304,8 @@ var engine;
             }
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
-            var displayBoxes = [];
             var e = this;
+            var displayBoxes = [e.boxes[myX][myY]];
             switch (facing) {
                 case "north":
                     for (var y = 3; y > 0; y--) {
@@ -371,8 +371,7 @@ var engine;
             var h = pack[pattern][surfaceType]["h"];
             setRectangle(e.gl, x, y, w, h);
         };
-        Engine.prototype.drawSurface = function (z, leftOrRight) {
-            if (leftOrRight === void 0) { leftOrRight = null; }
+        Engine.prototype.drawSurface = function (z, pattern, surfaceType) {
             var e = this;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
@@ -380,6 +379,33 @@ var engine;
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+            var total_width = +pack["packWidth"];
+            var total_height = +pack["packHeight"];
+            var w = +pack[pattern][surfaceType]["w"] * total_width;
+            var h = +pack[pattern][surfaceType]["h"] * total_height;
+            switch (surfaceType) {
+                case "left_center":
+                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z - 1))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    break;
+                case "ceiling_center":
+                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z - 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    break;
+                case "floor_center":
+                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 + (h / (Math.pow(2, z))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    break;
+                case "right_center":
+                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    break;
+                case "left_left":
+                    break;
+                case "right_right":
+                    break;
+                case "front_center":
+                case "front_left":
+                case "front_right":
+                    break;
+            }
+            console.log(surfaceType);
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         return Engine;
@@ -427,6 +453,8 @@ function getTextureLocations(pixel_locs) {
     pack = {};
     var total_width = pixel_locs['meta']['size']['w'];
     var total_height = pixel_locs['meta']['size']['h'];
+    pack["packHeight"] = total_height;
+    pack["packWidth"] = total_width;
     for (var key in pixel_locs['frames']) {
         var key_array = key.split('_');
         var pattern = key_array[0];

@@ -34,6 +34,8 @@ function getTextureLocations(pixel_locs) {
 	pack = {};
 	var total_width = pixel_locs['meta']['size']['w'];
 	var total_height = pixel_locs['meta']['size']['h'];
+	pack["packHeight"] = total_height;
+	pack["packWidth"] = total_width;
 	for (var key in pixel_locs['frames']) {
 		var key_array = key.split('_');
 		var pattern = key_array[0];

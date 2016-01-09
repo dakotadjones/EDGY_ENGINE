@@ -22,7 +22,7 @@
 		"floor":"purple",
 		"north":"blue",
 		"south":"blue",
-		"east":null,
+		"east":"blue",
 		"west":null},
 "4,0":{"ceil":"blue",
 		"floor":"purple",
