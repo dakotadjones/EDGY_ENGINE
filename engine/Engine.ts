@@ -197,12 +197,13 @@ export class Engine {
 	getBoxes(facing:string, myX:number, myY:number) {
 		var e = this;
 		var displayBoxes = [e.boxes[myX][myY]];
+		var order = [-1, 1, 0];
 		switch(facing) {
 			case "north":
 				for (var y = 3; y > 0; y--) {
 						var rowNum = myY - y;
-						for (var x = -1; x <= 1; x++) {
-							var xx = myX + x;
+						for (var x = 0; x < order.length; x++) {
+							var xx = myX + order[x];
 							var pos  = rowNum.toString() + "," + xx.toString();
 							if (map.hasOwnProperty(pos)) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
@@ -212,8 +213,8 @@ export class Engine {
 			case "south":
 				for (var y = 3; y > 0; y--) {
 						var rowNum = myY + y;
-						for (var x = -1; x <= 1; x++) {
-							var xx = myX + x;
+						for (var x = 0; x < order.length; x++) {
+							var xx = myX + order[x];
 							var pos  = rowNum.toString() + "," + xx.toString();
 							if (map.hasOwnProperty(pos)) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
@@ -223,8 +224,8 @@ export class Engine {
 			case "east":
 				for (var x = 3; x > 0; x--) {
 					var colNum = myX + x;
-					for (var y = -1; y <= 1; y++) {
-						var yy = myY + y;
+					for (var y = 0; y < order.length; y++) {
+						var yy = myY + order[y];
 						var pos  = colNum.toString() + "," + yy.toString();
 						if (map.hasOwnProperty(pos)) {
 							displayBoxes.push(e.boxes[colNum][yy]);
@@ -234,8 +235,8 @@ export class Engine {
 			case "west":
 				for (var x = 3; x > 0; x--) {
 						var colNum = myX - x;
-						for (var y = -1; y <= 1; y++) {
-							var yy = myY + y;
+						for (var y = 0; y < order.length; y++) {
+							var yy = myY + order[y];
 							var pos  = colNum.toString() + "," + yy.toString();
 							if (map.hasOwnProperty(pos)) {
 								displayBoxes.push(e.boxes[colNum][yy]);
