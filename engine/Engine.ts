@@ -37,7 +37,7 @@ export class Engine {
 		// canvas
 		e.canvas = <HTMLCanvasElement>document.getElementById(e.id);
 		// graphics library
-		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl') || <WebGLRenderingContext>e.canvas.getContext('experimental-webgl');
+		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl');
 		//e.gl = <WebGLRenderingContext> initWebGL(e.canvas)
 		// shader
 		var shader = new utils.Shader(e.gl);
@@ -86,13 +86,13 @@ export class Engine {
 				var x = coord.split(',')[0];
 				var y = coord.split(',')[1];
 				var box = new utils.Box(x,y, map[coord]);
-				if (this.boxes === undefined) {
-					this.boxes = [];				
+				if (e.boxes === undefined) {
+					e.boxes = [];				
 				}
-				if (this.boxes[x] === undefined) {
-					this.boxes[x] = [];
+				if (e.boxes[x] === undefined) {
+					e.boxes[x] = [];
 				}
-				this.boxes[x].push(box)
+				e.boxes[x].push(box)
 			}
 		}
 	}
@@ -110,7 +110,10 @@ export class Engine {
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
 		var e = this;
 		var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
+		var opposites = ["floor", "ceiling", "south", "north", "west","east"];
+		console.log(boxes);
 		for (var i = 0; i < boxes.length; i++) {
+			console.log(i);
 			var box = boxes[i];
 			var z;
 			var relSurfaces;
@@ -124,7 +127,7 @@ export class Engine {
 					} else {
 						leftRightCenter = "center";
 					}
-					relSurfaces = ["ceiling", "floor", "frontFar", "front", "right", "left"];
+					relSurfaces = ["ceiling", "floor", "front", "front", "right", "left"];
 					z = myY - box.y;				
 					break;
 				case "east":
@@ -139,7 +142,7 @@ export class Engine {
 						// it's in the center
 						leftRightCenter = "center";
 					}
-					relSurfaces = ["ceiling", "floor", "left", "right", "frontFar", "front"];
+					relSurfaces = ["ceiling", "floor", "left", "right", "front", "front"];
 					z = box.x - myX;					
 					break;
 				case "south":
@@ -150,8 +153,8 @@ export class Engine {
 						} else {
 							leftRightCenter = "center";
 						}
-						relSurfaces = ["ceiling", "floor", "frontFar", "front", "left", "right"];
-					    absSurfaces = ["ceiling", "floor", "south", "north", "east", "west"];
+						relSurfaces = ["ceiling", "floor", "front", "front", "left", "right"];
+					    // absSurfaces = ["ceiling", "floor", "south", "north", "east", "west"];
 						z = box.y - myY;				
 					break;
 				case "west":
@@ -165,8 +168,8 @@ export class Engine {
 							// it's in the center
 							leftRightCenter = "center";
 						}
-						relSurfaces = ["ceiling", "floor", "right", "left", "frontFar", "front"];
-						absSurfaces = ["ceiling", "floor", "north", "south", "west", "east"];
+						relSurfaces = ["ceiling", "floor", "right", "left", "front", "front"];
+						// absSurfaces = ["ceiling", "floor", "north", "south", "west", "east"];
 						z = box.x - myX - 1;	
 					break;
 			}			
@@ -177,16 +180,15 @@ export class Engine {
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
-				if (pattern != null){
-					if (rsurface == "frontFar"){
-						wasFrontFar = true;
-						rsurface = "front";
+				if (pattern != null && facing != opposites[j]){
+				console.log(asurface);
+					if (rsurface == "front"){
 						z += 1;
 					}
 					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);				
 					e.drawSurface(z-1, pattern, rsurface + "_" + leftRightCenter);
 					
-					if (wasFrontFar){
+					if (rsurface == "front"){
 						z -= 1;
 					}
 				}
@@ -196,7 +198,7 @@ export class Engine {
 	
 	getBoxes(facing:string, myX:number, myY:number) {
 		var e = this;
-		var displayBoxes = [e.boxes[myX][myY]];
+		var displayBoxes = [];
 		var order = [-1, 1, 0];
 		switch(facing) {
 			case "north":
@@ -204,7 +206,8 @@ export class Engine {
 						var rowNum = myY - y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
-							var pos  = rowNum.toString() + "," + xx.toString();
+							var pos  = xx.toString() + "," + rowNum.toString();
+							console.log(pos);
 							if (map.hasOwnProperty(pos)) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
@@ -215,7 +218,7 @@ export class Engine {
 						var rowNum = myY + y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
-							var pos  = rowNum.toString() + "," + xx.toString();
+							var pos  = xx.toString() + "," + rowNum.toString();
 							if (map.hasOwnProperty(pos)) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
@@ -245,6 +248,7 @@ export class Engine {
 				}
 			
 		}
+		displayBoxes.push(e.boxes[myX][myY]);
 		return displayBoxes;
 	}
 	
@@ -310,23 +314,61 @@ export class Engine {
 							 w/Math.pow(2,z), 
 							 h/Math.pow(2,z));
 				break;
-			case "left_left":
-				break;
-			case "right_right":
-				break;
 			case "front_center":
 				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
 							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
 							 w/Math.pow(2,z), 
 							 h/Math.pow(2,z));
+				break;
+			case "left_left":
+				setRectangle(e.gl,0, 
+							 0, 
+							 5, 
+							 5);//
+				break;
 			case "front_left":
-			case "front_right":
-				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z))), 
+				setRectangle(e.gl, e.canvas.width/2-(3*w/(Math.pow(2,z)*2)), 
 							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
 							 w/Math.pow(2,z), 
 							 h/Math.pow(2,z));
 				break;
+			case "floor_left":
+				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2+(h/(Math.pow(2,z))), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
+				break;
+			case "ceiling_left":
+				setRectangle(e.gl, e.canvas.width/2-(6*w/(Math.pow(2,z)*5)), 
+							 e.canvas.height/2-(h/(Math.pow(2,z-1))), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
+				break;
+			case "right_right":
+				setRectangle(e.gl,0, 
+							 0, 
+							 5, 
+							 5);//
+				break;
 			
+			case "front_right":
+				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
+				break;
+			case "floor_right":
+				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*5)), 
+							 e.canvas.height/2+(h/(Math.pow(2,z))), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
+				break;
+			case "ceiling_right":
+				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*5)), 
+							 e.canvas.height/2-(h/(Math.pow(2,z-1))), 
+							 w/Math.pow(2,z), 
+							 h/Math.pow(2,z));
+				break;
 				
 		}
 			console.log(surfaceType);	
