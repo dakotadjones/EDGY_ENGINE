@@ -202,7 +202,7 @@ export class Engine {
 		var order = [-1, 1, 0];
 		switch(facing) {
 			case "north":
-				for (var y = 3; y > 0; y--) {
+				for (var y = 3; y >= 0; y--) {
 						var rowNum = myY - y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
@@ -214,7 +214,7 @@ export class Engine {
 						}
 				}
 			case "south":
-				for (var y = 3; y > 0; y--) {
+				for (var y = 3; y >= 0; y--) {
 						var rowNum = myY + y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
@@ -225,7 +225,7 @@ export class Engine {
 						}
 				}
 			case "east":
-				for (var x = 3; x > 0; x--) {
+				for (var x = 3; x >= 0; x--) {
 					var colNum = myX + x;
 					for (var y = 0; y < order.length; y++) {
 						var yy = myY + order[y];
@@ -236,7 +236,7 @@ export class Engine {
 					}
 				}
 			case "west":
-				for (var x = 3; x > 0; x--) {
+				for (var x = 3; x >= 0; x--) {
 						var colNum = myX - x;
 						for (var y = 0; y < order.length; y++) {
 							var yy = myY + order[y];
@@ -248,7 +248,6 @@ export class Engine {
 				}
 			
 		}
-		displayBoxes.push(e.boxes[myX][myY]);
 		return displayBoxes;
 	}
 	
@@ -333,7 +332,7 @@ export class Engine {
 							 h/Math.pow(2,z));
 				break;
 			case "floor_left":
-				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
+				setRectangle(e.gl, e.canvas.width/2-(6*w/(Math.pow(2,z)*5)), 
 							 e.canvas.height/2+(h/(Math.pow(2,z))), 
 							 w/Math.pow(2,z), 
 							 h/Math.pow(2,z));
