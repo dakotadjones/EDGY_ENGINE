@@ -1,5 +1,5 @@
 /// <reference path="Engine.ts" />
-var SRC = 'assets/test_package';
+var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json'
 var pack;
 var map;
@@ -36,7 +36,12 @@ function getTextureLocations(pixel_locs) {
 	var total_height = pixel_locs['meta']['size']['h'];
 	pack["packHeight"] = total_height;
 	pack["packWidth"] = total_width;
-	for (var key in pixel_locs['frames']) {
+	/*for (var key in pixel_locs['frames']) {
+		var key_array = key.split('_');
+		*/
+	console.log(pixel_locs['frames'][0]['filename']);
+	for (var i = 0; i < pixel_locs['frames'].length; i++) {
+		var key = pixel_locs['frames'][i]['filename'];
 		var key_array = key.split('_');
 		var pattern = key_array[0];
 		var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
@@ -46,10 +51,15 @@ function getTextureLocations(pixel_locs) {
 		if (!pack[pattern].hasOwnProperty(surface_perspective)) {
 			pack[pattern][surface_perspective] = {};
 		}
+		/*
 		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][key]['sourceSize']['h']/total_height
 		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][key]['sourceSize']['w']/total_width
 		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][key]['frame']['y']/total_height
-		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][key]['frame']['x']/total_width
+		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][key]['frame']['x']/total_width*/
+		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['sourceSize']['h']/total_height
+		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['sourceSize']['w']/total_width
+		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y']/total_height
+		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x']/total_width
 	}
 }
 

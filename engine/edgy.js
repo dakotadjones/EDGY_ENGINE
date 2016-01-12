@@ -1,3 +1,24 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -37,6 +58,9 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
+/*
+ * Shader class that creates the programs for specified WebGL context
+ */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -122,6 +146,9 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
+/// <reference path="Shader.ts" />
+/// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -419,7 +446,8 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
-var SRC = 'assets/test_package';
+/// <reference path="Engine.ts" />
+var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
 var map;
@@ -448,7 +476,9 @@ function getTextureLocations(pixel_locs) {
     var total_height = pixel_locs['meta']['size']['h'];
     pack["packHeight"] = total_height;
     pack["packWidth"] = total_width;
-    for (var key in pixel_locs['frames']) {
+    console.log(pixel_locs['frames'][0]['filename']);
+    for (var i = 0; i < pixel_locs['frames'].length; i++) {
+        var key = pixel_locs['frames'][i]['filename'];
         var key_array = key.split('_');
         var pattern = key_array[0];
         var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
@@ -458,10 +488,10 @@ function getTextureLocations(pixel_locs) {
         if (!pack[pattern].hasOwnProperty(surface_perspective)) {
             pack[pattern][surface_perspective] = {};
         }
-        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][key]['sourceSize']['h'] / total_height;
-        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][key]['sourceSize']['w'] / total_width;
-        pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][key]['frame']['y'] / total_height;
-        pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][key]['frame']['x'] / total_width;
+        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['sourceSize']['h'] / total_height;
+        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['sourceSize']['w'] / total_width;
+        pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y'] / total_height;
+        pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x'] / total_width;
     }
 }
 function run() {
