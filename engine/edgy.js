@@ -1,24 +1,3 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -58,9 +37,6 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -146,9 +122,6 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -291,14 +264,8 @@ var engine;
                     var pattern = box.getPattern(asurface);
                     if (pattern != null && facing != opposites[j]) {
                         console.log(asurface);
-                        if (rsurface == "front") {
-                            z += 1;
-                        }
                         e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
-                        e.drawSurface(z - 1, pattern, rsurface + "_" + leftRightCenter);
-                        if (rsurface == "front") {
-                            z -= 1;
-                        }
+                        e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
                     }
                 }
             }
@@ -381,49 +348,50 @@ var engine;
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+            var s = e.canvas.height - e.canvas.height / 16;
             var total_width = +pack["packWidth"];
             var total_height = +pack["packHeight"];
             var w = +pack[pattern][surfaceType]["w"] * total_width;
             var h = +pack[pattern][surfaceType]["h"] * total_height;
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z - 1))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z - 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "floor_center":
-                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 + (h / (Math.pow(2, z))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 + (s / (Math.pow(2, z) * 2)), 2 * s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "right_center":
-                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z))), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "front_center":
-                    setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "left_left":
-                    setRectangle(e.gl, e.canvas.width / 2 - (15 * w / (Math.pow(2, z) * 8)), e.canvas.height / 2 - (h / (Math.pow(2, z + 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "front_left":
-                    setRectangle(e.gl, e.canvas.width / 2 - (3 * w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, e.canvas.width / 2 - (3 * s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "floor_left":
-                    setRectangle(e.gl, e.canvas.width / 2 - (6 * w / (Math.pow(2, z) * 5)), e.canvas.height / 2 + (h / (Math.pow(2, z))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, e.canvas.width / 2 - (6 * w / (Math.pow(2, z) * 5)), e.canvas.height / 2 - (h / (Math.pow(2, z - 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "right_right":
-                    setRectangle(e.gl, e.canvas.width / 2 + (7 * w / (Math.pow(2, z) * 8)), e.canvas.height / 2 - (h / (Math.pow(2, z + 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "front_right":
-                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "floor_right":
-                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z) * 5)), e.canvas.height / 2 + (h / (Math.pow(2, z))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z) * 5)), e.canvas.height / 2 - (h / (Math.pow(2, z - 1))), w / Math.pow(2, z), h / Math.pow(2, z));
+                    setRectangle(e.gl, 0, 0, 1, 1);
                     break;
             }
             console.log(surfaceType);
@@ -446,7 +414,6 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;

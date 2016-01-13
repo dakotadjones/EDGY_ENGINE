@@ -182,15 +182,8 @@ export class Engine {
 				var pattern = box.getPattern(asurface);
 				if (pattern != null && facing != opposites[j]){
 				console.log(asurface);
-					if (rsurface == "front"){
-						z += 1;
-					}
 					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);				
-					e.drawSurface(z-1, pattern, rsurface + "_" + leftRightCenter);
-					
-					if (rsurface == "front"){
-						z -= 1;
-					}
+					e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
 				}
 			}
 		}
@@ -283,6 +276,10 @@ export class Engine {
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 		
+		//create a reference scaler variable s
+		//lets assume that the closest front_center will be this tall and this wide
+		var s = e.canvas.height-e.canvas.height/16;
+		
 		// TODO fix hard coding numbers	
 		var total_width = +pack["packWidth"];
 		var total_height = +pack["packHeight"];
@@ -290,83 +287,83 @@ export class Engine {
 		var h = +pack[pattern][surfaceType]["h"] * total_height;
 		switch(surfaceType) {
 			case "left_center":
-				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z-1))), 
-								 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
-								 w/Math.pow(2,z), 
-								 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "ceiling_center":
-				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
- 						 e.canvas.height/2-(h/(Math.pow(2,z-1))), 
-						 w/Math.pow(2,z), 
-						 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "floor_center":
-				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
-								 e.canvas.height/2+(h/(Math.pow(2,z))), 
-								 w/Math.pow(2,z), 
-								 h/Math.pow(2,z));
+				setRectangle(e.gl, e.canvas.width/2-(s/(Math.pow(2,z))), 
+							 e.canvas.height/2+(s/(Math.pow(2,z)*2)), 
+							 2*s/Math.pow(2,z), 
+							 s/Math.pow(2,z));
 				break;
 			case "right_center":
-				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z))), 
-							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "front_center":
-				setRectangle(e.gl, e.canvas.width/2-(w/(Math.pow(2,z)*2)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, e.canvas.width/2-(s/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2-(s/(Math.pow(2,z)*2)), 
+							 s/Math.pow(2,z), 
+							 s/Math.pow(2,z));
 				break;
 			case "left_left":
-				setRectangle(e.gl, e.canvas.width/2-(15*w/(Math.pow(2,z)*8)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z+1))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "front_left":
-				setRectangle(e.gl, e.canvas.width/2-(3*w/(Math.pow(2,z)*2)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, e.canvas.width/2-(3*s/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2-(s/(Math.pow(2,z)*2)), 
+							 s/Math.pow(2,z), 
+							 s/Math.pow(2,z));
 				break;
 			case "floor_left":
-				setRectangle(e.gl, e.canvas.width/2-(6*w/(Math.pow(2,z)*5)), 
-							 e.canvas.height/2+(h/(Math.pow(2,z))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "ceiling_left":
-				setRectangle(e.gl, e.canvas.width/2-(6*w/(Math.pow(2,z)*5)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z-1))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "right_right":
-				setRectangle(e.gl, e.canvas.width/2+(7*w/(Math.pow(2,z)*8)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z+1))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			
 			case "front_right":
-				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*2)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z)*2)), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, e.canvas.width/2+(s/(Math.pow(2,z)*2)), 
+							 e.canvas.height/2-(s/(Math.pow(2,z)*2)), 
+							 s/Math.pow(2,z), 
+							 s/Math.pow(2,z));
 				break;
 			case "floor_right":
-				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*5)), 
-							 e.canvas.height/2+(h/(Math.pow(2,z))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 			case "ceiling_right":
-				setRectangle(e.gl, e.canvas.width/2+(w/(Math.pow(2,z)*5)), 
-							 e.canvas.height/2-(h/(Math.pow(2,z-1))), 
-							 w/Math.pow(2,z), 
-							 h/Math.pow(2,z));
+				setRectangle(e.gl, 0, 
+							 0, 
+							 1, 
+							 1);//
 				break;
 				
 		}
