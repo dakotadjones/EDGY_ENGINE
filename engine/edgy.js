@@ -375,7 +375,7 @@ var engine;
                     setRectangle(e.gl, e.canvas.width / 2 - (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
                     break;
                 case "left_left":
-                    setRectangle(e.gl, 0, 0, 5, 5);
+                    setRectangle(e.gl, e.canvas.width / 2 - (15 * w / (Math.pow(2, z) * 8)), e.canvas.height / 2 - (h / (Math.pow(2, z + 1))), w / Math.pow(2, z), h / Math.pow(2, z));
                     break;
                 case "front_left":
                     setRectangle(e.gl, e.canvas.width / 2 - (3 * w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
@@ -387,7 +387,7 @@ var engine;
                     setRectangle(e.gl, e.canvas.width / 2 - (6 * w / (Math.pow(2, z) * 5)), e.canvas.height / 2 - (h / (Math.pow(2, z - 1))), w / Math.pow(2, z), h / Math.pow(2, z));
                     break;
                 case "right_right":
-                    setRectangle(e.gl, 0, 0, 5, 5);
+                    setRectangle(e.gl, e.canvas.width / 2 + (7 * w / (Math.pow(2, z) * 8)), e.canvas.height / 2 - (h / (Math.pow(2, z + 1))), w / Math.pow(2, z), h / Math.pow(2, z));
                     break;
                 case "front_right":
                     setRectangle(e.gl, e.canvas.width / 2 + (w / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (h / (Math.pow(2, z) * 2)), w / Math.pow(2, z), h / Math.pow(2, z));
