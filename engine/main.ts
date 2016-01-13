@@ -1,6 +1,6 @@
 /// <reference path="Engine.ts" />
-var SRC = 'assets/test_package2';
-var MAPSRC = 'assets/map_fourbythree.json'
+var SRC = 'assets/test_package';
+var MAPSRC = 'assets/map.json'
 var pack;
 var map;
 var edgy;

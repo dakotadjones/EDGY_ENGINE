@@ -355,43 +355,43 @@ var engine;
             var h = +pack[pattern][surfaceType]["h"] * total_height;
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 - (s / (Math.pow(2, z))), s / (Math.pow(2, z) * 2), 2 * s / (Math.pow(2, z)));
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 - (s / (Math.pow(2, z))), 2 * s / Math.pow(2, z), s / (Math.pow(2, z) * 2));
                     break;
                 case "floor_center":
-                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 + (s / (Math.pow(2, z) * 2)), 2 * s / Math.pow(2, z), s / Math.pow(2, z));
+                    setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 + (s / (Math.pow(2, z) * 2)), 2 * s / Math.pow(2, z), s / (Math.pow(2, z) * 2));
                     break;
                 case "right_center":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z))), s / (Math.pow(2, z) * 2), 2 * s / (Math.pow(2, z)));
                     break;
                 case "front_center":
                     setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "left_left":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 - (3 * s / (Math.pow(2, z))), e.canvas.height / 2 - (s / (Math.pow(2, z))), 3 * s / (Math.pow(2, z) * 2), 2 * s / (Math.pow(2, z)));
                     break;
                 case "front_left":
                     setRectangle(e.gl, e.canvas.width / 2 - (3 * s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "floor_left":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 - (3 * s / (Math.pow(2, z))), e.canvas.height / 2 + (s / (Math.pow(2, z) * 2)), 5 * s / (Math.pow(2, z) * 2), s / (Math.pow(2, z) * 2));
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 - (3 * s / (Math.pow(2, z))), e.canvas.height / 2 - (s / (Math.pow(2, z))), 5 * s / (Math.pow(2, z) * 2), s / (Math.pow(2, z) * 2));
                     break;
                 case "right_right":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 + (3 * s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z))), 3 * s / (Math.pow(2, z) * 2), 2 * s / (Math.pow(2, z)));
                     break;
                 case "front_right":
                     setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z) * 2)), s / Math.pow(2, z), s / Math.pow(2, z));
                     break;
                 case "floor_right":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 + (s / (Math.pow(2, z) * 2)), 5 * s / (Math.pow(2, z) * 2), s / (Math.pow(2, z) * 2));
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, 0, 0, 1, 1);
+                    setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z))), 5 * s / (Math.pow(2, z) * 2), s / (Math.pow(2, z) * 2));
                     break;
             }
             console.log(surfaceType);
@@ -414,8 +414,8 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
-var SRC = 'assets/test_package2';
-var MAPSRC = 'assets/map_fourbythree.json';
+var SRC = 'assets/test_package';
+var MAPSRC = 'assets/map.json';
 var pack;
 var map;
 var edgy;
