@@ -414,8 +414,8 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
-var SRC = 'assets/test_package';
-var MAPSRC = 'assets/map.json';
+var SRC = 'assets/test_package2';
+var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
 var map;
 var edgy;
