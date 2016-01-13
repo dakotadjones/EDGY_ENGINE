@@ -196,9 +196,7 @@ var engine;
             var e = this;
             var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
             var opposites = ["floor", "ceiling", "south", "north", "west", "east"];
-            console.log(boxes);
             for (var i = 0; i < boxes.length; i++) {
-                console.log(i);
                 var box = boxes[i];
                 var z;
                 var relSurfaces;
@@ -263,7 +261,6 @@ var engine;
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
                     if (pattern != null && facing != opposites[j]) {
-                        console.log(asurface);
                         e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
                         e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
                     }
@@ -281,7 +278,6 @@ var engine;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
                             var pos = xx.toString() + "," + rowNum.toString();
-                            console.log(pos);
                             if (map.hasOwnProperty(pos)) {
                                 displayBoxes.push(e.boxes[xx][rowNum]);
                             }
@@ -394,7 +390,6 @@ var engine;
                     setRectangle(e.gl, e.canvas.width / 2 + (s / (Math.pow(2, z) * 2)), e.canvas.height / 2 - (s / (Math.pow(2, z))), 5 * s / (Math.pow(2, z) * 2), s / (Math.pow(2, z) * 2));
                     break;
             }
-            console.log(surfaceType);
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         return Engine;
