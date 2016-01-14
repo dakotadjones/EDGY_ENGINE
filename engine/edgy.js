@@ -156,7 +156,6 @@ var engine;
         function Engine() {
         }
         Engine.prototype.load = function (id) {
-            console.log("loading");
             var e = this;
             e.myPlayer = new player.Player();
             this.id = id;
@@ -166,7 +165,6 @@ var engine;
             this.texturePack.onload = function () { e.init(); };
         };
         Engine.prototype.init = function () {
-            console.log("initializing.");
             var e = this;
             e.canvas = document.getElementById(e.id);
             e.cw = e.canvas.width;
@@ -194,6 +192,7 @@ var engine;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
             e.loadBoxes();
+            document.onkeydown = function () { console.log("keydown"); e.myPlayer.setFacing("north"); };
             document.addEventListener("keydown", function (evt) {
                 switch (evt.key) {
                     case "w":
@@ -231,20 +230,9 @@ var engine;
             var x = xy[0];
             var y = xy[1];
             var facing = e.getPlayerFacing();
-            var getBoxesStart = new Date().getTime();
             var displayBoxes = e.getBoxes(facing, x, y);
-            var getBoxesEnd = new Date().getTime();
-            var drawBoxesStart = new Date().getTime();
             e.drawBoxes(displayBoxes, facing, x, y);
-            console.log("drawing");
-            var drawBoxesEnd = new Date().getTime();
-            var end = new Date().getTime();
-            console.log("draw() time");
-            console.log(end - start);
-            console.log("drawBoxes() time");
-            console.log(drawBoxesEnd - drawBoxesStart);
-            console.log("getBoxes() time");
-            console.log(getBoxesEnd - getBoxesStart);
+            requestAnimationFrame(function () { return e.draw(); });
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -324,12 +312,6 @@ var engine;
                     }
                 }
             }
-            console.log("second drawBoxes() loop time:");
-            console.log(total_time);
-            console.log("Total time to call setUpTexture():");
-            console.log(totalSetUpTexture);
-            console.log("Total time to call drawSurface():");
-            console.log(totalDrawSurface);
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
@@ -381,7 +363,6 @@ var engine;
                         }
                     }
             }
-            console.log("finished getBoxes");
             return displayBoxes;
         };
         Engine.prototype.getPlayerPosition = function () {

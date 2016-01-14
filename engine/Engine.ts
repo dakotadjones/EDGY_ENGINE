@@ -22,7 +22,6 @@ export class Engine {
 	
 	
 	load(id:string) {
-		console.log("loading");
 		// set up object reference 
 		var e = this;
 		// initialize our player  
@@ -37,7 +36,6 @@ export class Engine {
 	}
 	
 	init() {
-		console.log("initializing.");
 		// set up object reference 
 		var e = this;
 		// initialize elements
@@ -86,7 +84,7 @@ export class Engine {
 	
 		e.loadBoxes();
 		
-		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
+		document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", 
 			function(evt) {
 				switch(evt.key) {
@@ -96,6 +94,7 @@ export class Engine {
 				}
 			}
 		);
+		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
 	}
@@ -129,20 +128,9 @@ export class Engine {
 		var x = xy[0];
 		var y = xy[1];
 		var facing = e.getPlayerFacing();
-		var getBoxesStart = new Date().getTime();
 		var displayBoxes = e.getBoxes(facing, x, y);
-		var getBoxesEnd = new Date().getTime();
-		var drawBoxesStart = new Date().getTime();
 		e.drawBoxes(displayBoxes, facing, x, y);
-		console.log("drawing");
-		var drawBoxesEnd = new Date().getTime();
-		var end = new Date().getTime();
-		console.log("draw() time");
-		console.log(end-start);
-		console.log("drawBoxes() time");
-		console.log(drawBoxesEnd-drawBoxesStart);
-		console.log("getBoxes() time");
-		console.log(getBoxesEnd-getBoxesStart);
+		requestAnimationFrame(()=>e.draw());
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
@@ -225,15 +213,7 @@ export class Engine {
 					e.drawSurface(z, pattern, surface);
 				}
 			}
-		
 		}
-		
-		console.log("second drawBoxes() loop time:");
-		console.log(total_time);
-		console.log("Total time to call setUpTexture():");
-		console.log(totalSetUpTexture);
-		console.log("Total time to call drawSurface():");
-		console.log(totalDrawSurface);
 	}
 	
 	getBoxes(facing:string, myX:number, myY:number) {
@@ -287,7 +267,6 @@ export class Engine {
 				}
 			
 		}
-		console.log("finished getBoxes");
 		return displayBoxes;
 	}
 	
