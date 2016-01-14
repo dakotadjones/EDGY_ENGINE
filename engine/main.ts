@@ -39,7 +39,7 @@ function getTextureLocations(pixel_locs) {
 	/*for (var key in pixel_locs['frames']) {
 		var key_array = key.split('_');
 		*/
-	console.log(pixel_locs['frames'][0]['filename']);
+	//console.log(pixel_locs['frames'][0]['filename']);
 	for (var i = 0; i < pixel_locs['frames'].length; i++) {
 		var key = pixel_locs['frames'][i]['filename'];
 		var key_array = key.split('_');

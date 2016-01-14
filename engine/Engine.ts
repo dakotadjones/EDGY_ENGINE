@@ -16,7 +16,9 @@ export class Engine {
 	myPlayer:player.Player;
 	boxes:Array<Array<utils.Box>>;
 	
+	
 	load(id:string) {
+		console.log("loading");
 		// set up object reference 
 		var e = this;
 		// initialize our player  
@@ -31,6 +33,7 @@ export class Engine {
 	}
 	
 	init() {
+		console.log("initializing.");
 		// set up object reference 
 		var e = this;
 		// initialize elements
@@ -70,7 +73,17 @@ export class Engine {
 		e.texCoordBuffer = e.gl.createBuffer();
 	
 		e.loadBoxes();
-
+		
+		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
+		document.addEventListener("keydown", 
+			function(evt) {
+				switch(evt.key) {
+					case "w":
+						//e.myPlayer.setX(e.myPlayer.get)
+						break;
+				}
+			}
+		);
 		// TODO ensure draw gets called after load boxes
 		e.draw();
 	}
@@ -105,6 +118,7 @@ export class Engine {
 		var facing = e.getPlayerFacing();
 		var displayBoxes = e.getBoxes(facing, x, y);
 		e.drawBoxes(displayBoxes, facing, x, y);
+		console.log("drawing");
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
@@ -184,6 +198,7 @@ export class Engine {
 				}
 			}
 		}
+		console.log("finished drawBoxes");
 	}
 	
 	getBoxes(facing:string, myX:number, myY:number) {
@@ -237,6 +252,7 @@ export class Engine {
 				}
 			
 		}
+		console.log("finished getBoxes");
 		return displayBoxes;
 	}
 	
@@ -277,10 +293,10 @@ export class Engine {
 		var s = e.canvas.height-e.canvas.height/16;
 		
 		// TODO fix hard coding numbers	
-		var total_width = +pack["packWidth"];
-		var total_height = +pack["packHeight"];
-		var w = +pack[pattern][surfaceType]["w"] * total_width;
-		var h = +pack[pattern][surfaceType]["h"] * total_height;
+		//var total_width = +pack["packWidth"];
+		//var total_height = +pack["packHeight"];
+		//var w = +pack[pattern][surfaceType]["w"] * total_width;
+		//var h = +pack[pattern][surfaceType]["h"] * total_height;
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.canvas.width/2-(s/(Math.pow(2,z))), 

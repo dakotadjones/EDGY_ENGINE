@@ -116,6 +116,7 @@ var player;
             return this.facing;
         };
         Player.prototype.getCoordinates = function () {
+            console.log("getting coordinates");
             return [this.x, this.y];
         };
         return Player;
@@ -128,6 +129,7 @@ var engine;
         function Engine() {
         }
         Engine.prototype.load = function (id) {
+            console.log("loading");
             var e = this;
             e.myPlayer = new player.Player();
             this.id = id;
@@ -137,6 +139,7 @@ var engine;
             this.texturePack.onload = function () { e.init(); };
         };
         Engine.prototype.init = function () {
+            console.log("initializing.");
             var e = this;
             e.canvas = document.getElementById(e.id);
             e.gl = e.canvas.getContext('webgl');
@@ -159,6 +162,12 @@ var engine;
             e.positionBuffer = e.gl.createBuffer();
             e.texCoordBuffer = e.gl.createBuffer();
             e.loadBoxes();
+            document.addEventListener("keydown", function (evt) {
+                switch (evt.key) {
+                    case "w":
+                        break;
+                }
+            });
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -191,6 +200,7 @@ var engine;
             var facing = e.getPlayerFacing();
             var displayBoxes = e.getBoxes(facing, x, y);
             e.drawBoxes(displayBoxes, facing, x, y);
+            console.log("drawing");
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -266,6 +276,7 @@ var engine;
                     }
                 }
             }
+            console.log("finished drawBoxes");
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
@@ -317,6 +328,7 @@ var engine;
                         }
                     }
             }
+            console.log("finished getBoxes");
             return displayBoxes;
         };
         Engine.prototype.getPlayerPosition = function () {
@@ -345,10 +357,6 @@ var engine;
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
             var s = e.canvas.height - e.canvas.height / 16;
-            var total_width = +pack["packWidth"];
-            var total_height = +pack["packHeight"];
-            var w = +pack[pattern][surfaceType]["w"] * total_width;
-            var h = +pack[pattern][surfaceType]["h"] * total_height;
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, e.canvas.width / 2 - (s / (Math.pow(2, z))), e.canvas.height / 2 - (s / (Math.pow(2, z))), s / (Math.pow(2, z) * 2), 2 * s / (Math.pow(2, z)));
@@ -438,7 +446,6 @@ function getTextureLocations(pixel_locs) {
     var total_height = pixel_locs['meta']['size']['h'];
     pack["packHeight"] = total_height;
     pack["packWidth"] = total_width;
-    console.log(pixel_locs['frames'][0]['filename']);
     for (var i = 0; i < pixel_locs['frames'].length; i++) {
         var key = pixel_locs['frames'][i]['filename'];
         var key_array = key.split('_');
