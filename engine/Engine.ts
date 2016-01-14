@@ -7,6 +7,8 @@ export class Engine {
 	id:string;
 	gl:WebGLRenderingContext;
 	canvas:HTMLCanvasElement;
+	cw:number;
+	ch:number;
 	program:WebGLProgram;
 	positionBuffer:WebGLBuffer;
 	positionLocation:number;
@@ -16,6 +18,7 @@ export class Engine {
 	myPlayer:player.Player;
 	boxes:Array<Array<utils.Box>>;
 	rectangle:Float32Array;
+	resolutionLocation:WebGLUniformLocation;
 	
 	load(id:string) {
 		// set up object reference 
@@ -37,6 +40,8 @@ export class Engine {
 		// initialize elements
 		// canvas
 		e.canvas = <HTMLCanvasElement>document.getElementById(e.id);
+		e.cw = e.canvas.width;
+		e.ch = e.canvas.height;
 		// graphics library
 		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl');
 		//e.gl = <WebGLRenderingContext> initWebGL(e.canvas)
@@ -72,7 +77,9 @@ export class Engine {
 		e.positionBuffer = e.gl.createBuffer();
 		e.texCoordBuffer = e.gl.createBuffer();
 	
+		// you moved these from drawSurface
 		e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
+		e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
 	
 		e.loadBoxes();
 
@@ -194,20 +201,20 @@ export class Engine {
 			}			
 
 			// TODO optimize !!!!!!
-		
 			for (var j = 0; j <= relSurfaces.length; j++) {
 				var wasFrontFar = false;
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
 				if (pattern != null && facing != opposites[j]){
+					var surface = rsurface + "_" + leftRightCenter;
 					var start = new Date().getTime();
 					var setUpTextureStart = new Date().getTime();			
-					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
+					e.setUpTexture(pattern, surface);
 					var setUpTextureEnd = new Date().getTime();
 					totalSetUpTexture += setUpTextureEnd - setUpTextureStart;
 					var drawSurfaceStart = new Date().getTime();
-					e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
+					e.drawSurface(z, pattern, surface);
 					var drawSurfaceEnd = new Date().getTime();
 					totalDrawSurface += drawSurfaceEnd - drawSurfaceStart;
 					var end = new Date().getTime();
@@ -294,128 +301,196 @@ export class Engine {
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
 		e.gl.enableVertexAttribArray(e.texCoordLocation);
 		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
-		var bufferEnd = new Date().getTime();
-		
-		var packAccessStart = new Date().getTime();
+
 		var x = pack[pattern][surfaceType]["x"];
 		var y = pack[pattern][surfaceType]["y"];
 		var w = pack[pattern][surfaceType]["w"];
 		var h = pack[pattern][surfaceType]["h"];
-		var packAccessEnd = new Date().getTime();
-		
-		var setRectangleStart = new Date().getTime();
+	
 		setRectangle(e.gl, x, y, w, h, e.rectangle);
-		var setRectangleEnd = new Date().getTime();
-		/*
-		console.log("Buffer bind time: ");
-		console.log(bufferEnd-bufferStart);
-		console.log("Pack access time: ");
-		console.log(packAccessEnd-packAccessStart);
-		console.log("Set rectangle time: ");
-		console.log(setRectangleEnd-setRectangleStart);
-		*/		
 		
 	}
 	
-	drawSurface(z:number, pattern:string, surfaceType:string) {
+	drawSurface(z:number, pattern:string, surfaceType:string /*surface:string, column:string*/) {
 		var e = this;
 		// lookup uniforms
-		var setUpStart = new Date().getTime();
-		var resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
+		
 		// set the resolution
-		e.gl.uniform2f(resolutionLocation, e.canvas.width, e.canvas.height);
+		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 		
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
-		var s = e.canvas.height-e.canvas.height/16;
+		
+		var s = e.ch-e.ch/16;
+		
 		// var total_width = +pack["packWidth"];
 		// var total_height = +pack["packHeight"];
 		// var w = +pack[pattern][surfaceType]["w"] * total_width;
 		// var h = +pack[pattern][surfaceType]["h"] * total_height;
-		var zScale = Math.pow(2,z);
-		var setUpEnd = new Date().getTime();
-		console.log("Set up surface: ");
-		console.log(setUpEnd - setUpStart);
+		
+		var zScale = Math.pow(2,z);		
+		
+		/*
+		if (surface == "left" && column == "center" ) {
+			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
+		}
+		else if (surface == "ceiling" && column == "center" ) {
+			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 2*s/zScale, 
+							 s/(zScale*2), e.rectangle);	
+		}
+		else if (surface == "floor" && column == "center" ) {
+			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2+(s/(zScale*2)), 
+							 2*s/zScale, 
+							 s/(zScale*2), e.rectangle);			
+		}
+		else if (surface == "right" && column == "center" ) {
+			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
+							 s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);			
+		}
+		else if (surface == "left" && column == "left" ) {
+			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 3*s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
+		}
+		else if (surface == "front" && column == "left" ) {
+			setRectangle(e.gl, e.cw/2-(3*s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);
+		}
+		else if (surface == "floor" && column == "left" ) {
+			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2+(s/(zScale*2)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
+		}
+		else if (surface == "ceiling" && column == "left" ) {
+			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
+		}
+		else if (surface == "right" && column == "right" ) {
+			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
+		}
+		else if (surface == "front" && column == "right" ) {
+			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);
+		}
+		else if (surface == "floor" && column == "right" ) {
+			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2+(s/(zScale*2)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
+		}
+		else if (surface == "ceiling" && column == "right" ) {
+			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
+		}
+		else { // front center
+			setRectangle(e.gl, e.cw/2-(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);	
+		}
+		*/
+		
 		switch(surfaceType) {
 			case "left_center":
-				setRectangle(e.gl, e.canvas.width/2-(s/(zScale)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
 							 s/(zScale*2), 
 							 2*s/(zScale), e.rectangle);
 				break;
 			case "ceiling_center":
-				setRectangle(e.gl, e.canvas.width/2-(s/(zScale)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
 							 2*s/zScale, 
 							 s/(zScale*2), e.rectangle);
 				break;
 			case "floor_center":
-				setRectangle(e.gl, e.canvas.width/2-(s/(zScale)), 
-							 e.canvas.height/2+(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2+(s/(zScale*2)), 
 							 2*s/zScale, 
 							 s/(zScale*2), e.rectangle);
 				break;
 			case "right_center":
-				setRectangle(e.gl, e.canvas.width/2+(s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
 							 s/(zScale*2), 
 							 2*s/(zScale), e.rectangle);
 				break;
 			case "front_center":
-				setRectangle(e.gl, e.canvas.width/2-(s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2-(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale, 
 							 s/zScale, e.rectangle);
 				break;
 			case "left_left":
-				setRectangle(e.gl, e.canvas.width/2-(3*s/(zScale)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
 							 3*s/(zScale*2), 
 							 2*s/(zScale), e.rectangle);
 				break;
 			case "front_left":
-				setRectangle(e.gl, e.canvas.width/2-(3*s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale, 
 							 s/zScale, e.rectangle);
 				break;
 			case "floor_left":
-				setRectangle(e.gl, e.canvas.width/2-(3*s/(zScale)), 
-							 e.canvas.height/2+(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2+(s/(zScale*2)), 
 							 5*s/(zScale*2), 
 							 s/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_left":
-				setRectangle(e.gl, e.canvas.width/2-(3*s/(zScale)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
 							 5*s/(zScale*2), 
 							 s/(zScale*2), e.rectangle);
 				break;
 			case "right_right":
-				setRectangle(e.gl, e.canvas.width/2+(3*s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2+(3*s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
 							 3*s/(zScale*2), 
 							 2*s/(zScale), e.rectangle);
 				break;
 			
 			case "front_right":
-				setRectangle(e.gl, e.canvas.width/2+(s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale, 
 							 s/zScale, e.rectangle);
 				break;
 			case "floor_right":
-				setRectangle(e.gl, e.canvas.width/2+(s/(zScale*2)), 
-							 e.canvas.height/2+(s/(zScale*2)), 
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2+(s/(zScale*2)), 
 							 5*s/(zScale*2), 
 							 s/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_right":
-				setRectangle(e.gl, e.canvas.width/2+(s/(zScale*2)), 
-							 e.canvas.height/2-(s/(zScale)), 
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
 							 5*s/(zScale*2), 
 							 s/(zScale*2), e.rectangle);
 				break;
