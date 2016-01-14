@@ -98,19 +98,35 @@ export class Engine {
 	}
 	
 	draw() {
+		var start = new Date().getTime();
 		var e = this;
 		var xy = e.getPlayerPosition();
 		var x = xy[0];
 		var y = xy[1];
 		var facing = e.getPlayerFacing();
+		var getBoxesStart = new Date().getTime();
 		var displayBoxes = e.getBoxes(facing, x, y);
+		var getBoxesEnd = new Date().getTime();
+		var drawBoxesStart = new Date().getTime();
 		e.drawBoxes(displayBoxes, facing, x, y);
+		var drawBoxesEnd = new Date().getTime();
+		var end = new Date().getTime();
+		console.log("draw() time");
+		console.log(end-start);
+		console.log("drawBoxes() time");
+		console.log(drawBoxesEnd-drawBoxesStart);
+		console.log("getBoxes() time");
+		console.log(getBoxesEnd-getBoxesStart);
+		
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
 		var e = this;
 		var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
 		var opposites = ["floor", "ceiling", "south", "north", "west","east"];
+		var total_time = 0;
+		var totalSetUpTexture = 0;
+		var totalDrawSurface = 0;
 		for (var i = 0; i < boxes.length; i++) {
 			var box = boxes[i];
 			var z;
@@ -172,18 +188,35 @@ export class Engine {
 					break;
 			}			
 
-			// TODO optimize
+			// TODO optimize !!!!!!
+		
 			for (var j = 0; j <= relSurfaces.length; j++) {
 				var wasFrontFar = false;
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
 				if (pattern != null && facing != opposites[j]){
-					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);				
+					var start = new Date().getTime();
+					var setUpTextureStart = new Date().getTime();			
+					e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
+					var setUpTextureEnd = new Date().getTime();
+					totalSetUpTexture += setUpTextureEnd - setUpTextureStart;
+					var drawSurfaceStart = new Date().getTime();
 					e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
+					var drawSurfaceEnd = new Date().getTime();
+					totalDrawSurface += drawSurfaceEnd - drawSurfaceStart;
+					var end = new Date().getTime();
+					total_time += end-start;
 				}
 			}
+		
 		}
+		console.log("second drawBoxes() loop time:");
+		console.log(total_time);
+		console.log("Total time to call setUpTexture():");
+		console.log(totalSetUpTexture);
+		console.log("Total time to call drawSurface():");
+		console.log(totalDrawSurface);
 	}
 	
 	getBoxes(facing:string, myX:number, myY:number) {
@@ -251,14 +284,31 @@ export class Engine {
 	setUpTexture(pattern:string, surfaceType:string) {
 		// this is good
 		var e = this;
+		var bufferStart = new Date().getTime();
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
 		e.gl.enableVertexAttribArray(e.texCoordLocation);
 		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
+		var bufferEnd = new Date().getTime();
+		
+		var packAccessStart = new Date().getTime();
 		var x = pack[pattern][surfaceType]["x"];
 		var y = pack[pattern][surfaceType]["y"];
 		var w = pack[pattern][surfaceType]["w"];
 		var h = pack[pattern][surfaceType]["h"];
+		var packAccessEnd = new Date().getTime();
+		
+		var setRectangleStart = new Date().getTime();
 		setRectangle(e.gl, x, y, w, h);
+		var setRectangleEnd = new Date().getTime();
+		
+		console.log("Buffer bind time: ");
+		console.log(bufferEnd-bufferStart);
+		console.log("Pack access time: ");
+		console.log(packAccessEnd-packAccessStart);
+		console.log("Set rectangle time: ");
+		console.log(setRectangleEnd-setRectangleStart);
+		
+		
 	}
 	
 	drawSurface(z:number, pattern:string, surfaceType:string) {
@@ -275,8 +325,6 @@ export class Engine {
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
 		var s = e.canvas.height-e.canvas.height/16;
-		
-		// TODO fix hard coding numbers	
 		var total_width = +pack["packWidth"];
 		var total_height = +pack["packHeight"];
 		var w = +pack[pattern][surfaceType]["w"] * total_width;
