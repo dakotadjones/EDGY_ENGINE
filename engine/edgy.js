@@ -1,3 +1,24 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -37,6 +58,9 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
+/*
+ * Shader class that creates the programs for specified WebGL context
+ */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -123,6 +147,9 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
+/// <reference path="Shader.ts" />
+/// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -193,19 +220,37 @@ var engine;
             }
         };
         Engine.prototype.draw = function () {
+            var start = new Date().getTime();
             var e = this;
             var xy = e.getPlayerPosition();
             var x = xy[0];
             var y = xy[1];
             var facing = e.getPlayerFacing();
+            var getBoxesStart = new Date().getTime();
             var displayBoxes = e.getBoxes(facing, x, y);
+            var getBoxesEnd = new Date().getTime();
+            var drawBoxesStart = new Date().getTime();
             e.drawBoxes(displayBoxes, facing, x, y);
+<<<<<<< HEAD
             console.log("drawing");
+=======
+            var drawBoxesEnd = new Date().getTime();
+            var end = new Date().getTime();
+            console.log("draw() time");
+            console.log(end - start);
+            console.log("drawBoxes() time");
+            console.log(drawBoxesEnd - drawBoxesStart);
+            console.log("getBoxes() time");
+            console.log(getBoxesEnd - getBoxesStart);
+>>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
             var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
             var opposites = ["floor", "ceiling", "south", "north", "west", "east"];
+            var total_time = 0;
+            var totalSetUpTexture = 0;
+            var totalDrawSurface = 0;
             for (var i = 0; i < boxes.length; i++) {
                 var box = boxes[i];
                 var z;
@@ -271,12 +316,30 @@ var engine;
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
                     if (pattern != null && facing != opposites[j]) {
+                        var start = new Date().getTime();
+                        var setUpTextureStart = new Date().getTime();
                         e.setUpTexture(pattern, rsurface + "_" + leftRightCenter);
+                        var setUpTextureEnd = new Date().getTime();
+                        totalSetUpTexture += setUpTextureEnd - setUpTextureStart;
+                        var drawSurfaceStart = new Date().getTime();
                         e.drawSurface(z, pattern, rsurface + "_" + leftRightCenter);
+                        var drawSurfaceEnd = new Date().getTime();
+                        totalDrawSurface += drawSurfaceEnd - drawSurfaceStart;
+                        var end = new Date().getTime();
+                        total_time += end - start;
                     }
                 }
             }
+<<<<<<< HEAD
             console.log("finished drawBoxes");
+=======
+            console.log("second drawBoxes() loop time:");
+            console.log(total_time);
+            console.log("Total time to call setUpTexture():");
+            console.log(totalSetUpTexture);
+            console.log("Total time to call drawSurface():");
+            console.log(totalDrawSurface);
+>>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
@@ -339,14 +402,26 @@ var engine;
         };
         Engine.prototype.setUpTexture = function (pattern, surfaceType) {
             var e = this;
+            var bufferStart = new Date().getTime();
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
             e.gl.enableVertexAttribArray(e.texCoordLocation);
             e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
+            var bufferEnd = new Date().getTime();
+            var packAccessStart = new Date().getTime();
             var x = pack[pattern][surfaceType]["x"];
             var y = pack[pattern][surfaceType]["y"];
             var w = pack[pattern][surfaceType]["w"];
             var h = pack[pattern][surfaceType]["h"];
+            var packAccessEnd = new Date().getTime();
+            var setRectangleStart = new Date().getTime();
             setRectangle(e.gl, x, y, w, h);
+            var setRectangleEnd = new Date().getTime();
+            console.log("Buffer bind time: ");
+            console.log(bufferEnd - bufferStart);
+            console.log("Pack access time: ");
+            console.log(packAccessEnd - packAccessStart);
+            console.log("Set rectangle time: ");
+            console.log(setRectangleEnd - setRectangleStart);
         };
         Engine.prototype.drawSurface = function (z, pattern, surfaceType) {
             var e = this;
@@ -417,6 +492,7 @@ function setRectangle(gl, x, y, width, height) {
         x2, y1,
         x2, y2]), gl.STATIC_DRAW);
 }
+/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
