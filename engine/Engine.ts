@@ -122,9 +122,7 @@ export class Engine {
 		var getBoxesEnd = new Date().getTime();
 		var drawBoxesStart = new Date().getTime();
 		e.drawBoxes(displayBoxes, facing, x, y);
-<<<<<<< HEAD
 		console.log("drawing");
-=======
 		var drawBoxesEnd = new Date().getTime();
 		var end = new Date().getTime();
 		console.log("draw() time");
@@ -133,8 +131,6 @@ export class Engine {
 		console.log(drawBoxesEnd-drawBoxesStart);
 		console.log("getBoxes() time");
 		console.log(getBoxesEnd-getBoxesStart);
-		
->>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
@@ -228,16 +224,12 @@ export class Engine {
 			}
 		
 		}
-<<<<<<< HEAD
-		console.log("finished drawBoxes");
-=======
 		console.log("second drawBoxes() loop time:");
 		console.log(total_time);
 		console.log("Total time to call setUpTexture():");
 		console.log(totalSetUpTexture);
 		console.log("Total time to call drawSurface():");
 		console.log(totalDrawSurface);
->>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
 	}
 	
 	getBoxes(facing:string, myX:number, myY:number) {
@@ -347,19 +339,12 @@ export class Engine {
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
 		var s = e.canvas.height-e.canvas.height/16;
-<<<<<<< HEAD
 		
 		// TODO fix hard coding numbers	
 		//var total_width = +pack["packWidth"];
 		//var total_height = +pack["packHeight"];
 		//var w = +pack[pattern][surfaceType]["w"] * total_width;
 		//var h = +pack[pattern][surfaceType]["h"] * total_height;
-=======
-		var total_width = +pack["packWidth"];
-		var total_height = +pack["packHeight"];
-		var w = +pack[pattern][surfaceType]["w"] * total_width;
-		var h = +pack[pattern][surfaceType]["h"] * total_height;
->>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.canvas.width/2-(s/(Math.pow(2,z))), 
