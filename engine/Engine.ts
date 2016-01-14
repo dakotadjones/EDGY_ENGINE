@@ -220,18 +220,9 @@ export class Engine {
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
 				if (pattern != null && facing != opposites[j]){
-					var surface = rsurface + "_" + leftRightCenter;
-					var start = new Date().getTime();
-					var setUpTextureStart = new Date().getTime();			
+					var surface = rsurface + "_" + leftRightCenter;		
 					e.setUpTexture(pattern, surface);
-					var setUpTextureEnd = new Date().getTime();
-					totalSetUpTexture += setUpTextureEnd - setUpTextureStart;
-					var drawSurfaceStart = new Date().getTime();
 					e.drawSurface(z, pattern, surface);
-					var drawSurfaceEnd = new Date().getTime();
-					totalDrawSurface += drawSurfaceEnd - drawSurfaceStart;
-					var end = new Date().getTime();
-					total_time += end-start;
 				}
 			}
 		
@@ -337,99 +328,6 @@ export class Engine {
 		
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
-<<<<<<< HEAD
-		
-		var s = e.ch-e.ch/16;
-		
-		// var total_width = +pack["packWidth"];
-		// var total_height = +pack["packHeight"];
-		// var w = +pack[pattern][surfaceType]["w"] * total_width;
-		// var h = +pack[pattern][surfaceType]["h"] * total_height;
-		
-		var zScale = Math.pow(2,z);		
-		
-		/*
-		if (surface == "left" && column == "center" ) {
-			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
-							 e.ch/2-(s/(zScale)), 
-							 s/(zScale*2), 
-							 2*s/(zScale), e.rectangle);
-		}
-		else if (surface == "ceiling" && column == "center" ) {
-			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
-							 e.ch/2-(s/(zScale)), 
-							 2*s/zScale, 
-							 s/(zScale*2), e.rectangle);	
-		}
-		else if (surface == "floor" && column == "center" ) {
-			setRectangle(e.gl, e.cw/2-(s/(zScale)), 
-							 e.ch/2+(s/(zScale*2)), 
-							 2*s/zScale, 
-							 s/(zScale*2), e.rectangle);			
-		}
-		else if (surface == "right" && column == "center" ) {
-			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
-							 e.ch/2-(s/(zScale)), 
-							 s/(zScale*2), 
-							 2*s/(zScale), e.rectangle);			
-		}
-		else if (surface == "left" && column == "left" ) {
-			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
-							 e.ch/2-(s/(zScale)), 
-							 3*s/(zScale*2), 
-							 2*s/(zScale), e.rectangle);
-		}
-		else if (surface == "front" && column == "left" ) {
-			setRectangle(e.gl, e.cw/2-(3*s/(zScale*2)), 
-							 e.ch/2-(s/(zScale*2)), 
-							 s/zScale, 
-							 s/zScale, e.rectangle);
-		}
-		else if (surface == "floor" && column == "left" ) {
-			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
-							 e.ch/2+(s/(zScale*2)), 
-							 5*s/(zScale*2), 
-							 s/(zScale*2), e.rectangle);
-		}
-		else if (surface == "ceiling" && column == "left" ) {
-			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
-							 e.ch/2-(s/(zScale)), 
-							 5*s/(zScale*2), 
-							 s/(zScale*2), e.rectangle);
-		}
-		else if (surface == "right" && column == "right" ) {
-			setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
-							 e.ch/2-(s/(zScale)), 
-							 5*s/(zScale*2), 
-							 s/(zScale*2), e.rectangle);
-		}
-		else if (surface == "front" && column == "right" ) {
-			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
-							 e.ch/2-(s/(zScale*2)), 
-							 s/zScale, 
-							 s/zScale, e.rectangle);
-		}
-		else if (surface == "floor" && column == "right" ) {
-			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
-							 e.ch/2+(s/(zScale*2)), 
-							 5*s/(zScale*2), 
-							 s/(zScale*2), e.rectangle);
-		}
-		else if (surface == "ceiling" && column == "right" ) {
-			setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
-							 e.ch/2-(s/(zScale)), 
-							 5*s/(zScale*2), 
-							 s/(zScale*2), e.rectangle);
-		}
-		else { // front center
-			setRectangle(e.gl, e.cw/2-(s/(zScale*2)), 
-							 e.ch/2-(s/(zScale*2)), 
-							 s/zScale, 
-							 s/zScale, e.rectangle);	
-		}
-		*/
-		
-=======
 		var s = e.canvas.height-e.canvas.height/16;
 		
 		// TODO fix hard coding numbers	
@@ -438,10 +336,6 @@ export class Engine {
 		//var w = +pack[pattern][surfaceType]["w"] * total_width;
 		//var h = +pack[pattern][surfaceType]["h"] * total_height;
 		var zScale = Math.pow(2,z);
-		var setUpEnd = new Date().getTime();
-		console.log("Set up surface: ");
-		console.log(setUpEnd - setUpStart);
->>>>>>> 6d965c5858b97318a8606e8596b78cce96488737
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.cw/2-(s/(zScale)), 

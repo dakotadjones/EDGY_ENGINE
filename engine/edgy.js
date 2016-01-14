@@ -236,9 +236,7 @@ var engine;
             var getBoxesEnd = new Date().getTime();
             var drawBoxesStart = new Date().getTime();
             e.drawBoxes(displayBoxes, facing, x, y);
-<<<<<<< HEAD
             console.log("drawing");
-=======
             var drawBoxesEnd = new Date().getTime();
             var end = new Date().getTime();
             console.log("draw() time");
@@ -247,7 +245,6 @@ var engine;
             console.log(drawBoxesEnd - drawBoxesStart);
             console.log("getBoxes() time");
             console.log(getBoxesEnd - getBoxesStart);
->>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -322,30 +319,17 @@ var engine;
                     var pattern = box.getPattern(asurface);
                     if (pattern != null && facing != opposites[j]) {
                         var surface = rsurface + "_" + leftRightCenter;
-                        var start = new Date().getTime();
-                        var setUpTextureStart = new Date().getTime();
                         e.setUpTexture(pattern, surface);
-                        var setUpTextureEnd = new Date().getTime();
-                        totalSetUpTexture += setUpTextureEnd - setUpTextureStart;
-                        var drawSurfaceStart = new Date().getTime();
                         e.drawSurface(z, pattern, surface);
-                        var drawSurfaceEnd = new Date().getTime();
-                        totalDrawSurface += drawSurfaceEnd - drawSurfaceStart;
-                        var end = new Date().getTime();
-                        total_time += end - start;
                     }
                 }
             }
-<<<<<<< HEAD
-            console.log("finished drawBoxes");
-=======
             console.log("second drawBoxes() loop time:");
             console.log(total_time);
             console.log("Total time to call setUpTexture():");
             console.log(totalSetUpTexture);
             console.log("Total time to call drawSurface():");
             console.log(totalDrawSurface);
->>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
@@ -424,19 +408,8 @@ var engine;
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
-<<<<<<< HEAD
-            var s = e.ch - e.ch / 16;
-            var zScale = Math.pow(2, z);
-=======
             var s = e.canvas.height - e.canvas.height / 16;
-<<<<<<< HEAD
-=======
             var zScale = Math.pow(2, z);
-            var setUpEnd = new Date().getTime();
-            console.log("Set up surface: ");
-            console.log(setUpEnd - setUpStart);
->>>>>>> 4f3ddaf4bc7b9941a91393488ac615f7e3e04350
->>>>>>> 6d965c5858b97318a8606e8596b78cce96488737
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)), s / (zScale * 2), 2 * s / (zScale), e.rectangle);
