@@ -20,7 +20,9 @@ export class Engine {
 	rectangle:Float32Array;
 	resolutionLocation:WebGLUniformLocation;
 	
+	
 	load(id:string) {
+		console.log("loading");
 		// set up object reference 
 		var e = this;
 		// initialize our player  
@@ -35,6 +37,7 @@ export class Engine {
 	}
 	
 	init() {
+		console.log("initializing.");
 		// set up object reference 
 		var e = this;
 		// initialize elements
@@ -82,7 +85,17 @@ export class Engine {
 		e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
 	
 		e.loadBoxes();
-
+		
+		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
+		document.addEventListener("keydown", 
+			function(evt) {
+				switch(evt.key) {
+					case "w":
+						//e.myPlayer.setX(e.myPlayer.get)
+						break;
+				}
+			}
+		);
 		// TODO ensure draw gets called after load boxes
 		e.draw();
 	}
@@ -121,6 +134,7 @@ export class Engine {
 		var getBoxesEnd = new Date().getTime();
 		var drawBoxesStart = new Date().getTime();
 		e.drawBoxes(displayBoxes, facing, x, y);
+		console.log("drawing");
 		var drawBoxesEnd = new Date().getTime();
 		var end = new Date().getTime();
 		console.log("draw() time");
@@ -129,7 +143,6 @@ export class Engine {
 		console.log(drawBoxesEnd-drawBoxesStart);
 		console.log("getBoxes() time");
 		console.log(getBoxesEnd-getBoxesStart);
-		
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
@@ -283,6 +296,7 @@ export class Engine {
 				}
 			
 		}
+		console.log("finished getBoxes");
 		return displayBoxes;
 	}
 	
@@ -323,6 +337,7 @@ export class Engine {
 		
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
+<<<<<<< HEAD
 		
 		var s = e.ch-e.ch/16;
 		
@@ -414,6 +429,19 @@ export class Engine {
 		}
 		*/
 		
+=======
+		var s = e.canvas.height-e.canvas.height/16;
+		
+		// TODO fix hard coding numbers	
+		//var total_width = +pack["packWidth"];
+		//var total_height = +pack["packHeight"];
+		//var w = +pack[pattern][surfaceType]["w"] * total_width;
+		//var h = +pack[pattern][surfaceType]["h"] * total_height;
+		var zScale = Math.pow(2,z);
+		var setUpEnd = new Date().getTime();
+		console.log("Set up surface: ");
+		console.log(setUpEnd - setUpStart);
+>>>>>>> 6d965c5858b97318a8606e8596b78cce96488737
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.cw/2-(s/(zScale)), 

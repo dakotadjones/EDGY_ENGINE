@@ -140,6 +140,7 @@ var player;
             return this.facing;
         };
         Player.prototype.getCoordinates = function () {
+            console.log("getting coordinates");
             return [this.x, this.y];
         };
         return Player;
@@ -155,6 +156,7 @@ var engine;
         function Engine() {
         }
         Engine.prototype.load = function (id) {
+            console.log("loading");
             var e = this;
             e.myPlayer = new player.Player();
             this.id = id;
@@ -164,6 +166,7 @@ var engine;
             this.texturePack.onload = function () { e.init(); };
         };
         Engine.prototype.init = function () {
+            console.log("initializing.");
             var e = this;
             e.canvas = document.getElementById(e.id);
             e.cw = e.canvas.width;
@@ -191,6 +194,12 @@ var engine;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
             e.loadBoxes();
+            document.addEventListener("keydown", function (evt) {
+                switch (evt.key) {
+                    case "w":
+                        break;
+                }
+            });
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -227,6 +236,9 @@ var engine;
             var getBoxesEnd = new Date().getTime();
             var drawBoxesStart = new Date().getTime();
             e.drawBoxes(displayBoxes, facing, x, y);
+<<<<<<< HEAD
+            console.log("drawing");
+=======
             var drawBoxesEnd = new Date().getTime();
             var end = new Date().getTime();
             console.log("draw() time");
@@ -235,6 +247,7 @@ var engine;
             console.log(drawBoxesEnd - drawBoxesStart);
             console.log("getBoxes() time");
             console.log(getBoxesEnd - getBoxesStart);
+>>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -323,12 +336,16 @@ var engine;
                     }
                 }
             }
+<<<<<<< HEAD
+            console.log("finished drawBoxes");
+=======
             console.log("second drawBoxes() loop time:");
             console.log(total_time);
             console.log("Total time to call setUpTexture():");
             console.log(totalSetUpTexture);
             console.log("Total time to call drawSurface():");
             console.log(totalDrawSurface);
+>>>>>>> 4d2b7867ab21999756479cf218f341cdcff85617
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
@@ -380,6 +397,7 @@ var engine;
                         }
                     }
             }
+            console.log("finished getBoxes");
             return displayBoxes;
         };
         Engine.prototype.getPlayerPosition = function () {
@@ -406,8 +424,19 @@ var engine;
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+<<<<<<< HEAD
             var s = e.ch - e.ch / 16;
             var zScale = Math.pow(2, z);
+=======
+            var s = e.canvas.height - e.canvas.height / 16;
+<<<<<<< HEAD
+=======
+            var zScale = Math.pow(2, z);
+            var setUpEnd = new Date().getTime();
+            console.log("Set up surface: ");
+            console.log(setUpEnd - setUpStart);
+>>>>>>> 4f3ddaf4bc7b9941a91393488ac615f7e3e04350
+>>>>>>> 6d965c5858b97318a8606e8596b78cce96488737
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)), s / (zScale * 2), 2 * s / (zScale), e.rectangle);
@@ -505,7 +534,6 @@ function getTextureLocations(pixel_locs) {
     var total_height = pixel_locs['meta']['size']['h'];
     pack["packHeight"] = total_height;
     pack["packWidth"] = total_width;
-    console.log(pixel_locs['frames'][0]['filename']);
     for (var i = 0; i < pixel_locs['frames'].length; i++) {
         var key = pixel_locs['frames'][i]['filename'];
         var key_array = key.split('_');
