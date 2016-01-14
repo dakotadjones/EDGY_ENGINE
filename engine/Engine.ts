@@ -345,23 +345,16 @@ export class Engine {
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
 		var s = e.canvas.height-e.canvas.height/16;
-<<<<<<< HEAD
 		
 		// TODO fix hard coding numbers	
 		//var total_width = +pack["packWidth"];
 		//var total_height = +pack["packHeight"];
 		//var w = +pack[pattern][surfaceType]["w"] * total_width;
 		//var h = +pack[pattern][surfaceType]["h"] * total_height;
-=======
-		// var total_width = +pack["packWidth"];
-		// var total_height = +pack["packHeight"];
-		// var w = +pack[pattern][surfaceType]["w"] * total_width;
-		// var h = +pack[pattern][surfaceType]["h"] * total_height;
 		var zScale = Math.pow(2,z);
 		var setUpEnd = new Date().getTime();
 		console.log("Set up surface: ");
 		console.log(setUpEnd - setUpStart);
->>>>>>> 4f3ddaf4bc7b9941a91393488ac615f7e3e04350
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.canvas.width/2-(s/(zScale)), 
