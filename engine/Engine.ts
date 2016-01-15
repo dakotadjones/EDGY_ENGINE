@@ -97,52 +97,7 @@ export class Engine {
 		e.fpsElement=document.getElementById("fps_counter");
 		
 		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
-		document.addEventListener("keydown", 
-			function(evt) {
-				switch(evt.key) {
-					case "w":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.x++;
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.y--;
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.x--;
-						else
-							e.myPlayer.y++;
-						break;
-					case "a":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.setFacing("north");
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.setFacing("west");
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.setFacing("south");
-						else
-							e.myPlayer.setFacing("east");
-						break;
-					case "s":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.x--;
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.y++;
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.x++;
-						else
-							e.myPlayer.y--;
-						break;
-					case "d":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.setFacing("south");
-						else if (e.myPlayer.getFacing()=="south")
-							e.myPlayer.setFacing("west");
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.setFacing("north");
-						else
-							e.myPlayer.setFacing("east");
-						break;
-				}
-			}
-		);
+		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
@@ -463,6 +418,52 @@ export class Engine {
 				
 		}
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+	}
+	
+	readInput(keyEvent:KeyboardEvent){
+		var e = this;
+		switch(keyEvent.key) {
+			case "w":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.x++;
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.y--;
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.x--;
+				else
+					e.myPlayer.y++;
+				break;
+			case "a":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.setFacing("north");
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.setFacing("west");
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.setFacing("south");
+				else
+					e.myPlayer.setFacing("east");
+				break;
+			case "s":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.x--;
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.y++;
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.x++;
+				else
+					e.myPlayer.y--;
+				break;
+			case "d":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.setFacing("south");
+				else if (e.myPlayer.getFacing()=="south")
+					e.myPlayer.setFacing("west");
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.setFacing("north");
+				else
+					e.myPlayer.setFacing("east");
+				break;
+		}
 	}
 		
 } // end engine 

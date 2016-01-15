@@ -169,50 +169,7 @@ var engine;
             e.fpsTimeLast = 0;
             e.fpsTimeCounter = 0;
             e.fpsElement = document.getElementById("fps_counter");
-            document.addEventListener("keydown", function (evt) {
-                switch (evt.key) {
-                    case "w":
-                        if (e.myPlayer.getFacing() == "east")
-                            e.myPlayer.x++;
-                        else if (e.myPlayer.getFacing() == "north")
-                            e.myPlayer.y--;
-                        else if (e.myPlayer.getFacing() == "west")
-                            e.myPlayer.x--;
-                        else
-                            e.myPlayer.y++;
-                        break;
-                    case "a":
-                        if (e.myPlayer.getFacing() == "east")
-                            e.myPlayer.setFacing("north");
-                        else if (e.myPlayer.getFacing() == "north")
-                            e.myPlayer.setFacing("west");
-                        else if (e.myPlayer.getFacing() == "west")
-                            e.myPlayer.setFacing("south");
-                        else
-                            e.myPlayer.setFacing("east");
-                        break;
-                    case "s":
-                        if (e.myPlayer.getFacing() == "east")
-                            e.myPlayer.x--;
-                        else if (e.myPlayer.getFacing() == "north")
-                            e.myPlayer.y++;
-                        else if (e.myPlayer.getFacing() == "west")
-                            e.myPlayer.x++;
-                        else
-                            e.myPlayer.y--;
-                        break;
-                    case "d":
-                        if (e.myPlayer.getFacing() == "east")
-                            e.myPlayer.setFacing("south");
-                        else if (e.myPlayer.getFacing() == "south")
-                            e.myPlayer.setFacing("west");
-                        else if (e.myPlayer.getFacing() == "west")
-                            e.myPlayer.setFacing("north");
-                        else
-                            e.myPlayer.setFacing("east");
-                        break;
-                }
-            });
+            document.addEventListener("keydown", function (evt) { e.readInput(evt); });
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -468,6 +425,51 @@ var engine;
                     break;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+        };
+        Engine.prototype.readInput = function (keyEvent) {
+            var e = this;
+            switch (keyEvent.key) {
+                case "w":
+                    if (e.myPlayer.getFacing() == "east")
+                        e.myPlayer.x++;
+                    else if (e.myPlayer.getFacing() == "north")
+                        e.myPlayer.y--;
+                    else if (e.myPlayer.getFacing() == "west")
+                        e.myPlayer.x--;
+                    else
+                        e.myPlayer.y++;
+                    break;
+                case "a":
+                    if (e.myPlayer.getFacing() == "east")
+                        e.myPlayer.setFacing("north");
+                    else if (e.myPlayer.getFacing() == "north")
+                        e.myPlayer.setFacing("west");
+                    else if (e.myPlayer.getFacing() == "west")
+                        e.myPlayer.setFacing("south");
+                    else
+                        e.myPlayer.setFacing("east");
+                    break;
+                case "s":
+                    if (e.myPlayer.getFacing() == "east")
+                        e.myPlayer.x--;
+                    else if (e.myPlayer.getFacing() == "north")
+                        e.myPlayer.y++;
+                    else if (e.myPlayer.getFacing() == "west")
+                        e.myPlayer.x++;
+                    else
+                        e.myPlayer.y--;
+                    break;
+                case "d":
+                    if (e.myPlayer.getFacing() == "east")
+                        e.myPlayer.setFacing("south");
+                    else if (e.myPlayer.getFacing() == "south")
+                        e.myPlayer.setFacing("west");
+                    else if (e.myPlayer.getFacing() == "west")
+                        e.myPlayer.setFacing("north");
+                    else
+                        e.myPlayer.setFacing("east");
+                    break;
+            }
         };
         return Engine;
     })();
