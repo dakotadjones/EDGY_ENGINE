@@ -249,7 +249,7 @@ export class Engine {
 		var e = this;
 		var displayBoxes = [];
 		var order = [-1, 1, 0];
-		var playerBox = (e.zAnim == 0) ? 0 : -1;
+		var playerBox = (e.zAnim > 0) ? -1 : 0;
 		switch(facing) {
 			case "north":
 				for (var y = 8; y >= playerBox; y--) {
@@ -479,7 +479,7 @@ export class Engine {
 				break;
 			case "s":
 				if(e.checkWall(true)) { 
-				 	e.zAnim = 0.3;
+				 	// e.zAnim = 0.3;
 					return;
 				}
 				if (e.myPlayer.getFacing()=="east")
