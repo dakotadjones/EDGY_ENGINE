@@ -95,53 +95,9 @@ export class Engine {
 		e.fpsTimeLast=0;
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
-		
-		document.addEventListener("keydown", 
-			function(evt) {
-				switch(evt.key) {
-					case "w":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.x++;
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.y--;
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.x--;
-						else
-							e.myPlayer.y++;
-						break;
-					case "a":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.setFacing("north");
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.setFacing("west");
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.setFacing("south");
-						else
-							e.myPlayer.setFacing("east");
-						break;
-					case "s":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.x--;
-						else if (e.myPlayer.getFacing()=="north")
-							e.myPlayer.y++;
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.x++;
-						else
-							e.myPlayer.y--;
-						break;
-					case "d":
-						if (e.myPlayer.getFacing()=="east")
-							e.myPlayer.setFacing("south");
-						else if (e.myPlayer.getFacing()=="south")
-							e.myPlayer.setFacing("west");
-						else if (e.myPlayer.getFacing()=="west")
-							e.myPlayer.setFacing("north");
-						else
-							e.myPlayer.setFacing("east");
-						break;
-				}
-			}
-		);
+
+		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
+		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
@@ -189,7 +145,6 @@ export class Engine {
 		var facing = e.getPlayerFacing();
 		var displayBoxes = e.getBoxes(facing, x, y);
 		
-		//I don't believe we are actually clearing the screen at the moment
    		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
 		e.drawBoxes(displayBoxes, facing, x, y);
 		e.gl.flush();
@@ -211,54 +166,53 @@ export class Engine {
 				case "north":
 					if (myX > box.x) {
 						leftRightCenter = "left";
+						relSurfaces = ["ceiling", "floor", "front", "null", "null", "left"];
 					} else if (myX < box.x) {
 						leftRightCenter = "right";
+						relSurfaces = ["ceiling", "floor", "front", "null", "right", "null"];
 					} else {
 						leftRightCenter = "center";
+						relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
 					}
-					relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
 					z = myY - box.y;				
 					break;
 				case "east":
 					if (myY > box.y) {
-						// it's to the right
 						leftRightCenter = "left";
-					
+						relSurfaces = ["ceiling", "floor", "left", "null", "front", "null"];
 					} else if (myY < box.y) {
-						// it's to the left 
 						leftRightCenter = "right";
+						relSurfaces = ["ceiling", "floor", "null", "right", "front", "null"];
 					} else {
-						// it's in the center
 						leftRightCenter = "center";
+						relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
 					}
-					relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
 					z = box.x - myX;					
 					break;
 				case "south":
 					if (myX > box.x) {
 							leftRightCenter = "right";
+							relSurfaces = ["ceiling", "floor", "null", "front", "null", "right"];
 						} else if (myX < box.x) {
 							leftRightCenter = "left";
+							relSurfaces = ["ceiling", "floor", "null", "front", "left", "null"];
 						} else {
 							leftRightCenter = "center";
+							relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
 						}
-						relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
-					    // absSurfaces = ["ceiling", "floor", "south", "north", "east", "west"];
 						z = box.y - myY;				
 					break;
 				case "west":
 					if (myY > box.y) {
-							// it's to the right
 							leftRightCenter = "right";
+							relSurfaces = ["ceiling", "floor", "right", "null", "null", "front"];
 						} else if (myY < box.y) {
-							// it's to the left 
 							leftRightCenter = "left";
+							relSurfaces = ["ceiling", "floor", "null", "left", "null", "front"];
 						} else {
-							// it's in the center
 							leftRightCenter = "center";
+							relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
 						}
-						relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
-						// absSurfaces = ["ceiling", "floor", "north", "south", "west", "east"];
 						z = myX - box.x;	
 					break;
 			}			
@@ -289,44 +243,48 @@ export class Engine {
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
 							var pos  = xx.toString() + "," + rowNum.toString();
-							if (map.hasOwnProperty(pos)) {
+							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
 						}
 				}
+				break;
 			case "south":
 				for (var y = 3; y >= 0; y--) {
 						var rowNum = myY + y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
 							var pos  = xx.toString() + "," + rowNum.toString();
-							if (map.hasOwnProperty(pos)) {
+							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
 						}
 				}
+				break;
 			case "east":
 				for (var x = 3; x >= 0; x--) {
 					var colNum = myX + x;
 					for (var y = 0; y < order.length; y++) {
 						var yy = myY + order[y];
 						var pos  = colNum.toString() + "," + yy.toString();
-						if (map.hasOwnProperty(pos)) {
+						if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
 							displayBoxes.push(e.boxes[colNum][yy]);
 						}
 					}
 				}
+				break;
 			case "west":
 				for (var x = 3; x >= 0; x--) {
 						var colNum = myX - x;
 						for (var y = 0; y < order.length; y++) {
 							var yy = myY + order[y];
 							var pos  = colNum.toString() + "," + yy.toString();
-							if (map.hasOwnProperty(pos)) {
+							if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
 								displayBoxes.push(e.boxes[colNum][yy]);
 							}
 						}
 				}
+				break;
 			
 		}
 		return displayBoxes;
@@ -460,6 +418,52 @@ export class Engine {
 				
 		}
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+	}
+	
+	readInput(keyEvent:KeyboardEvent){
+		var e = this;
+		switch(keyEvent.key) {
+			case "w":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.x++;
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.y--;
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.x--;
+				else
+					e.myPlayer.y++;
+				break;
+			case "a":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.setFacing("north");
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.setFacing("west");
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.setFacing("south");
+				else
+					e.myPlayer.setFacing("east");
+				break;
+			case "s":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.x--;
+				else if (e.myPlayer.getFacing()=="north")
+					e.myPlayer.y++;
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.x++;
+				else
+					e.myPlayer.y--;
+				break;
+			case "d":
+				if (e.myPlayer.getFacing()=="east")
+					e.myPlayer.setFacing("south");
+				else if (e.myPlayer.getFacing()=="south")
+					e.myPlayer.setFacing("west");
+				else if (e.myPlayer.getFacing()=="west")
+					e.myPlayer.setFacing("north");
+				else
+					e.myPlayer.setFacing("east");
+				break;
+		}
 	}
 		
 } // end engine 
