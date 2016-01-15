@@ -441,6 +441,10 @@ export class Engine {
 			return;
 		switch(keyEvent.key) {
 			case "w":
+			 	if (e.checkWall()) {
+				 	e.zAnim = -0.3;
+					return;
+				}
 				if (e.myPlayer.getFacing() =="east") 
 						e.myPlayer.x++;
 				else if (e.myPlayer.getFacing()=="north") 
@@ -462,6 +466,10 @@ export class Engine {
 					e.myPlayer.setFacing("east");
 				break;
 			case "s":
+				if(e.checkWall(true)) { 
+				 	e.zAnim = 0.3;
+					return;
+				}
 				if (e.myPlayer.getFacing()=="east")
 					e.myPlayer.x--;
 				else if (e.myPlayer.getFacing()=="north")
@@ -482,6 +490,40 @@ export class Engine {
 				else
 					e.myPlayer.setFacing("east");
 				break;
+		}
+	}
+	
+	checkWall(behind:boolean=false) {
+		var e = this;
+		var facing = e.getPlayerFacing();
+		var pos = e.getPlayerPosition();
+		switch(facing) {
+			case "north":
+				if (behind)
+					return e.boxes[pos[0]][pos[1]].southSurface != null;
+				else 
+					return e.boxes[pos[0]][pos[1]].northSurface != null;
+				break;
+			case "south":
+				if (behind)
+					return e.boxes[pos[0]][pos[1]].northSurface != null;
+				else 
+					return e.boxes[pos[0]][pos[1]].southSurface != null;
+				break;
+			case "east":
+				if (behind)
+					return e.boxes[pos[0]][pos[1]].westSurface != null;
+				else 
+					return e.boxes[pos[0]][pos[1]].eastSurface != null;
+				break;
+			case "west":
+				if (behind)
+					return e.boxes[pos[0]][pos[1]].eastSurface != null;
+				else 
+					return e.boxes[pos[0]][pos[1]].westSurface != null;
+				break;
+			default:
+				return false;
 		}
 	}
 		
