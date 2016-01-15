@@ -307,7 +307,7 @@ var engine;
             var order = [-1, 1, 0];
             switch (facing) {
                 case "north":
-                    for (var y = 3; y >= 0; y--) {
+                    for (var y = 8; y >= 0; y--) {
                         var rowNum = myY - y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -319,7 +319,7 @@ var engine;
                     }
                     break;
                 case "south":
-                    for (var y = 3; y >= 0; y--) {
+                    for (var y = 8; y >= 0; y--) {
                         var rowNum = myY + y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -331,7 +331,7 @@ var engine;
                     }
                     break;
                 case "east":
-                    for (var x = 3; x >= 0; x--) {
+                    for (var x = 8; x >= 0; x--) {
                         var colNum = myX + x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
@@ -343,7 +343,7 @@ var engine;
                     }
                     break;
                 case "west":
-                    for (var x = 3; x >= 0; x--) {
+                    for (var x = 8; x >= 0; x--) {
                         var colNum = myX - x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
