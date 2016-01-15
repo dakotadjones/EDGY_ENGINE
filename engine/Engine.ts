@@ -20,7 +20,12 @@ export class Engine {
 	rectangle:Float32Array;
 	resolutionLocation:WebGLUniformLocation;
 	
-	
+	fpsFrames:number;
+	fpsTime:number;
+	fpsTimeLast:number;
+	fpsTimeCounter:number;
+	fpsElement:HTMLElement;
+		
 	load(id:string) {
 		// set up object reference 
 		var e = this;
@@ -44,7 +49,7 @@ export class Engine {
 		e.cw = e.canvas.width;
 		e.ch = e.canvas.height;
 		// graphics library
-		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl');
+		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl', {antialias: true});
 		//e.gl = <WebGLRenderingContext> initWebGL(e.canvas)
 		// shader
 		var shader = new utils.Shader(e.gl);
@@ -84,6 +89,13 @@ export class Engine {
 	
 		e.loadBoxes();
 		
+		//fps stuff
+		e.fpsFrames=0;
+		e.fpsTime=0;
+		e.fpsTimeLast=0;
+		e.fpsTimeCounter=0;
+		e.fpsElement=document.getElementById("fps_counter");
+		
 		document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", 
 			function(evt) {
@@ -122,15 +134,29 @@ export class Engine {
 	}
 	
 	draw() {
-		var start = new Date().getTime();
 		var e = this;
+		
+		//fps
+		e.fpsTime = new Date().getTime();
+		e.fpsTimeCounter += e.fpsTime - e.fpsTimeLast;
+		e.fpsTimeLast = e.fpsTime;
+		e.fpsFrames++;
+		 if (e.fpsTimeCounter>1000){
+			e.fpsElement.innerHTML=Math.round(1000*e.fpsFrames/e.fpsTimeCounter) + " fps";
+			e.fpsTimeCounter = 0;
+			e.fpsFrames = 0;
+		 }
+		
 		var xy = e.getPlayerPosition();
 		var x = xy[0];
 		var y = xy[1];
 		var facing = e.getPlayerFacing();
 		var displayBoxes = e.getBoxes(facing, x, y);
+		
+   		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
 		e.drawBoxes(displayBoxes, facing, x, y);
-		requestAnimationFrame(()=>e.draw());
+		e.gl.flush();
+		window.requestAnimationFrame(()=>e.draw());
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {

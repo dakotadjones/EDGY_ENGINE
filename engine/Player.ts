@@ -26,7 +26,6 @@ module player {
 		}
 		
 		getCoordinates() {
-			console.log("getting coordinates");
 			return [this.x, this.y];
 		}
 	}

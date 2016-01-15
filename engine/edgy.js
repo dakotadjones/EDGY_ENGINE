@@ -1,24 +1,3 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -58,9 +37,6 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -140,16 +116,12 @@ var player;
             return this.facing;
         };
         Player.prototype.getCoordinates = function () {
-            console.log("getting coordinates");
             return [this.x, this.y];
         };
         return Player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -169,7 +141,7 @@ var engine;
             e.canvas = document.getElementById(e.id);
             e.cw = e.canvas.width;
             e.ch = e.canvas.height;
-            e.gl = e.canvas.getContext('webgl');
+            e.gl = e.canvas.getContext('webgl', { antialias: true });
             var shader = new utils.Shader(e.gl);
             shader.getShader('shader-fs');
             shader.getShader('shader-vs');
@@ -192,6 +164,11 @@ var engine;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
             e.loadBoxes();
+            e.fpsFrames = 0;
+            e.fpsTime = 0;
+            e.fpsTimeLast = 0;
+            e.fpsTimeCounter = 0;
+            e.fpsElement = document.getElementById("fps_counter");
             document.onkeydown = function () { console.log("keydown"); e.myPlayer.setFacing("north"); };
             document.addEventListener("keydown", function (evt) {
                 switch (evt.key) {
@@ -224,15 +201,25 @@ var engine;
             }
         };
         Engine.prototype.draw = function () {
-            var start = new Date().getTime();
             var e = this;
+            e.fpsTime = new Date().getTime();
+            e.fpsTimeCounter += e.fpsTime - e.fpsTimeLast;
+            e.fpsTimeLast = e.fpsTime;
+            e.fpsFrames++;
+            if (e.fpsTimeCounter > 1000) {
+                e.fpsElement.innerHTML = Math.round(1000 * e.fpsFrames / e.fpsTimeCounter) + " fps";
+                e.fpsTimeCounter = 0;
+                e.fpsFrames = 0;
+            }
             var xy = e.getPlayerPosition();
             var x = xy[0];
             var y = xy[1];
             var facing = e.getPlayerFacing();
             var displayBoxes = e.getBoxes(facing, x, y);
+            e.gl.clear(e.gl.COLOR_BUFFER_BIT);
             e.drawBoxes(displayBoxes, facing, x, y);
-            requestAnimationFrame(function () { return e.draw(); });
+            e.gl.flush();
+            window.requestAnimationFrame(function () { return e.draw(); });
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -458,7 +445,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
