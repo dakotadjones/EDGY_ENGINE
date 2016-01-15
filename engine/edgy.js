@@ -169,10 +169,47 @@ var engine;
             e.fpsTimeLast = 0;
             e.fpsTimeCounter = 0;
             e.fpsElement = document.getElementById("fps_counter");
-            document.onkeydown = function () { console.log("keydown"); e.myPlayer.setFacing("north"); };
             document.addEventListener("keydown", function (evt) {
                 switch (evt.key) {
                     case "w":
+                        if (e.myPlayer.getFacing() == "east")
+                            e.myPlayer.x++;
+                        else if (e.myPlayer.getFacing() == "north")
+                            e.myPlayer.y--;
+                        else if (e.myPlayer.getFacing() == "west")
+                            e.myPlayer.x--;
+                        else
+                            e.myPlayer.y++;
+                        break;
+                    case "a":
+                        if (e.myPlayer.getFacing() == "east")
+                            e.myPlayer.setFacing("north");
+                        else if (e.myPlayer.getFacing() == "north")
+                            e.myPlayer.setFacing("west");
+                        else if (e.myPlayer.getFacing() == "west")
+                            e.myPlayer.setFacing("south");
+                        else
+                            e.myPlayer.setFacing("east");
+                        break;
+                    case "s":
+                        if (e.myPlayer.getFacing() == "east")
+                            e.myPlayer.x--;
+                        else if (e.myPlayer.getFacing() == "north")
+                            e.myPlayer.y++;
+                        else if (e.myPlayer.getFacing() == "west")
+                            e.myPlayer.x++;
+                        else
+                            e.myPlayer.y--;
+                        break;
+                    case "d":
+                        if (e.myPlayer.getFacing() == "east")
+                            e.myPlayer.setFacing("south");
+                        else if (e.myPlayer.getFacing() == "south")
+                            e.myPlayer.setFacing("west");
+                        else if (e.myPlayer.getFacing() == "west")
+                            e.myPlayer.setFacing("north");
+                        else
+                            e.myPlayer.setFacing("east");
                         break;
                 }
             });
@@ -224,7 +261,6 @@ var engine;
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
             var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
-            var opposites = ["floor", "ceiling", "south", "north", "west", "east"];
             var total_time = 0;
             var totalSetUpTexture = 0;
             var totalDrawSurface = 0;
@@ -244,7 +280,7 @@ var engine;
                         else {
                             leftRightCenter = "center";
                         }
-                        relSurfaces = ["ceiling", "floor", "front", "front", "right", "left"];
+                        relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
                         z = myY - box.y;
                         break;
                     case "east":
@@ -257,7 +293,7 @@ var engine;
                         else {
                             leftRightCenter = "center";
                         }
-                        relSurfaces = ["ceiling", "floor", "left", "right", "front", "front"];
+                        relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
                         z = box.x - myX;
                         break;
                     case "south":
@@ -270,7 +306,7 @@ var engine;
                         else {
                             leftRightCenter = "center";
                         }
-                        relSurfaces = ["ceiling", "floor", "front", "front", "left", "right"];
+                        relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
                         z = box.y - myY;
                         break;
                     case "west":
@@ -283,8 +319,8 @@ var engine;
                         else {
                             leftRightCenter = "center";
                         }
-                        relSurfaces = ["ceiling", "floor", "right", "left", "front", "front"];
-                        z = box.x - myX - 1;
+                        relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
+                        z = myX - box.x;
                         break;
                 }
                 for (var j = 0; j <= relSurfaces.length; j++) {
@@ -292,7 +328,7 @@ var engine;
                     var rsurface = relSurfaces[j];
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
-                    if (pattern != null && facing != opposites[j]) {
+                    if (pattern != null && relSurfaces[j] != "null") {
                         var surface = rsurface + "_" + leftRightCenter;
                         e.setUpTexture(pattern, surface);
                         e.drawSurface(z, pattern, surface);

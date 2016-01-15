@@ -96,12 +96,49 @@ export class Engine {
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
 		
-		document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
+		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", 
 			function(evt) {
 				switch(evt.key) {
 					case "w":
-						//e.myPlayer.setX(e.myPlayer.get)
+						if (e.myPlayer.getFacing()=="east")
+							e.myPlayer.x++;
+						else if (e.myPlayer.getFacing()=="north")
+							e.myPlayer.y--;
+						else if (e.myPlayer.getFacing()=="west")
+							e.myPlayer.x--;
+						else
+							e.myPlayer.y++;
+						break;
+					case "a":
+						if (e.myPlayer.getFacing()=="east")
+							e.myPlayer.setFacing("north");
+						else if (e.myPlayer.getFacing()=="north")
+							e.myPlayer.setFacing("west");
+						else if (e.myPlayer.getFacing()=="west")
+							e.myPlayer.setFacing("south");
+						else
+							e.myPlayer.setFacing("east");
+						break;
+					case "s":
+						if (e.myPlayer.getFacing()=="east")
+							e.myPlayer.x--;
+						else if (e.myPlayer.getFacing()=="north")
+							e.myPlayer.y++;
+						else if (e.myPlayer.getFacing()=="west")
+							e.myPlayer.x++;
+						else
+							e.myPlayer.y--;
+						break;
+					case "d":
+						if (e.myPlayer.getFacing()=="east")
+							e.myPlayer.setFacing("south");
+						else if (e.myPlayer.getFacing()=="south")
+							e.myPlayer.setFacing("west");
+						else if (e.myPlayer.getFacing()=="west")
+							e.myPlayer.setFacing("north");
+						else
+							e.myPlayer.setFacing("east");
 						break;
 				}
 			}
@@ -153,6 +190,7 @@ export class Engine {
 		var facing = e.getPlayerFacing();
 		var displayBoxes = e.getBoxes(facing, x, y);
 		
+		//I don't believe we are actually clearing the screen at the moment
    		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
 		e.drawBoxes(displayBoxes, facing, x, y);
 		e.gl.flush();
@@ -162,7 +200,6 @@ export class Engine {
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
 		var e = this;
 		var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
-		var opposites = ["floor", "ceiling", "south", "north", "west","east"];
 		var total_time = 0;
 		var totalSetUpTexture = 0;
 		var totalDrawSurface = 0;
@@ -180,7 +217,7 @@ export class Engine {
 					} else {
 						leftRightCenter = "center";
 					}
-					relSurfaces = ["ceiling", "floor", "front", "front", "right", "left"];
+					relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
 					z = myY - box.y;				
 					break;
 				case "east":
@@ -195,7 +232,7 @@ export class Engine {
 						// it's in the center
 						leftRightCenter = "center";
 					}
-					relSurfaces = ["ceiling", "floor", "left", "right", "front", "front"];
+					relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
 					z = box.x - myX;					
 					break;
 				case "south":
@@ -206,7 +243,7 @@ export class Engine {
 						} else {
 							leftRightCenter = "center";
 						}
-						relSurfaces = ["ceiling", "floor", "front", "front", "left", "right"];
+						relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
 					    // absSurfaces = ["ceiling", "floor", "south", "north", "east", "west"];
 						z = box.y - myY;				
 					break;
@@ -221,9 +258,9 @@ export class Engine {
 							// it's in the center
 							leftRightCenter = "center";
 						}
-						relSurfaces = ["ceiling", "floor", "right", "left", "front", "front"];
+						relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
 						// absSurfaces = ["ceiling", "floor", "north", "south", "west", "east"];
-						z = box.x - myX - 1;	
+						z = myX - box.x;	
 					break;
 			}			
 
@@ -233,7 +270,7 @@ export class Engine {
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
-				if (pattern != null && facing != opposites[j]){
+				if (pattern != null && relSurfaces[j] != "null"){
 					var surface = rsurface + "_" + leftRightCenter;		
 					e.setUpTexture(pattern, surface);
 					e.drawSurface(z, pattern, surface);
