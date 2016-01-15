@@ -348,7 +348,7 @@ export class Engine {
 		// var total_height = +pack["packHeight"];
 		var w = +pack[pattern][surfaceType]["w"];// * total_width;
 		var h = +pack[pattern][surfaceType]["h"];// * total_height;
-		var zScale = Math.pow(2,z);
+		var zScale = Math.pow(2,z+e.zAnim);
 		switch(surfaceType) {
 			case "left_center":
 				var diff = s*(2*w-h/2);
