@@ -197,6 +197,7 @@ var engine;
             e.fpsTimeCounter = 0;
             e.fpsElement = document.getElementById("fps_counter");
             document.addEventListener("keydown", function (evt) { e.readInput(evt); });
+            e.zAnim = 0;
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -240,6 +241,15 @@ var engine;
             e.gl.clear(e.gl.COLOR_BUFFER_BIT);
             e.drawBoxes(displayBoxes, facing, x, y);
             e.gl.flush();
+            if (e.zAnim < 0.05 && e.zAnim > -0.05) {
+                e.zAnim = 0;
+            }
+            else if (e.zAnim < 0) {
+                e.zAnim += .05;
+            }
+            else if (e.zAnim > 0) {
+                e.zAnim -= .05;
+            }
             requestAnimationFrame(this.draw.bind(this));
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
@@ -332,9 +342,10 @@ var engine;
             var e = this;
             var displayBoxes = [];
             var order = [-1, 1, 0];
+            var playerBox = (e.zAnim == 0) ? 0 : -1;
             switch (facing) {
                 case "north":
-                    for (var y = 8; y >= 0; y--) {
+                    for (var y = 8; y >= playerBox; y--) {
                         var rowNum = myY - y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -346,7 +357,7 @@ var engine;
                     }
                     break;
                 case "south":
-                    for (var y = 8; y >= 0; y--) {
+                    for (var y = 8; y >= playerBox; y--) {
                         var rowNum = myY + y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -358,7 +369,7 @@ var engine;
                     }
                     break;
                 case "east":
-                    for (var x = 8; x >= 0; x--) {
+                    for (var x = 8; x >= playerBox; x--) {
                         var colNum = myX + x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
@@ -370,7 +381,7 @@ var engine;
                     }
                     break;
                 case "west":
-                    for (var x = 8; x >= 0; x--) {
+                    for (var x = 8; x >= playerBox; x--) {
                         var colNum = myX - x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
@@ -409,7 +420,7 @@ var engine;
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
             var s = e.canvas.height - e.canvas.height / 16;
-            var zScale = Math.pow(2, z);
+            var zScale = Math.pow(2, z + e.zAnim);
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)), s / (zScale * 2), 2 * s / (zScale), e.rectangle);
@@ -454,9 +465,9 @@ var engine;
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         Engine.prototype.readInput = function (keyEvent) {
+            var e = this;
             if (e.zAnim != 0)
                 return;
-            var e = this;
             switch (keyEvent.key) {
                 case "w":
                     if (e.myPlayer.getFacing() == "east")
@@ -467,6 +478,7 @@ var engine;
                         e.myPlayer.x--;
                     else
                         e.myPlayer.y++;
+                    e.zAnim = 1;
                     break;
                 case "a":
                     if (e.myPlayer.getFacing() == "east")
@@ -487,6 +499,7 @@ var engine;
                         e.myPlayer.x++;
                     else
                         e.myPlayer.y--;
+                    e.zAnim = -1;
                     break;
                 case "d":
                     if (e.myPlayer.getFacing() == "east")

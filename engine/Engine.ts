@@ -100,6 +100,9 @@ export class Engine {
 		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
+		// initialize the scale 
+		e.zAnim = 0;
+		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
 	}
@@ -149,6 +152,15 @@ export class Engine {
    		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
 		e.drawBoxes(displayBoxes, facing, x, y);
 		e.gl.flush();
+		if (e.zAnim < 0.05 && e.zAnim > -0.05){
+			e.zAnim=0;
+		}
+		else if (e.zAnim < 0) {
+			e.zAnim += .05;
+		}
+		else if (e.zAnim > 0) {
+			e.zAnim -= .05;
+		}
 		requestAnimationFrame(this.draw.bind(this));
 	}
 	
@@ -237,9 +249,10 @@ export class Engine {
 		var e = this;
 		var displayBoxes = [];
 		var order = [-1, 1, 0];
+		var playerBox = (e.zAnim == 0) ? 0 : -1;
 		switch(facing) {
 			case "north":
-				for (var y = 8; y >= 0; y--) {
+				for (var y = 8; y >= playerBox; y--) {
 						var rowNum = myY - y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
@@ -251,7 +264,7 @@ export class Engine {
 				}
 				break;
 			case "south":
-				for (var y = 8; y >= 0; y--) {
+				for (var y = 8; y >= playerBox; y--) {
 						var rowNum = myY + y;
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
@@ -263,7 +276,7 @@ export class Engine {
 				}
 				break;
 			case "east":
-				for (var x = 8; x >= 0; x--) {
+				for (var x = 8; x >= playerBox; x--) {
 					var colNum = myX + x;
 					for (var y = 0; y < order.length; y++) {
 						var yy = myY + order[y];
@@ -275,7 +288,7 @@ export class Engine {
 				}
 				break;
 			case "west":
-				for (var x = 8; x >= 0; x--) {
+				for (var x = 8; x >= playerBox; x--) {
 						var colNum = myX - x;
 						for (var y = 0; y < order.length; y++) {
 							var yy = myY + order[y];
@@ -335,7 +348,7 @@ export class Engine {
 		//var total_height = +pack["packHeight"];
 		//var w = +pack[pattern][surfaceType]["w"] * total_width;
 		//var h = +pack[pattern][surfaceType]["h"] * total_height;
-		var zScale = Math.pow(2,z);
+		var zScale = Math.pow(2,z + e.zAnim) ;
 		
 		switch(surfaceType) {
 			case "left_center":
@@ -423,19 +436,20 @@ export class Engine {
 	}
 	
 	readInput(keyEvent:KeyboardEvent){
+		var e = this;
 		if (e.zAnim != 0)
 			return;
-		var e = this;
 		switch(keyEvent.key) {
 			case "w":
-				if (e.myPlayer.getFacing()=="east")
+				if (e.myPlayer.getFacing() =="east") 
 						e.myPlayer.x++;
-				else if (e.myPlayer.getFacing()=="north")
+				else if (e.myPlayer.getFacing()=="north") 
 					e.myPlayer.y--;
-				else if (e.myPlayer.getFacing()=="west")
+				else if (e.myPlayer.getFacing()=="west") 
 					e.myPlayer.x--;
 				else
 					e.myPlayer.y++;
+				e.zAnim = 1;
 				break;
 			case "a":
 				if (e.myPlayer.getFacing()=="east")
@@ -452,10 +466,11 @@ export class Engine {
 					e.myPlayer.x--;
 				else if (e.myPlayer.getFacing()=="north")
 					e.myPlayer.y++;
-				else if (e.myPlayer.getFacing()=="west")
+				else if (e.myPlayer.getFacing()=="west") 
 					e.myPlayer.x++;
 				else
 					e.myPlayer.y--;
+				e.zAnim = -1;
 				break;
 			case "d":
 				if (e.myPlayer.getFacing()=="east")
