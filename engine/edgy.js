@@ -1,3 +1,24 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -37,6 +58,9 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
+/*
+ * Shader class that creates the programs for specified WebGL context
+ */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -122,6 +146,9 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
+/// <reference path="Shader.ts" />
+/// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -256,7 +283,7 @@ var engine;
             e.gl.clear(e.gl.COLOR_BUFFER_BIT);
             e.drawBoxes(displayBoxes, facing, x, y);
             e.gl.flush();
-            window.requestAnimationFrame(function () { return e.draw(); });
+            requestAnimationFrame(this.draw.bind(this));
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
             var e = this;
@@ -481,6 +508,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
+/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package2';
 var MAPSRC = 'assets/map_fourbythree.json';
 var pack;

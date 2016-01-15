@@ -96,7 +96,6 @@ export class Engine {
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
 		
-		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", 
 			function(evt) {
 				switch(evt.key) {
@@ -194,7 +193,7 @@ export class Engine {
    		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
 		e.drawBoxes(displayBoxes, facing, x, y);
 		e.gl.flush();
-		window.requestAnimationFrame(()=>e.draw());
+		requestAnimationFrame(this.draw.bind(this));
 	}
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
