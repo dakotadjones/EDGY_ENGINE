@@ -273,53 +273,61 @@ var engine;
                     case "north":
                         if (myX > box.x) {
                             leftRightCenter = "left";
+                            relSurfaces = ["ceiling", "floor", "front", "null", "null", "left"];
                         }
                         else if (myX < box.x) {
                             leftRightCenter = "right";
+                            relSurfaces = ["ceiling", "floor", "front", "null", "right", "null"];
                         }
                         else {
                             leftRightCenter = "center";
+                            relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
                         }
-                        relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
                         z = myY - box.y;
                         break;
                     case "east":
                         if (myY > box.y) {
                             leftRightCenter = "left";
+                            relSurfaces = ["ceiling", "floor", "left", "null", "front", "null"];
                         }
                         else if (myY < box.y) {
                             leftRightCenter = "right";
+                            relSurfaces = ["ceiling", "floor", "null", "right", "front", "null"];
                         }
                         else {
                             leftRightCenter = "center";
+                            relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
                         }
-                        relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
                         z = box.x - myX;
                         break;
                     case "south":
                         if (myX > box.x) {
                             leftRightCenter = "right";
+                            relSurfaces = ["ceiling", "floor", "null", "front", "null", "right"];
                         }
                         else if (myX < box.x) {
                             leftRightCenter = "left";
+                            relSurfaces = ["ceiling", "floor", "null", "front", "left", "null"];
                         }
                         else {
                             leftRightCenter = "center";
+                            relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
                         }
-                        relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
                         z = box.y - myY;
                         break;
                     case "west":
                         if (myY > box.y) {
                             leftRightCenter = "right";
+                            relSurfaces = ["ceiling", "floor", "right", "null", "null", "front"];
                         }
                         else if (myY < box.y) {
                             leftRightCenter = "left";
+                            relSurfaces = ["ceiling", "floor", "null", "left", "null", "front"];
                         }
                         else {
                             leftRightCenter = "center";
+                            relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
                         }
-                        relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
                         z = myX - box.x;
                         break;
                 }
@@ -347,44 +355,48 @@ var engine;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
                             var pos = xx.toString() + "," + rowNum.toString();
-                            if (map.hasOwnProperty(pos)) {
+                            if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
                                 displayBoxes.push(e.boxes[xx][rowNum]);
                             }
                         }
                     }
+                    break;
                 case "south":
                     for (var y = 3; y >= 0; y--) {
                         var rowNum = myY + y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
                             var pos = xx.toString() + "," + rowNum.toString();
-                            if (map.hasOwnProperty(pos)) {
+                            if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
                                 displayBoxes.push(e.boxes[xx][rowNum]);
                             }
                         }
                     }
+                    break;
                 case "east":
                     for (var x = 3; x >= 0; x--) {
                         var colNum = myX + x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
                             var pos = colNum.toString() + "," + yy.toString();
-                            if (map.hasOwnProperty(pos)) {
+                            if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
                                 displayBoxes.push(e.boxes[colNum][yy]);
                             }
                         }
                     }
+                    break;
                 case "west":
                     for (var x = 3; x >= 0; x--) {
                         var colNum = myX - x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
                             var pos = colNum.toString() + "," + yy.toString();
-                            if (map.hasOwnProperty(pos)) {
+                            if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
                                 displayBoxes.push(e.boxes[colNum][yy]);
                             }
                         }
                     }
+                    break;
             }
             return displayBoxes;
         };
