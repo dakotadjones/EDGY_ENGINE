@@ -19,6 +19,7 @@ export class Engine {
 	boxes:Array<Array<utils.Box>>;
 	rectangle:Float32Array;
 	resolutionLocation:WebGLUniformLocation;
+	zAnim:number;
 	
 	fpsFrames:number;
 	fpsTime:number;
@@ -335,6 +336,7 @@ export class Engine {
 		//var w = +pack[pattern][surfaceType]["w"] * total_width;
 		//var h = +pack[pattern][surfaceType]["h"] * total_height;
 		var zScale = Math.pow(2,z);
+		
 		switch(surfaceType) {
 			case "left_center":
 				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
@@ -421,11 +423,13 @@ export class Engine {
 	}
 	
 	readInput(keyEvent:KeyboardEvent){
+		if (e.zAnim != 0)
+			return;
 		var e = this;
 		switch(keyEvent.key) {
 			case "w":
 				if (e.myPlayer.getFacing()=="east")
-					e.myPlayer.x++;
+						e.myPlayer.x++;
 				else if (e.myPlayer.getFacing()=="north")
 					e.myPlayer.y--;
 				else if (e.myPlayer.getFacing()=="west")

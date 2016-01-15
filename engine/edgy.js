@@ -454,6 +454,8 @@ var engine;
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         Engine.prototype.readInput = function (keyEvent) {
+            if (e.zAnim != 0)
+                return;
             var e = this;
             switch (keyEvent.key) {
                 case "w":
