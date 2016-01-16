@@ -400,46 +400,46 @@ var engine;
             var zScale = Math.pow(2, z + e.zAnim);
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)), s / (zScale * 2), 2 * s / (zScale), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)) - 1, s / (zScale * 2) + 1, 2 * s / (zScale) + 2, e.rectangle);
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 - (s / (zScale)), 2 * s / zScale, s / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)) - 1, e.ch / 2 - (s / (zScale)), 2 * s / zScale + 2, s / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
                     var diff = h - w / 4;
-                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)), e.ch / 2 + ((s - diff) / (zScale * 2)), 2 * s / zScale, (s + diff) / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (s / (zScale)) - 1, e.ch / 2 + ((s - diff) / (zScale * 2)), 2 * s / zScale + 3, (s + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "right_center":
-                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 - (s / (zScale)), s / (zScale * 2), 2 * s / (zScale), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 - (s / (zScale)) - 1, s / (zScale * 2) + 1, 2 * s / (zScale) + 2, e.rectangle);
                     break;
                 case "front_center":
-                    setRectangle(e.gl, e.cw / 2 - (s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale, s / zScale, e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale + 1, s / zScale + 1, e.rectangle);
                     break;
                 case "left_left":
-                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)), e.ch / 2 - (s / (zScale)), 3 * s / (zScale * 2), 2 * s / (zScale), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)), e.ch / 2 - (s / (zScale)) - 1, 3 * s / (zScale * 2) + 1, 2 * s / (zScale) + 2, e.rectangle);
                     break;
                 case "front_left":
-                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale, s / zScale, e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale + 1, s / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
                     var diff = h - w / 5;
-                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)), e.ch / 2 + ((s - diff) / (zScale * 2)), 5 * s / (zScale * 2), (s + diff) / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)) - 1, e.ch / 2 + ((s - diff) / (zScale * 2)), 5 * s / (zScale * 2) + 2, (s + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)), e.ch / 2 - (s / (zScale)), 5 * s / (zScale * 2), s / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 - (3 * s / (zScale)) - 1, e.ch / 2 - (s / (zScale)), 5 * s / (zScale * 2) + 2, s / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "right_right":
-                    setRectangle(e.gl, e.cw / 2 + (3 * s / (zScale * 2)), e.ch / 2 - (s / (zScale)), 3 * s / (zScale * 2), 2 * s / (zScale), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 + (3 * s / (zScale * 2)), e.ch / 2 - (s / (zScale)) - 1, 3 * s / (zScale * 2) + 1, 2 * s / (zScale) + 2, e.rectangle);
                     break;
                 case "front_right":
-                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale, s / zScale, e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 - (s / (zScale * 2)), s / zScale + 1, s / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
                     var diff = h - w / 5;
-                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 + ((s - diff) / (zScale * 2)), 5 * s / (zScale * 2), (s + diff) / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)) - 1, e.ch / 2 + ((s - diff) / (zScale * 2)), 5 * s / (zScale * 2) + 2, (s + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)), e.ch / 2 - (s / (zScale)), 5 * s / (zScale * 2), s / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, e.cw / 2 + (s / (zScale * 2)) - 1, e.ch / 2 - (s / (zScale)), 5 * s / (zScale * 2) + 2, s / (zScale * 2) + 1, e.rectangle);
                     break;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
@@ -539,7 +539,6 @@ var engine;
     engine.Engine = Engine;
 })(engine || (engine = {}));
 function setRectangle(gl, x, y, width, height, buffer) {
-    var setRectangleStart = new Date().getTime();
     var x1 = x;
     var x2 = x + width;
     var y1 = y;
