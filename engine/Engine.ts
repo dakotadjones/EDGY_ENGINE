@@ -166,7 +166,7 @@ export class Engine {
 	
 	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
 		var e = this;
-		var absSurfaces = ["ceiling", "floor", "north", "south", "east", "west"];
+		var absSurfaces = ["north", "south", "east", "west", "ceiling", "floor"];
 		var total_time = 0;
 		var totalSetUpTexture = 0;
 		var totalDrawSurface = 0;
@@ -179,52 +179,52 @@ export class Engine {
 				case "north":
 					if (myX > box.x) {
 						leftRightCenter = "left";
-						relSurfaces = ["ceiling", "floor", "front", "null", "null", "left"];
+						relSurfaces = ["front", "null", "null", "left", "ceiling", "floor"];
 					} else if (myX < box.x) {
 						leftRightCenter = "right";
-						relSurfaces = ["ceiling", "floor", "front", "null", "right", "null"];
+						relSurfaces = ["front", "null", "right", "null", "ceiling", "floor"];
 					} else {
 						leftRightCenter = "center";
-						relSurfaces = ["ceiling", "floor", "front", "null", "right", "left"];
+						relSurfaces = ["front", "null", "right", "left", "ceiling", "floor"];
 					}
 					z = myY - box.y;				
 					break;
 				case "east":
 					if (myY > box.y) {
 						leftRightCenter = "left";
-						relSurfaces = ["ceiling", "floor", "left", "null", "front", "null"];
+						relSurfaces = ["left", "null", "front", "null", "ceiling", "floor"];
 					} else if (myY < box.y) {
 						leftRightCenter = "right";
-						relSurfaces = ["ceiling", "floor", "null", "right", "front", "null"];
+						relSurfaces = ["null", "right", "front", "null", "ceiling", "floor"];
 					} else {
 						leftRightCenter = "center";
-						relSurfaces = ["ceiling", "floor", "left", "right", "front", "null"];
+						relSurfaces = ["left", "right", "front", "null", "ceiling", "floor"];
 					}
 					z = box.x - myX;					
 					break;
 				case "south":
 					if (myX > box.x) {
 							leftRightCenter = "right";
-							relSurfaces = ["ceiling", "floor", "null", "front", "null", "right"];
+							relSurfaces = ["null", "front", "null", "right", "ceiling", "floor"];
 						} else if (myX < box.x) {
 							leftRightCenter = "left";
-							relSurfaces = ["ceiling", "floor", "null", "front", "left", "null"];
+							relSurfaces = ["null", "front", "left", "null", "ceiling", "floor"];
 						} else {
 							leftRightCenter = "center";
-							relSurfaces = ["ceiling", "floor", "null", "front", "left", "right"];
+							relSurfaces = ["null", "front", "left", "right", "ceiling", "floor"];
 						}
 						z = box.y - myY;				
 					break;
 				case "west":
 					if (myY > box.y) {
 							leftRightCenter = "right";
-							relSurfaces = ["ceiling", "floor", "right", "null", "null", "front"];
+							relSurfaces = ["right", "null", "null", "front", "ceiling", "floor"];
 						} else if (myY < box.y) {
 							leftRightCenter = "left";
-							relSurfaces = ["ceiling", "floor", "null", "left", "null", "front"];
+							relSurfaces = ["null", "left", "null", "front", "ceiling", "floor"];
 						} else {
 							leftRightCenter = "center";
-							relSurfaces = ["ceiling", "floor", "right", "left", "null", "front"];
+							relSurfaces = ["right", "left", "null", "front", "ceiling", "floor"];
 						}
 						z = myX - box.x;	
 					break;
