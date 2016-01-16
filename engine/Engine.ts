@@ -348,101 +348,101 @@ export class Engine {
 		// var total_height = +pack["packHeight"];
 		var w = +pack[pattern][surfaceType]["w"];// * total_width;
 		var h = +pack[pattern][surfaceType]["h"];// * total_height;
+		w=s*w/h;
+		h=s;
 		var zScale = Math.pow(2,z+e.zAnim);
 		switch(surfaceType) {
 			case "left_center":
-				var diff = s*(w-h/4);
-				setRectangle(e.gl, e.cw/2-(s/(zScale))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 s/(zScale*2)+2, 
-							 2*s/(zScale)+2, e.rectangle);
+				// var diff = w-h/4; //I commented out what is untested
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
 				break;
 			case "ceiling_center":
-				var diff = s*(h-w/4);
-				setRectangle(e.gl, e.cw/2-(s/(zScale))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 2*s/zScale+2, 
-							 s/(zScale*2)+2, e.rectangle);
+				// var diff = h-w/4;
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 2*s/zScale, 
+							 s/(zScale*2), e.rectangle);
 				break;
 			case "floor_center":
-				w=s*w/h;
-				h=s+2;
-				var diff = h-w/4;//work here
-				setRectangle(e.gl, e.cw/2-(s/(zScale))-1, 
-							 e.ch/2+((s-diff)/(zScale*2))-1, 
-							 2*s/zScale+2, 
-							 (s+diff)/(zScale*2)+2, e.rectangle);
+				var diff = h-w/4;
+				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+							 e.ch/2+((s-diff)/(zScale*2)), 
+							 2*s/zScale, 
+							 (s+diff)/(zScale*2), e.rectangle);
 				break;
 			case "right_center":
-				var diff = s*(w-h/4);
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 s/(zScale*2)+2, 
-							 2*s/(zScale)+2, e.rectangle);
+				// var diff = w-h/4;
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
+							 s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
 				break;
 			case "front_center":
-				var diff = s*(h-w)/2;//this allows front walls to be extend horizontally
-				setRectangle(e.gl, e.cw/2-(s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale*2))-1, 
-							 s/zScale+2, 
-							 s/zScale+2, e.rectangle);
+				// var diff = h-w;//this allows front walls to be extend horizontally
+				setRectangle(e.gl, e.cw/2-(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);
 				break;
 			case "left_left":
-				var diff = s*(w-h/2);
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 3*s/(zScale*2)+2, 
-							 2*s/(zScale)+2, e.rectangle);
+				// var diff = w-h/2;
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 3*s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
 				break;
 			case "front_left":
-				var diff = s*(h-w)/2;//only extend left
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale*2))-1, 
-							 s/zScale+2, 
-							 s/zScale+2, e.rectangle);
+				// var diff = h-w;
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);
 				break;
 			case "floor_left":
-				//var diff = s*(2*h-2*w/5)/2;
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale))-1, 
-							 e.ch/2+(s/(zScale*2))-1, 
-							 5*s/(zScale*2)+2, 
-							 s/(zScale*2)+2, e.rectangle);
+				var diff = h-w/5;
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2+((s-diff)/(zScale*2)), 
+							 5*s/(zScale*2), 
+							 (s+diff)/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_left":
-				//var diff = s*(2*h-2*w/5);
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 5*s/(zScale*2)+2, 
-							 s/(zScale*2)+2, e.rectangle);
+				// var diff = h-w/5;
+				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+							 e.ch/2-(s/(zScale)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
 				break;
 			case "right_right":
-				//var diff = s*(w-h/2)/2;
-				setRectangle(e.gl, e.cw/2+(3*s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 3*s/(zScale*2)+2, 
-							 2*s/(zScale)+2, e.rectangle);
+				// var diff = w-h/2;
+				setRectangle(e.gl, e.cw/2+(3*s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
+							 3*s/(zScale*2), 
+							 2*s/(zScale), e.rectangle);
 				break;
 			
 			case "front_right":
-				//var diff = s*(h-w);//only extend right
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale*2))-1, 
-							 s/zScale+2, 
-							 s/zScale+2, e.rectangle);
+				// var diff = h-w;
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale*2)), 
+							 s/zScale, 
+							 s/zScale, e.rectangle);
 				break;
 			case "floor_right":
-				//var diff = s*(2*h-2*w/5)/2;
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
-							 e.ch/2+(s/(zScale*2))-1, 
-							 5*s/(zScale*2)+2, 
-							 s/(zScale*2)+2, e.rectangle);
+				var diff = h-w/5;
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2+((s-diff)/(zScale*2)), 
+							 5*s/(zScale*2), 
+							 (s+diff)/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_right":
-				//var diff = s*(2*h-2*w/5);
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
-							 e.ch/2-(s/(zScale))-1, 
-							 5*s/(zScale*2)+2, 
-							 s/(zScale*2)+2, e.rectangle);
+				// var diff = h-w/5;
+				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+							 e.ch/2-(s/(zScale)), 
+							 5*s/(zScale*2), 
+							 s/(zScale*2), e.rectangle);
 				break;
 		}
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
