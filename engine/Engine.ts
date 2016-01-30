@@ -339,13 +339,13 @@ export class Engine {
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 		
+		// create a variable to introduce turning
+		var slide = 100;
+		
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
-		var s = e.canvas.height-e.canvas.height/16;
-		
-		// TODO fix hard coding numbers	
-		// var total_width = +pack["packWidth"];
-		// var total_height = +pack["packHeight"];
+		var s = e.canvas.height-e.canvas.height/16; 
+
 		var w = +pack[pattern][surfaceType]["w"];// * total_width;
 		var h = +pack[pattern][surfaceType]["h"];// * total_height;
 		w=s*w/h;
@@ -354,70 +354,70 @@ export class Engine {
 		switch(surfaceType) {
 			case "left_center":
 				// var diff = w-h/4; //I commented out what is untested
-				setRectangle(e.gl, e.cw/2-(s/(zScale)), 
+				setRectangle(e.gl, (e.cw/2-(s/(zScale)))+slide, 
 							 e.ch/2-(s/(zScale))-1, 
 							 s/(zScale*2)+1, 
 							 2*s/(zScale)+2, e.rectangle);
 				break;
 			case "ceiling_center":
 				// var diff = h-w/4;
-				setRectangle(e.gl, e.cw/2-(s/(zScale))-1, 
+				setRectangle(e.gl, (e.cw/2-(s/(zScale))-1)+slide, 
 							 e.ch/2-(s/(zScale)), 
 							 2*s/zScale+2, 
 							 s/(zScale*2)+1, e.rectangle);
 				break;
 			case "floor_center":
 				var diff = h-w/4;
-				setRectangle(e.gl, e.cw/2-(s/(zScale))-1, 
+				setRectangle(e.gl, (e.cw/2-(s/(zScale))-1)+slide, 
 							 e.ch/2+((s-diff)/(zScale*2)), 
 							 2*s/zScale+3, 
 							 (s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "right_center":
 				// var diff = w-h/4;
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+				setRectangle(e.gl, (e.cw/2+(s/(zScale*2)))+slide, 
 							 e.ch/2-(s/(zScale))-1, 
 							 s/(zScale*2)+1, 
 							 2*s/(zScale)+2, e.rectangle);
 				break;
 			case "front_center":
 				// var diff = h-w;//this allows front walls to be extend horizontally
-				setRectangle(e.gl, e.cw/2-(s/(zScale*2)), 
+				setRectangle(e.gl, (e.cw/2-(s/(zScale*2)))+slide, 
 							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale+1, 
 							 s/zScale+1, e.rectangle);
 				break;
 			case "left_left":
 				// var diff = w-h/2;
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale)), 
+				setRectangle(e.gl, (e.cw/2-(3*s/(zScale)))+slide, 
 							 e.ch/2-(s/(zScale))-1, 
 							 3*s/(zScale*2)+1, 
 							 2*s/(zScale)+2, e.rectangle);
 				break;
 			case "front_left":
 				// var diff = h-w;
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale*2)), 
+				setRectangle(e.gl, (e.cw/2-(3*s/(zScale*2)))+slide, 
 							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale+1, 
 							 s/zScale+1, e.rectangle);
 				break;
 			case "floor_left":
 				var diff = h-w/5;
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale))-1, 
+				setRectangle(e.gl, (e.cw/2-(3*s/(zScale))-1)+slide, 
 							 e.ch/2+((s-diff)/(zScale*2)), 
 							 5*s/(zScale*2)+2, 
 							 (s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "ceiling_left":
 				// var diff = h-w/5;
-				setRectangle(e.gl, e.cw/2-(3*s/(zScale))-1, 
+				setRectangle(e.gl, (e.cw/2-(3*s/(zScale))-1)+slide, 
 							 e.ch/2-(s/(zScale)), 
 							 5*s/(zScale*2)+2, 
 							 s/(zScale*2)+1, e.rectangle);
 				break;
 			case "right_right":
 				// var diff = w-h/2;
-				setRectangle(e.gl, e.cw/2+(3*s/(zScale*2)), 
+				setRectangle(e.gl, (e.cw/2+(3*s/(zScale*2)))+slide, 
 							 e.ch/2-(s/(zScale))-1, 
 							 3*s/(zScale*2)+1, 
 							 2*s/(zScale)+2, e.rectangle);
@@ -425,21 +425,21 @@ export class Engine {
 			
 			case "front_right":
 				// var diff = h-w;
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2)), 
+				setRectangle(e.gl, (e.cw/2+(s/(zScale*2)))+slide, 
 							 e.ch/2-(s/(zScale*2)), 
 							 s/zScale+1, 
 							 s/zScale+1, e.rectangle);
 				break;
 			case "floor_right":
 				var diff = h-w/5;
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
+				setRectangle(e.gl, (e.cw/2+(s/(zScale*2))-1)+slide, 
 							 e.ch/2+((s-diff)/(zScale*2)), 
 							 5*s/(zScale*2)+2, 
 							 (s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "ceiling_right":
 				// var diff = h-w/5;
-				setRectangle(e.gl, e.cw/2+(s/(zScale*2))-1, 
+				setRectangle(e.gl, (e.cw/2+(s/(zScale*2))-1)+slide, 
 							 e.ch/2-(s/(zScale)), 
 							 5*s/(zScale*2)+2, 
 							 s/(zScale*2)+1, e.rectangle);
