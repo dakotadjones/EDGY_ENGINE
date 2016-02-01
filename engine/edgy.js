@@ -239,15 +239,13 @@ var engine;
             var x = xy[0];
             var y = xy[1];
             var facing = e.getPlayerFacing();
+            var displayBoxes = e.getBoxes(facing, x, y);
             e.gl.clear(e.gl.COLOR_BUFFER_BIT);
             if (e.slide != 0) {
-                var oldDisplayBoxes = e.getBoxes(e.turnFace, x, y);
-                e.drawBoxes(oldDisplayBoxes, e.turnFace, x, y);
-                var displayBoxes = e.getBoxes(facing, x, y);
-                e.drawBoxes(displayBoxes, facing, x, y);
+                var turnedBoxes = e.getBoxes(e.turnFace, x, y);
+                e.drawBoxes(displayBoxes, facing, x, y, turnedBoxes);
             }
             else {
-                var displayBoxes = e.getBoxes(facing, x, y);
                 e.drawBoxes(displayBoxes, facing, x, y);
             }
             e.gl.flush();
@@ -271,14 +269,20 @@ var engine;
             }
             requestAnimationFrame(this.draw.bind(this));
         };
-        Engine.prototype.drawBoxes = function (boxes, facing, myX, myY) {
+        Engine.prototype.drawBoxes = function (boxes, facing, myX, myY, turnedBoxes) {
+            if (turnedBoxes === void 0) { turnedBoxes = null; }
             var e = this;
             var absSurfaces = ["north", "south", "east", "west", "ceiling", "floor"];
-            var total_time = 0;
-            var totalSetUpTexture = 0;
-            var totalDrawSurface = 0;
-            for (var i = 0; i < boxes.length; i++) {
-                var box = boxes[i];
+            var totalBoxes = (turnedBoxes != null) ? boxes.length + turnedBoxes.length : boxes.length;
+            for (var i = 0; i < totalBoxes; i++) {
+                var box;
+                if (i < boxes.length) {
+                    box = boxes[i];
+                }
+                else {
+                    box = turnedBoxes[i - boxes.length];
+                    facing = e.turnFace;
+                }
                 var z;
                 var relSurfaces;
                 var leftRightCenter = null;
@@ -510,7 +514,7 @@ var engine;
                     e.zAnim = 1;
                     break;
                 case "a":
-                    e.slide = -e.cw;
+                    e.slide = parseInt(((-e.cw + e.s) / 2).toFixed(0));
                     if (e.myPlayer.getFacing() == "east") {
                         e.turnFace = "east";
                         e.myPlayer.setFacing("north");

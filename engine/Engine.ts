@@ -158,16 +158,13 @@ export class Engine {
 		var x = xy[0];
 		var y = xy[1];
 		var facing = e.getPlayerFacing();
-   		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
-		//console.log(displayBoxes)
+   		var displayBoxes = e.getBoxes(facing, x, y);
+		e.gl.clear(e.gl.COLOR_BUFFER_BIT);
+		
 		if (e.slide !=0) {
-			var oldDisplayBoxes = e.getBoxes(e.turnFace, x, y);
-			e.drawBoxes(oldDisplayBoxes, e.turnFace, x, y);
-			var displayBoxes = e.getBoxes(facing, x, y);
-			e.drawBoxes(displayBoxes, facing, x, y);			
-			//console.log(displayBoxes);
+			var turnedBoxes = e.getBoxes(e.turnFace, x, y);
+			e.drawBoxes(displayBoxes, facing, x, y, turnedBoxes);			
 		} else { 
-			var displayBoxes = e.getBoxes(facing, x, y);
 			e.drawBoxes(displayBoxes, facing, x, y);
 		}
 
@@ -192,18 +189,22 @@ export class Engine {
 		} else if (e.slide > 0) {
 			e.slide -= 10;
 		}
-		//console.log(e.slide);
 		requestAnimationFrame(this.draw.bind(this));
 	}
 	
-	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number) {
+	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number, turnedBoxes:Array<utils.Box>=null) {
 		var e = this;
 		var absSurfaces = ["north", "south", "east", "west", "ceiling", "floor"];
-		var total_time = 0;
-		var totalSetUpTexture = 0;
-		var totalDrawSurface = 0;
-		for (var i = 0; i < boxes.length; i++) {
-			var box = boxes[i];
+		var totalBoxes = (turnedBoxes != null) ? boxes.length+turnedBoxes.length : boxes.length;
+		for (var i = 0; i < totalBoxes; i++) {
+			var box;
+			if (i < boxes.length) {
+				box = boxes[i];
+			} else {
+				box = turnedBoxes[i-boxes.length];
+				facing = e.turnFace;
+			}
+			//console.log(box);
 			var z;
 			var relSurfaces;
 			var leftRightCenter = null;
@@ -262,7 +263,6 @@ export class Engine {
 					break;
 			}			
 
-			// TODO optimize !!!!!!
 			for (var j = 0; j <= relSurfaces.length; j++) {
 				var wasFrontFar = false;
 				var rsurface = relSurfaces[j];
@@ -358,13 +358,11 @@ export class Engine {
 		var h = pack[pattern][surfaceType]["h"];
 	
 		setRectangle(e.gl, x, y, w, h, e.rectangle);
-		
 	}
 	
-	drawSurface(z:number, pattern:string, surfaceType:string /*surface:string, column:string*/) {
+	drawSurface(z:number, pattern:string, surfaceType:string ) {
 		var e = this;
 		// lookup uniforms
-		
 		// set the resolution
 		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
@@ -494,7 +492,7 @@ export class Engine {
 				e.zAnim = 1;
 				break;
 			case "a":
-				e.slide = -e.cw; //parseInt(((-e.cw + e.s)/2).toFixed(0));
+				e.slide = parseInt(((-e.cw + e.s)/2).toFixed(0));
 				if (e.myPlayer.getFacing()=="east") {
 					e.turnFace = "east";
 				    e.myPlayer.setFacing("north");	
