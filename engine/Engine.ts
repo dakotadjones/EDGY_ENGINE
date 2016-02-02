@@ -185,17 +185,18 @@ export class Engine {
 			e.slide = 0;
 		}
 		else if (e.slide < 0) {
-			e.slide += 10;
+			e.slide += 100;
 		} else if (e.slide > 0) {
-			e.slide -= 10;
+			e.slide -= 100;
 		}
 		requestAnimationFrame(this.draw.bind(this));
 	}
 	
-	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number, turnedBoxes:Array<utils.Box>=null) {
+	drawBoxes(boxes:Array<utils.Box>, facing:string, myX:number, myY:number, turnedBoxes:Array<utils.Box>=[]) {
 		var e = this;
 		var absSurfaces = ["north", "south", "east", "west", "ceiling", "floor"];
-		var totalBoxes = (turnedBoxes != null) ? boxes.length+turnedBoxes.length : boxes.length;
+		var totalBoxes = (turnedBoxes.length) ? boxes.length+turnedBoxes.length : boxes.length;
+		var push = false;
 		for (var i = 0; i < totalBoxes; i++) {
 			var box;
 			if (i < boxes.length) {
@@ -203,8 +204,10 @@ export class Engine {
 			} else {
 				box = turnedBoxes[i-boxes.length];
 				facing = e.turnFace;
+				push = true;
+				
 			}
-			//console.log(box);
+			//console.log(push);
 			var z;
 			var relSurfaces;
 			var leftRightCenter = null;
@@ -271,7 +274,7 @@ export class Engine {
 				if (pattern != null && relSurfaces[j] != "null"){
 					var surface = rsurface + "_" + leftRightCenter;		
 					e.setUpTexture(pattern, surface);
-					e.drawSurface(z, pattern, surface);
+					e.drawSurface(z, pattern, surface, push);
 				}
 			}
 		}
@@ -360,7 +363,7 @@ export class Engine {
 		setRectangle(e.gl, x, y, w, h, e.rectangle);
 	}
 	
-	drawSurface(z:number, pattern:string, surfaceType:string ) {
+	drawSurface(z:number, pattern:string, surfaceType:string, push:boolean) {
 		var e = this;
 		// lookup uniforms
 		// set the resolution
@@ -374,73 +377,77 @@ export class Engine {
 		w=e.s*w/h;
 		h=e.s;
 		var zScale = Math.pow(2,z+e.zAnim);
+		var temp = 0;
+		// todo real math
+		if (push) 
+			temp = 1010;
 		switch(surfaceType) {
 			case "left_center":
 				// var diff = w-h/4; //I commented out what is untested
-				setRectangle(e.gl, (e.cw/2-(e.s/(zScale)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(e.s/(zScale)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale))-1, 
 							 e.s/(zScale*2)+1, 
 							 2*e.s/(zScale)+2, e.rectangle);
 				break;
 			case "ceiling_center":
 				// var diff = h-w/4;
-				setRectangle(e.gl, (e.cw/2-(e.s/(zScale))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(e.s/(zScale))-1)+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale)), 
 							 2*e.s/zScale+2, 
 							 e.s/(zScale*2)+1, e.rectangle);
 				break;
 			case "floor_center":
 				var diff = h-w/4;
-				setRectangle(e.gl, (e.cw/2-(e.s/(zScale))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(e.s/(zScale))-1)+e.slide+temp, 
 							 e.ch/2+((e.s-diff)/(zScale*2)), 
 							 2*e.s/zScale+3, 
 							 (e.s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "right_center":
 				// var diff = w-h/4;
-				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale))-1, 
 							 e.s/(zScale*2)+1, 
 							 2*e.s/(zScale)+2, e.rectangle);
 				break;
 			case "front_center":
 				// var diff = h-w;//this allows front walls to be extend horizontally
-				setRectangle(e.gl, (e.cw/2-(e.s/(zScale*2)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(e.s/(zScale*2)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale*2)), 
 							 e.s/zScale+1, 
 							 e.s/zScale+1, e.rectangle);
 				break;
 			case "left_left":
 				// var diff = w-h/2;
-				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale))-1, 
 							 3*e.s/(zScale*2)+1, 
 							 2*e.s/(zScale)+2, e.rectangle);
 				break;
 			case "front_left":
 				// var diff = h-w;
-				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale*2)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale*2)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale*2)), 
 							 e.s/zScale+1, 
 							 e.s/zScale+1, e.rectangle);
 				break;
 			case "floor_left":
 				var diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale))-1)+e.slide+temp, 
 							 e.ch/2+((e.s-diff)/(zScale*2)), 
 							 5*e.s/(zScale*2)+2, 
 							 (e.s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "ceiling_left":
 				// var diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2-(3*e.s/(zScale))-1)+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale)), 
 							 5*e.s/(zScale*2)+2, 
 							 e.s/(zScale*2)+1, e.rectangle);
 				break;
 			case "right_right":
 				// var diff = w-h/2;
-				setRectangle(e.gl, (e.cw/2+(3*e.s/(zScale*2)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2+(3*e.s/(zScale*2)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale))-1, 
 							 3*e.s/(zScale*2)+1, 
 							 2*e.s/(zScale)+2, e.rectangle);
@@ -448,21 +455,21 @@ export class Engine {
 			
 			case "front_right":
 				// var diff = h-w;
-				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2)))+e.slide, 
+				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2)))+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale*2)), 
 							 e.s/zScale+1, 
 							 e.s/zScale+1, e.rectangle);
 				break;
 			case "floor_right":
 				var diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2))-1)+e.slide+temp, 
 							 e.ch/2+((e.s-diff)/(zScale*2)), 
 							 5*e.s/(zScale*2)+2, 
 							 (e.s+diff)/(zScale*2)+1.5, e.rectangle);
 				break;
 			case "ceiling_right":
 				// var diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2))-1)+e.slide, 
+				setRectangle(e.gl, (e.cw/2+(e.s/(zScale*2))-1)+e.slide+temp, 
 							 e.ch/2-(e.s/(zScale)), 
 							 5*e.s/(zScale*2)+2, 
 							 e.s/(zScale*2)+1, e.rectangle);
@@ -492,7 +499,8 @@ export class Engine {
 				e.zAnim = 1;
 				break;
 			case "a":
-				e.slide = parseInt(((-e.cw + e.s)/2).toFixed(0));
+				// todo real math
+				e.slide = -1000; //parseInt(((-e.cw + e.s)/2).toFixed(0));
 				if (e.myPlayer.getFacing()=="east") {
 					e.turnFace = "east";
 				    e.myPlayer.setFacing("north");	
