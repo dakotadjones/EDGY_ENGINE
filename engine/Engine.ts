@@ -196,15 +196,17 @@ export class Engine {
 		var absSurfaces = ["north", "south", "east", "west", "ceiling", "floor"];
 		var totalBoxes = (turnedBoxes.length) ? boxes.length+turnedBoxes.length : boxes.length;
 		var push = false;
+		var tempFace = facing;
 		for (var i = 0; i < totalBoxes; i++) {
 			var box;
-			if (i < boxes.length) {
-				box = boxes[i];
-			} else {
-				box = turnedBoxes[i-boxes.length];
+			if (i < turnedBoxes.length) {
+				box = turnedBoxes[i];
 				facing = e.turnFace;
 				push = true;
-				
+			} else {
+				box = boxes[i-turnedBoxes.length];
+				facing = tempFace;
+				push = false;
 			}
 			var z;
 			var relSurfaces;
