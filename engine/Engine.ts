@@ -534,14 +534,23 @@ export class Engine {
 				e.zAnim = -1;
 				break;
 			case "d":
-				if (e.myPlayer.getFacing()=="east")
+                e.slide = 1000;
+				if (e.myPlayer.getFacing()=="east"){
+                    e.turnFace = "east";
 					e.myPlayer.setFacing("south");
-				else if (e.myPlayer.getFacing()=="south")
+                }
+				else if (e.myPlayer.getFacing()=="south"){
+                    e.turnFace = "south";
 					e.myPlayer.setFacing("west");
-				else if (e.myPlayer.getFacing()=="west")
+                }
+				else if (e.myPlayer.getFacing()=="west"){
+                    e.turnFace = "west";
 					e.myPlayer.setFacing("north");
-				else
+                }
+				else{
+                    e.turnFace = "north";
 					e.myPlayer.setFacing("east");
+                }
 				break;
 		}
 	}
