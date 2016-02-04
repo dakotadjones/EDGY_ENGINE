@@ -33,9 +33,10 @@ export class Engine {
 	load(id:string) {
 		// set up object reference 
 		var e = this;
+        
 		// initialize our player  
 		e.myPlayer = new player.Player();
-
+        
 		// initialize texture pack 
 		this.id = id;
 		this.texturePack = new Image();
@@ -43,7 +44,7 @@ export class Engine {
 		this.texturePack.crossOrigin = 'anonymous';
 		this.texturePack.onload = function() { e.init(); };
 	}
-	
+    	
 	init() {
 		// set up object reference 
 		var e = this;
@@ -167,10 +168,8 @@ export class Engine {
 		} else { 
 			e.drawBoxes(displayBoxes, facing, x, y);
 		}
-
-
-		
 		e.gl.flush();
+        // code for animating movement
 		if (e.zAnim < 0.05 && e.zAnim > -0.05){
 			e.zAnim=0;
 		}
@@ -180,7 +179,7 @@ export class Engine {
 		else if (e.zAnim > 0) {
 			e.zAnim -= .05;
 		}
-		
+		// code for sliding movement as you turn left or right
 		if (e.slide >= -2 && e.slide <= 8) {
 			e.slide = 0;
 		}
@@ -207,7 +206,6 @@ export class Engine {
 				push = true;
 				
 			}
-			//console.log(push);
 			var z;
 			var relSurfaces;
 			var leftRightCenter = null;
@@ -333,8 +331,7 @@ export class Engine {
 							}
 						}
 				}
-				break;
-			
+				break;		
 		}
 		return displayBoxes;
 	}
@@ -348,7 +345,6 @@ export class Engine {
 	}
 
 	setUpTexture(pattern:string, surfaceType:string) {
-		// this is good
 		var e = this;
 		var bufferStart = new Date().getTime();
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
@@ -378,9 +374,14 @@ export class Engine {
 		h=e.s;
 		var zScale = Math.pow(2,z+e.zAnim);
 		var temp = 0;
-		// todo real math
-		if (push) 
-			temp = 1010;
+		// logic for setting temp variable to be used for drawing turning farther than canvas size
+		if (push)
+            if(e.slide<0){
+			     temp = e.cw;
+            }
+            else{
+                temp = -e.cw;
+            }
 		switch(surfaceType) {
 			case "left_center":
 				// var diff = w-h/4; //I commented out what is untested
@@ -499,8 +500,7 @@ export class Engine {
 				e.zAnim = 1;
 				break;
 			case "a":
-				// todo real math
-				e.slide = -1000; //parseInt(((-e.cw + e.s)/2).toFixed(0));
+				e.slide = -e.cw; 
 				if (e.myPlayer.getFacing()=="east") {
 					e.turnFace = "east";
 				    e.myPlayer.setFacing("north");	
@@ -520,7 +520,6 @@ export class Engine {
 				break;
 			case "s":
 				if(e.checkWall(true)) { 
-				 	// e.zAnim = 0.3;
 					return;
 				}
 				if (e.myPlayer.getFacing()=="east")
@@ -534,7 +533,7 @@ export class Engine {
 				e.zAnim = -1;
 				break;
 			case "d":
-                e.slide = 1000;
+                e.slide = e.cw;
 				if (e.myPlayer.getFacing()=="east"){
                     e.turnFace = "east";
 					e.myPlayer.setFacing("south");

@@ -451,7 +451,12 @@ var engine;
             var zScale = Math.pow(2, z + e.zAnim);
             var temp = 0;
             if (push)
-                temp = 1010;
+                if (e.slide < 0) {
+                    temp = e.cw;
+                }
+                else {
+                    temp = -e.cw;
+                }
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, (e.cw / 2 - (e.s / (zScale))) + e.slide + temp, e.ch / 2 - (e.s / (zScale)) - 1, e.s / (zScale * 2) + 1, 2 * e.s / (zScale) + 2, e.rectangle);
@@ -519,7 +524,7 @@ var engine;
                     e.zAnim = 1;
                     break;
                 case "a":
-                    e.slide = -1000;
+                    e.slide = -e.cw;
                     if (e.myPlayer.getFacing() == "east") {
                         e.turnFace = "east";
                         e.myPlayer.setFacing("north");
@@ -552,14 +557,23 @@ var engine;
                     e.zAnim = -1;
                     break;
                 case "d":
-                    if (e.myPlayer.getFacing() == "east")
+                    e.slide = e.cw;
+                    if (e.myPlayer.getFacing() == "east") {
+                        e.turnFace = "east";
                         e.myPlayer.setFacing("south");
-                    else if (e.myPlayer.getFacing() == "south")
+                    }
+                    else if (e.myPlayer.getFacing() == "south") {
+                        e.turnFace = "south";
                         e.myPlayer.setFacing("west");
-                    else if (e.myPlayer.getFacing() == "west")
+                    }
+                    else if (e.myPlayer.getFacing() == "west") {
+                        e.turnFace = "west";
                         e.myPlayer.setFacing("north");
-                    else
+                    }
+                    else {
+                        e.turnFace = "north";
                         e.myPlayer.setFacing("east");
+                    }
                     break;
             }
         };
