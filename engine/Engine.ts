@@ -215,52 +215,52 @@ export class Engine {
 				case "north":
 					if (myX > box.x) {
 						leftRightCenter = "left";
-						relSurfaces = ["front", "null", "null", "left", "ceiling", "floor"];
+						relSurfaces = ["front", null, null, "left", "ceiling", "floor"];
 					} else if (myX < box.x) {
 						leftRightCenter = "right";
-						relSurfaces = ["front", "null", "right", "null", "ceiling", "floor"];
+						relSurfaces = ["front", null, "right", null, "ceiling", "floor"];
 					} else {
 						leftRightCenter = "center";
-						relSurfaces = ["front", "null", "right", "left", "ceiling", "floor"];
+						relSurfaces = ["front", null, "right", "left", "ceiling", "floor"];
 					}
 					z = myY - box.y;				
 					break;
 				case "east":
 					if (myY > box.y) {
 						leftRightCenter = "left";
-						relSurfaces = ["left", "null", "front", "null", "ceiling", "floor"];
+						relSurfaces = ["left", null, "front", null, "ceiling", "floor"];
 					} else if (myY < box.y) {
 						leftRightCenter = "right";
-						relSurfaces = ["null", "right", "front", "null", "ceiling", "floor"];
+						relSurfaces = [null, "right", "front", null, "ceiling", "floor"];
 					} else {
 						leftRightCenter = "center";
-						relSurfaces = ["left", "right", "front", "null", "ceiling", "floor"];
+						relSurfaces = ["left", "right", "front", null, "ceiling", "floor"];
 					}
 					z = box.x - myX;					
 					break;
 				case "south":
 					if (myX > box.x) {
 							leftRightCenter = "right";
-							relSurfaces = ["null", "front", "null", "right", "ceiling", "floor"];
+							relSurfaces = [null, "front", null, "right", "ceiling", "floor"];
 						} else if (myX < box.x) {
 							leftRightCenter = "left";
-							relSurfaces = ["null", "front", "left", "null", "ceiling", "floor"];
+							relSurfaces = [null, "front", "left", null, "ceiling", "floor"];
 						} else {
 							leftRightCenter = "center";
-							relSurfaces = ["null", "front", "left", "right", "ceiling", "floor"];
+							relSurfaces = [null, "front", "left", "right", "ceiling", "floor"];
 						}
 						z = box.y - myY;				
 					break;
 				case "west":
 					if (myY > box.y) {
 							leftRightCenter = "right";
-							relSurfaces = ["right", "null", "null", "front", "ceiling", "floor"];
+							relSurfaces = ["right", null, null, "front", "ceiling", "floor"];
 						} else if (myY < box.y) {
 							leftRightCenter = "left";
-							relSurfaces = ["null", "left", "null", "front", "ceiling", "floor"];
+							relSurfaces = [null, "left", null, "front", "ceiling", "floor"];
 						} else {
 							leftRightCenter = "center";
-							relSurfaces = ["right", "left", "null", "front", "ceiling", "floor"];
+							relSurfaces = ["right", "left", null, "front", "ceiling", "floor"];
 						}
 						z = myX - box.x;	
 					break;
@@ -271,7 +271,7 @@ export class Engine {
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
-				if (pattern != null && relSurfaces[j] != "null"){
+				if (pattern != null && relSurfaces[j] != null){
 					var surface = rsurface + "_" + leftRightCenter;		
 					e.setUpTexture(pattern, surface);
 					e.drawSurface(z, pattern, surface, push);

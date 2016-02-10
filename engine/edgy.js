@@ -1,3 +1,24 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -37,6 +58,9 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
+/*
+ * Shader class that creates the programs for specified WebGL context
+ */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -122,6 +146,9 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
+/// <reference path="Shader.ts" />
+/// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -268,60 +295,60 @@ var engine;
                     case "north":
                         if (myX > box.x) {
                             leftRightCenter = "left";
-                            relSurfaces = ["front", "null", "null", "left", "ceiling", "floor"];
+                            relSurfaces = ["front", null, null, "left", "ceiling", "floor"];
                         }
                         else if (myX < box.x) {
                             leftRightCenter = "right";
-                            relSurfaces = ["front", "null", "right", "null", "ceiling", "floor"];
+                            relSurfaces = ["front", null, "right", null, "ceiling", "floor"];
                         }
                         else {
                             leftRightCenter = "center";
-                            relSurfaces = ["front", "null", "right", "left", "ceiling", "floor"];
+                            relSurfaces = ["front", null, "right", "left", "ceiling", "floor"];
                         }
                         z = myY - box.y;
                         break;
                     case "east":
                         if (myY > box.y) {
                             leftRightCenter = "left";
-                            relSurfaces = ["left", "null", "front", "null", "ceiling", "floor"];
+                            relSurfaces = ["left", null, "front", null, "ceiling", "floor"];
                         }
                         else if (myY < box.y) {
                             leftRightCenter = "right";
-                            relSurfaces = ["null", "right", "front", "null", "ceiling", "floor"];
+                            relSurfaces = [null, "right", "front", null, "ceiling", "floor"];
                         }
                         else {
                             leftRightCenter = "center";
-                            relSurfaces = ["left", "right", "front", "null", "ceiling", "floor"];
+                            relSurfaces = ["left", "right", "front", null, "ceiling", "floor"];
                         }
                         z = box.x - myX;
                         break;
                     case "south":
                         if (myX > box.x) {
                             leftRightCenter = "right";
-                            relSurfaces = ["null", "front", "null", "right", "ceiling", "floor"];
+                            relSurfaces = [null, "front", null, "right", "ceiling", "floor"];
                         }
                         else if (myX < box.x) {
                             leftRightCenter = "left";
-                            relSurfaces = ["null", "front", "left", "null", "ceiling", "floor"];
+                            relSurfaces = [null, "front", "left", null, "ceiling", "floor"];
                         }
                         else {
                             leftRightCenter = "center";
-                            relSurfaces = ["null", "front", "left", "right", "ceiling", "floor"];
+                            relSurfaces = [null, "front", "left", "right", "ceiling", "floor"];
                         }
                         z = box.y - myY;
                         break;
                     case "west":
                         if (myY > box.y) {
                             leftRightCenter = "right";
-                            relSurfaces = ["right", "null", "null", "front", "ceiling", "floor"];
+                            relSurfaces = ["right", null, null, "front", "ceiling", "floor"];
                         }
                         else if (myY < box.y) {
                             leftRightCenter = "left";
-                            relSurfaces = ["null", "left", "null", "front", "ceiling", "floor"];
+                            relSurfaces = [null, "left", null, "front", "ceiling", "floor"];
                         }
                         else {
                             leftRightCenter = "center";
-                            relSurfaces = ["right", "left", "null", "front", "ceiling", "floor"];
+                            relSurfaces = ["right", "left", null, "front", "ceiling", "floor"];
                         }
                         z = myX - box.x;
                         break;
@@ -331,7 +358,7 @@ var engine;
                     var rsurface = relSurfaces[j];
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
-                    if (pattern != null && relSurfaces[j] != "null") {
+                    if (pattern != null && relSurfaces[j] != null) {
                         var surface = rsurface + "_" + leftRightCenter;
                         e.setUpTexture(pattern, surface);
                         e.drawSurface(z, pattern, surface, push);
@@ -610,6 +637,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
+/// <reference path="Engine.ts" />
 var SRC = 'assets/test_package_grass';
 var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
