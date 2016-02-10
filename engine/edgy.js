@@ -127,6 +127,12 @@ var player;
             this.y = y;
             this.facing = facing;
         }
+        Player.prototype.getX = function () {
+            return this.x;
+        };
+        Player.prototype.getY = function () {
+            return this.y;
+        };
         Player.prototype.setX = function (x) {
             this.x = x;
         };
@@ -168,7 +174,7 @@ var engine;
             e.canvas = document.getElementById(e.id);
             e.cw = e.canvas.width;
             e.ch = e.canvas.height;
-            e.s = e.canvas.height - e.canvas.height / 16;
+            e.tileSizeRef = e.canvas.height - e.canvas.height / 16;
             e.gl = e.canvas.getContext('webgl', { antialias: true });
             var shader = new utils.Shader(e.gl);
             shader.getShader('shader-fs');
@@ -449,59 +455,59 @@ var engine;
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
             var w = +pack[pattern][surfaceType]["w"];
             var h = +pack[pattern][surfaceType]["h"];
-            w = e.s * w / h;
-            h = e.s;
+            w = e.tileSizeRef * w / h;
+            h = e.tileSizeRef;
             var zScale = Math.pow(2, z + e.zAnim);
-            var temp = 0;
+            var scenePush = 0;
             if (push)
                 if (e.slide < 0) {
-                    temp = e.cw;
+                    scenePush = e.cw;
                 }
                 else {
-                    temp = -e.cw;
+                    scenePush = -e.cw;
                 }
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.s / (zScale))) + e.slide + temp, e.ch / 2 - (e.s / (zScale)) - 1, e.s / (zScale * 2) + 1, 2 * e.s / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.s / (zScale)) - 1) + e.slide + temp, e.ch / 2 - (e.s / (zScale)), 2 * e.s / zScale + 2, e.s / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
                     var diff = h - w / 4;
-                    setRectangle(e.gl, (e.cw / 2 - (e.s / (zScale)) - 1) + e.slide + temp, e.ch / 2 + ((e.s - diff) / (zScale * 2)), 2 * e.s / zScale + 3, (e.s + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "right_center":
-                    setRectangle(e.gl, (e.cw / 2 + (e.s / (zScale * 2))) + e.slide + temp, e.ch / 2 - (e.s / (zScale)) - 1, e.s / (zScale * 2) + 1, 2 * e.s / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.s / (zScale * 2))) + e.slide + temp, e.ch / 2 - (e.s / (zScale * 2)), e.s / zScale + 1, e.s / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "left_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.s / (zScale))) + e.slide + temp, e.ch / 2 - (e.s / (zScale)) - 1, 3 * e.s / (zScale * 2) + 1, 2 * e.s / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.s / (zScale * 2))) + e.slide + temp, e.ch / 2 - (e.s / (zScale * 2)), e.s / zScale + 1, e.s / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
                     var diff = h - w / 5;
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.s / (zScale)) - 1) + e.slide + temp, e.ch / 2 + ((e.s - diff) / (zScale * 2)), 5 * e.s / (zScale * 2) + 2, (e.s + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.s / (zScale)) - 1) + e.slide + temp, e.ch / 2 - (e.s / (zScale)), 5 * e.s / (zScale * 2) + 2, e.s / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "right_right":
-                    setRectangle(e.gl, (e.cw / 2 + (3 * e.s / (zScale * 2))) + e.slide + temp, e.ch / 2 - (e.s / (zScale)) - 1, 3 * e.s / (zScale * 2) + 1, 2 * e.s / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_right":
-                    setRectangle(e.gl, (e.cw / 2 + (e.s / (zScale * 2))) + e.slide + temp, e.ch / 2 - (e.s / (zScale * 2)), e.s / zScale + 1, e.s / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
                     var diff = h - w / 5;
-                    setRectangle(e.gl, (e.cw / 2 + (e.s / (zScale * 2)) - 1) + e.slide + temp, e.ch / 2 + ((e.s - diff) / (zScale * 2)), 5 * e.s / (zScale * 2) + 2, (e.s + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, (e.cw / 2 + (e.s / (zScale * 2)) - 1) + e.slide + temp, e.ch / 2 - (e.s / (zScale)), 5 * e.s / (zScale * 2) + 2, e.s / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
@@ -516,27 +522,27 @@ var engine;
                         e.zAnim = -0.3;
                         return;
                     }
-                    if (e.myPlayer.getFacing() == "east")
-                        e.myPlayer.x++;
-                    else if (e.myPlayer.getFacing() == "north")
-                        e.myPlayer.y--;
-                    else if (e.myPlayer.getFacing() == "west")
-                        e.myPlayer.x--;
+                    if (e.getPlayerFacing() == "east")
+                        e.myPlayer.setX(e.myPlayer.getX() + 1);
+                    else if (e.getPlayerFacing() == "north")
+                        e.myPlayer.setY(e.myPlayer.getY() - 1);
+                    else if (e.getPlayerFacing() == "west")
+                        e.myPlayer.setX(e.myPlayer.getX() - 1);
                     else
-                        e.myPlayer.y++;
+                        e.myPlayer.setY(e.myPlayer.getY() + 1);
                     e.zAnim = 1;
                     break;
                 case "a":
                     e.slide = -e.cw;
-                    if (e.myPlayer.getFacing() == "east") {
+                    if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
                         e.myPlayer.setFacing("north");
                     }
-                    else if (e.myPlayer.getFacing() == "north") {
+                    else if (e.getPlayerFacing() == "north") {
                         e.turnFace = "north";
                         e.myPlayer.setFacing("west");
                     }
-                    else if (e.myPlayer.getFacing() == "west") {
+                    else if (e.getPlayerFacing() == "west") {
                         e.turnFace = "west";
                         e.myPlayer.setFacing("south");
                     }
@@ -549,27 +555,27 @@ var engine;
                     if (e.checkWall(true)) {
                         return;
                     }
-                    if (e.myPlayer.getFacing() == "east")
-                        e.myPlayer.x--;
-                    else if (e.myPlayer.getFacing() == "north")
-                        e.myPlayer.y++;
-                    else if (e.myPlayer.getFacing() == "west")
-                        e.myPlayer.x++;
+                    if (e.getPlayerFacing() == "east")
+                        e.myPlayer.setX(e.myPlayer.getX() - 1);
+                    else if (e.getPlayerFacing() == "north")
+                        e.myPlayer.setY(e.myPlayer.getY() + 1);
+                    else if (e.getPlayerFacing() == "west")
+                        e.myPlayer.setX(e.myPlayer.getX() + 1);
                     else
-                        e.myPlayer.y--;
+                        e.myPlayer.setY(e.myPlayer.getY() - 1);
                     e.zAnim = -1;
                     break;
                 case "d":
                     e.slide = e.cw;
-                    if (e.myPlayer.getFacing() == "east") {
+                    if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
                         e.myPlayer.setFacing("south");
                     }
-                    else if (e.myPlayer.getFacing() == "south") {
+                    else if (e.getPlayerFacing() == "south") {
                         e.turnFace = "south";
                         e.myPlayer.setFacing("west");
                     }
-                    else if (e.myPlayer.getFacing() == "west") {
+                    else if (e.getPlayerFacing() == "west") {
                         e.turnFace = "west";
                         e.myPlayer.setFacing("north");
                     }
