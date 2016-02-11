@@ -205,6 +205,7 @@ var engine;
             e.fpsElement = document.getElementById("fps_counter");
             document.addEventListener("keydown", function (evt) { e.readInput(evt); });
             e.zAnim = 0;
+            e.zChanged = false;
             e.slide = 0;
             e.draw();
         };
@@ -268,10 +269,10 @@ var engine;
                 e.slide = 0;
             }
             else if (e.slide < 0) {
-                e.slide += 100;
+                e.slide += 10;
             }
             else if (e.slide > 0) {
-                e.slide -= 100;
+                e.slide -= 10;
             }
             requestAnimationFrame(this.draw.bind(this));
         };
@@ -282,8 +283,12 @@ var engine;
             var totalBoxes = (turnedBoxes.length) ? boxes.length + turnedBoxes.length : boxes.length;
             var push = false;
             var tempFace = facing;
+            var z;
+            var zCopy;
+            var relSurfaces;
+            var leftRightCenter = null;
+            var box;
             for (var i = 0; i < totalBoxes; i++) {
-                var box;
                 if (i < turnedBoxes.length) {
                     box = turnedBoxes[i];
                     facing = e.turnFace;
@@ -294,9 +299,6 @@ var engine;
                     facing = tempFace;
                     push = false;
                 }
-                var z;
-                var relSurfaces;
-                var leftRightCenter = null;
                 switch (facing) {
                     case "north":
                         if (myX > box.x) {
@@ -358,6 +360,10 @@ var engine;
                         }
                         z = myX - box.x;
                         break;
+                }
+                if (z != zCopy) {
+                    zCopy = z;
+                    e.zChanged = true;
                 }
                 for (var j = 0; j <= relSurfaces.length; j++) {
                     var wasFrontFar = false;
@@ -459,13 +465,15 @@ var engine;
             h = e.tileSizeRef;
             var zScale = Math.pow(2, z + e.zAnim);
             var scenePush = 0;
-            if (push)
+            var diff;
+            if (push) {
                 if (e.slide < 0) {
                     scenePush = e.cw;
                 }
                 else {
                     scenePush = -e.cw;
                 }
+            }
             switch (surfaceType) {
                 case "left_center":
                     setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
@@ -474,7 +482,7 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
-                    var diff = h - w / 4;
+                    diff = h - w / 4;
                     setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "right_center":
@@ -490,7 +498,7 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
-                    var diff = h - w / 5;
+                    diff = h - w / 5;
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
@@ -503,7 +511,7 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
-                    var diff = h - w / 5;
+                    diff = h - w / 5;
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":

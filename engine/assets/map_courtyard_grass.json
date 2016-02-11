@@ -802,7 +802,7 @@
 },
 "12,4":{
 	"ceil":"blue",
-	"floor":"blue",
+	"floor":"purple",
 	"north":null,
 	"south":null,
 	"east":"purple",
@@ -818,7 +818,7 @@
 },
 "12,6":{
 	"ceil":"blue",
-	"floor":"blue",
+	"floor":"purple",
 	"north":null,
 	"south":null,
 	"east":"purple",
