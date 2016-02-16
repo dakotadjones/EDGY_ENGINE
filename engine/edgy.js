@@ -208,6 +208,7 @@ var engine;
             e.zChanged = false;
             e.slide = 0;
             e.turnPush = 0;
+            e.drawDistance = 5;
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -270,12 +271,11 @@ var engine;
                 e.slide = 0;
             }
             else if (e.slide < 0) {
-                e.slide += 10;
+                e.slide += e.cw / 10;
             }
             else if (e.slide > 0) {
-                e.slide -= 10;
+                e.slide -= e.cw / 10;
             }
-            console.log(e.turnPush);
             requestAnimationFrame(this.draw.bind(this));
         };
         Engine.prototype.drawBoxes = function (boxes, facing, myX, myY, turnedBoxes) {
@@ -366,6 +366,8 @@ var engine;
                 if (z != zCopy) {
                     zCopy = z;
                     e.zChanged = true;
+                    e.setUpTexture("black", "front_center");
+                    e.drawSquare();
                 }
                 for (var j = 0; j <= relSurfaces.length; j++) {
                     var wasFrontFar = false;
@@ -387,7 +389,7 @@ var engine;
             var playerBox = (e.zAnim > 0) ? -1 : 0;
             switch (facing) {
                 case "north":
-                    for (var y = 8; y >= playerBox; y--) {
+                    for (var y = e.drawDistance; y >= playerBox; y--) {
                         var rowNum = myY - y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -399,7 +401,7 @@ var engine;
                     }
                     break;
                 case "south":
-                    for (var y = 8; y >= playerBox; y--) {
+                    for (var y = e.drawDistance; y >= playerBox; y--) {
                         var rowNum = myY + y;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
@@ -411,7 +413,7 @@ var engine;
                     }
                     break;
                 case "east":
-                    for (var x = 8; x >= playerBox; x--) {
+                    for (var x = e.drawDistance; x >= playerBox; x--) {
                         var colNum = myX + x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
@@ -423,7 +425,7 @@ var engine;
                     }
                     break;
                 case "west":
-                    for (var x = 8; x >= playerBox; x--) {
+                    for (var x = e.drawDistance; x >= playerBox; x--) {
                         var colNum = myX - x;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
@@ -478,48 +480,57 @@ var engine;
             }
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
                     diff = h - w / 4;
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "right_center":
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "left_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
                     diff = h - w / 5;
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "right_right":
-                    setRectangle(e.gl, (e.cw / 2 + (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_right":
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
                     diff = h - w / 5;
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush + e.turnPush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
             }
+            e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+        };
+        Engine.prototype.drawSquare = function () {
+            var e = this;
+            e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+            e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
+            e.gl.enableVertexAttribArray(e.positionLocation);
+            e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+            setRectangle(e.gl, 0, 0, e.cw, e.ch, e.rectangle);
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         Engine.prototype.readInput = function (keyEvent) {
@@ -544,7 +555,6 @@ var engine;
                     break;
                 case "a":
                     e.slide = -e.cw;
-                    e.turnPush = 200;
                     if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
                         e.myPlayer.setFacing("north");
@@ -655,7 +665,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
 /// <reference path="Engine.ts" />
-var SRC = 'assets/test_package_grass';
+var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
 var map;
