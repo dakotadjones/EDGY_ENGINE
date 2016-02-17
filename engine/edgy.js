@@ -191,8 +191,12 @@ var engine;
             e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_WRAP_T, e.gl.CLAMP_TO_EDGE);
             e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MIN_FILTER, e.gl.NEAREST);
             e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MAG_FILTER, e.gl.NEAREST);
+            e.alphaUniform = e.gl.getUniformLocation(e.program, "uAlpha");
+            e.tileOpacity = 1.0;
             e.gl.blendFunc(e.gl.SRC_ALPHA, e.gl.ONE_MINUS_SRC_ALPHA);
             e.gl.enable(e.gl.BLEND);
+            e.gl.disable(e.gl.DEPTH_TEST);
+            e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
             e.positionBuffer = e.gl.createBuffer();
             e.texCoordBuffer = e.gl.createBuffer();
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
@@ -366,8 +370,15 @@ var engine;
                 if (z != zCopy) {
                     zCopy = z;
                     e.zChanged = true;
+                    e.tileOpacity = .5;
+                    if (e.zAnim > 0 && z == -1) {
+                        e.tileOpacity = .5 * e.zAnim;
+                    }
+                    else if (e.zAnim < 0 && z == 0) {
+                        e.tileOpacity = .5 * 1 + e.zAnim;
+                    }
                     e.setUpTexture("black", "front_center");
-                    e.drawSquare();
+                    e.drawSquare(push);
                 }
                 for (var j = 0; j <= relSurfaces.length; j++) {
                     var wasFrontFar = false;
@@ -376,6 +387,7 @@ var engine;
                     var pattern = box.getPattern(asurface);
                     if (pattern != null && relSurfaces[j] != null) {
                         var surface = rsurface + "_" + leftRightCenter;
+                        e.tileOpacity = 1;
                         e.setUpTexture(pattern, surface);
                         e.drawSurface(z, pattern, surface, push);
                     }
@@ -460,6 +472,7 @@ var engine;
         Engine.prototype.drawSurface = function (z, pattern, surfaceType, push) {
             var e = this;
             e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+            e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
@@ -524,13 +537,23 @@ var engine;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
-        Engine.prototype.drawSquare = function () {
+        Engine.prototype.drawSquare = function (push) {
             var e = this;
+            var x = 0;
             e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+            e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
             e.gl.enableVertexAttribArray(e.positionLocation);
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
-            setRectangle(e.gl, 0, 0, e.cw, e.ch, e.rectangle);
+            if (push) {
+                if (e.slide < 0) {
+                    x = e.cw;
+                }
+                else {
+                    x = -e.cw;
+                }
+            }
+            setRectangle(e.gl, x + e.slide, 0, e.cw, e.ch, e.rectangle);
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
         };
         Engine.prototype.readInput = function (keyEvent) {

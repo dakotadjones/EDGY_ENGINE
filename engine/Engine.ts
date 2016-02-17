@@ -26,7 +26,9 @@ export class Engine {
 	turnFace:string;
 	tileSizeRef:number;
 	drawDistance:number;
-	
+	alphaUniform:WebGLUniformLocation;
+	tileOpacity:number;
+
 	// Frames Per Second for developer reference
 	fpsFrames:number;
 	fpsTime:number;
@@ -89,9 +91,16 @@ export class Engine {
     	e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MIN_FILTER, e.gl.NEAREST);
     	e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MAG_FILTER, e.gl.NEAREST);
 		
+		// texture alpha
+		e.alphaUniform = e.gl.getUniformLocation(e.program, "uAlpha");
+		// opacity for drawings 
+		e.tileOpacity = 1.0;
+		
 		// transparency
 		e.gl.blendFunc(e.gl.SRC_ALPHA, e.gl.ONE_MINUS_SRC_ALPHA);
 		e.gl.enable(e.gl.BLEND);
+		e.gl.disable(e.gl.DEPTH_TEST);
+		e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
 		
 		// set up buffers 
 		e.positionBuffer = e.gl.createBuffer();
@@ -200,6 +209,7 @@ export class Engine {
 		} else if (e.slide > 0) {
 			e.slide -= e.cw/10;
 		}
+		
 		requestAnimationFrame(this.draw.bind(this));
 	}
 	
@@ -222,6 +232,7 @@ export class Engine {
 				box = turnedBoxes[i];
 				facing = e.turnFace;
 				push = true;
+				
 			} else {
 				box = boxes[i-turnedBoxes.length];
 				facing = tempFace;
@@ -286,8 +297,14 @@ export class Engine {
 			if (z != zCopy) {
  				zCopy = z;
 				e.zChanged = true;
+				e.tileOpacity = .5;
+				if (e.zAnim > 0 && z == -1) {
+						e.tileOpacity = .5 * e.zAnim;
+				} else if (e.zAnim < 0 && z == 0) {
+						e.tileOpacity = .5 * 1+e.zAnim;
+				}
 				e.setUpTexture("black", "front_center");
-				e.drawSquare()	
+				e.drawSquare(push);
 			}
 
 			for (var j = 0; j <= relSurfaces.length; j++) {
@@ -297,6 +314,7 @@ export class Engine {
 				var pattern = box.getPattern(asurface);
 				if (pattern != null && relSurfaces[j] != null){
 					var surface = rsurface + "_" + leftRightCenter;
+					e.tileOpacity = 1;
 					e.setUpTexture(pattern, surface);
 					e.drawSurface(z, pattern, surface, push);
 				}
@@ -390,6 +408,7 @@ export class Engine {
 		// lookup uniforms
 		// set the resolution
 		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+		e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
@@ -507,30 +526,32 @@ export class Engine {
 							 e.tileSizeRef/(zScale*2)+1, e.rectangle);
 				break;
 		}
+
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 	}
 	
-	drawSquare() {
+	drawSquare(push:boolean) {
 		var e = this;
+		var x = 0;
 		// lookup uniforms
 		// set the resolution
 		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+		e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
-
-		/*
-		var w = +pack[pattern][surfaceType]["w"];// * total_width;
-		var h = +pack[pattern][surfaceType]["h"];// * total_height;
-		w=e.tileSizeRef*w/h;
-		h=e.tileSizeRef;
-		var zScale = Math.pow(2,z+e.zAnim);
-		var scenePush = 0;
-		var diff;
-		*/
-		setRectangle(e.gl, 0, 0, e.cw, e.ch, e.rectangle);
-		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 		
+		if (push) {
+			if(e.slide < 0) {
+			     x = e.cw;
+            }
+            else {
+                x = -e.cw;
+            }
+		}
+		
+		setRectangle(e.gl, x+e.slide, 0, e.cw, e.ch, e.rectangle);
+		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);		
 	}
 	
 	readInput(keyEvent:KeyboardEvent){
