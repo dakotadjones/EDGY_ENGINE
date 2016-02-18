@@ -297,11 +297,16 @@ export class Engine {
 			if (z != zCopy) {
  				zCopy = z;
 				e.zChanged = true;
-				e.tileOpacity = .5;
+				e.tileOpacity = .4;
 				if (e.zAnim > 0 && z == -1) {
-						e.tileOpacity = .5 * e.zAnim;
-				} else if (e.zAnim < 0 && z == 0) {
-						e.tileOpacity = .5 * 1+e.zAnim;
+						e.tileOpacity = .4 * e.zAnim;
+				} else if (e.zAnim > 0 && z == e.drawDistance-1) {
+						e.tileOpacity = .4 + (1 * e.zAnim);
+				}
+				else if (e.zAnim < 0 && z == 0) {
+						e.tileOpacity = .4 * 1+e.zAnim;
+				} else if (e.zAnim < 0 && z == e.drawDistance) {
+						e.tileOpacity = 1 + e.zAnim;
 				}
 				e.setUpTexture("black", "front_center");
 				e.drawSquare(push);
