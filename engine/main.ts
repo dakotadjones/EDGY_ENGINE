@@ -80,7 +80,6 @@ function getTextureLocations(pixel_locs:JSON) {
 }
 
 function run() {
-	console.log(pack);
 	edgy = new engine.Engine();
 	edgy.load("gameport");
 }
