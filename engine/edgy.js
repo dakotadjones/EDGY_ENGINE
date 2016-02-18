@@ -727,8 +727,24 @@ function locationRequestListener() {
 function mapRequestListener() {
     map = JSON.parse(this.responseText);
 }
+function addThing(thingInfo, itMoves) {
+    var things = pack["thing"];
+    var key_array = thingInfo["filename"].split('_');
+    var name = key_array[1];
+    var thing_perspective = key_array[2] + "_" + key_array[3].split('.')[0];
+    if (!things.hasOwnProperty(name)) {
+        things[name] = {};
+    }
+    if (!things[name].hasOwnProperty(thing_perspective)) {
+        things[name][thing_perspective] = {};
+    }
+    things[name][thing_perspective]['h'] = thingInfo['sourceSize']['h'] / pack["packHeight"];
+    things[name][thing_perspective]['w'] = thingInfo['sourceSize']['w'] / pack["packWidth"];
+    things[name][thing_perspective]['y'] = thingInfo['frame']['y'] / pack["packHeight"];
+    things[name][thing_perspective]['x'] = thingInfo['frame']['x'] / pack["packWidth"];
+}
 function getTextureLocations(pixel_locs) {
-    pack = {};
+    pack = { "thing": {} };
     var total_width = pixel_locs['meta']['size']['w'];
     var total_height = pixel_locs['meta']['size']['h'];
     pack["packHeight"] = total_height;
@@ -737,6 +753,10 @@ function getTextureLocations(pixel_locs) {
         var key = pixel_locs['frames'][i]['filename'];
         var key_array = key.split('_');
         var pattern = key_array[0];
+        if (pattern == "character") {
+            addThing(pixel_locs['frames'][i], true);
+            continue;
+        }
         var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
         if (!pack.hasOwnProperty(pattern)) {
             pack[pattern] = {};
@@ -751,6 +771,7 @@ function getTextureLocations(pixel_locs) {
     }
 }
 function run() {
+    console.log(pack);
     edgy = new engine.Engine();
     edgy.load("gameport");
 }

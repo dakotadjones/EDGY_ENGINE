@@ -127,6 +127,15 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
+	"filename": "character_slenderman_front_center.png",
+	"frame": {"x":2,"y":510,"w":339,"h":409},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":339,"h":409},
+	"sourceSize": {"w":339,"h":409},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
 	"filename": "grass_floor_center.png",
 	"frame": {"x":1224,"y":510,"w":500,"h":135},
 	"rotated": false,
@@ -269,15 +278,6 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":250,"h":500},
 	"sourceSize": {"w":250,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
-},
-{
-	"filename": "slenderman.png",
-	"frame": {"x":2,"y":510,"w":339,"h":409},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":339,"h":409},
-	"sourceSize": {"w":339,"h":409},
-	"pivot": {"x":0.5,"y":0.5}
 }],
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
@@ -286,6 +286,6 @@
 	"format": "RGBA8888",
 	"size": {"w":2048,"h":2048},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3ee0a960deea1afb35670f6b8c3e5ec9:71fa654d3d2c1091da142d19f1b971f7:cdd140b6f9ad8f87526619e8ed68f6a8$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b3e429729b80c043ad7014b34e746cef:175ceb386431c3b8754e1b161a52e4a1:cdd140b6f9ad8f87526619e8ed68f6a8$"
 }
 }
