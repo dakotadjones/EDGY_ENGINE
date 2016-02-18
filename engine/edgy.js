@@ -175,6 +175,7 @@ var engine;
             e.cw = e.canvas.width;
             e.ch = e.canvas.height;
             e.tileSizeRef = e.canvas.height - e.canvas.height / 16;
+            e.maxMonsterHeight = e.tileSizeRef / 1.5;
             e.gl = e.canvas.getContext('webgl', { antialias: true });
             var shader = new utils.Shader(e.gl);
             shader.getShader('shader-fs');
@@ -412,7 +413,7 @@ var engine;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
                             var pos = xx.toString() + "," + rowNum.toString();
-                            if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
+                            if (e.boxes[xx] !== undefined && e.boxes[xx][rowNum] !== undefined) {
                                 displayBoxes.push(e.boxes[xx][rowNum]);
                             }
                         }
@@ -424,7 +425,7 @@ var engine;
                         for (var x = 0; x < order.length; x++) {
                             var xx = myX + order[x];
                             var pos = xx.toString() + "," + rowNum.toString();
-                            if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
+                            if (e.boxes[xx] !== undefined && e.boxes[xx][rowNum] !== undefined) {
                                 displayBoxes.push(e.boxes[xx][rowNum]);
                             }
                         }
@@ -436,7 +437,7 @@ var engine;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
                             var pos = colNum.toString() + "," + yy.toString();
-                            if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
+                            if (e.boxes[colNum] !== undefined && e.boxes[colNum][yy] !== undefined) {
                                 displayBoxes.push(e.boxes[colNum][yy]);
                             }
                         }
@@ -448,7 +449,7 @@ var engine;
                         for (var y = 0; y < order.length; y++) {
                             var yy = myY + order[y];
                             var pos = colNum.toString() + "," + yy.toString();
-                            if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
+                            if (e.boxes[colNum] !== undefined && e.boxes[colNum][yy] !== undefined) {
                                 displayBoxes.push(e.boxes[colNum][yy]);
                             }
                         }
@@ -693,6 +694,15 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
+var thing;
+(function (thing) {
+    var Thing = (function () {
+        function Thing() {
+        }
+        return Thing;
+    })();
+    thing.Thing = Thing;
+})(thing || (thing = {}));
 /// <reference path="Engine.ts" />
 var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';

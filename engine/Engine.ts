@@ -28,6 +28,7 @@ export class Engine {
 	drawDistance:number;
 	alphaUniform:WebGLUniformLocation;
 	tileOpacity:number;
+	maxMonsterHeight:number;
 
 	// Frames Per Second for developer reference
 	fpsFrames:number;
@@ -62,8 +63,12 @@ export class Engine {
 		
 		//create a reference scaler variable s
 		//lets assume that the closest front_center will be this tall and this wide
+		// this is also the tallest a character can possibly be.
 		e.tileSizeRef = e.canvas.height-e.canvas.height/16; 
 		
+		// if a monster is in the middle of a box, this is their maximum height;
+		e.maxMonsterHeight = e.tileSizeRef/1.5;
+
 		// graphics library
 		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl', {antialias: true});
 		//e.gl = <WebGLRenderingContext> initWebGL(e.canvas)
@@ -339,7 +344,7 @@ export class Engine {
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
 							var pos  = xx.toString() + "," + rowNum.toString();
-							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
+							if ( e.boxes[xx] !== undefined &&  e.boxes[xx][rowNum] !== undefined) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
 						}
@@ -351,7 +356,7 @@ export class Engine {
 						for (var x = 0; x < order.length; x++) {
 							var xx = myX + order[x];
 							var pos  = xx.toString() + "," + rowNum.toString();
-							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
+							if ( e.boxes[xx] !== undefined &&  e.boxes[xx][rowNum] !== undefined) {
 								displayBoxes.push(e.boxes[xx][rowNum]);
 							}
 						}
@@ -363,7 +368,7 @@ export class Engine {
 					for (var y = 0; y < order.length; y++) {
 						var yy = myY + order[y];
 						var pos  = colNum.toString() + "," + yy.toString();
-						if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
+						if ( e.boxes[colNum] !== undefined &&  e.boxes[colNum][yy] !== undefined) {
 							displayBoxes.push(e.boxes[colNum][yy]);
 						}
 					}
@@ -375,7 +380,7 @@ export class Engine {
 						for (var y = 0; y < order.length; y++) {
 							var yy = myY + order[y];
 							var pos  = colNum.toString() + "," + yy.toString();
-							if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
+							if ( e.boxes[colNum] !== undefined &&  e.boxes[colNum][yy] !== undefined) {
 								displayBoxes.push(e.boxes[colNum][yy]);
 							}
 						}
@@ -418,10 +423,10 @@ export class Engine {
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 
-		var w = +pack[pattern][surfaceType]["w"];// * total_width;
-		var h = +pack[pattern][surfaceType]["h"];// * total_height;
+		var w = +pack[pattern][surfaceType]["w"];
+		var h = +pack[pattern][surfaceType]["h"];
 		w=e.tileSizeRef*w/h;
-		h=e.tileSizeRef;
+		h=e.tileSizeRef;		
 		var zScale = Math.pow(2,z+e.zAnim);
 		var scenePush = 0;
 		var diff;
@@ -435,7 +440,6 @@ export class Engine {
                 scenePush = -e.cw;
             }
 		}
-		
 		
 		switch(surfaceType) {
 			case "left_center":
