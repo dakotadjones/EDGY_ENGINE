@@ -102,6 +102,9 @@ var player;
             this.x = x;
             this.y = y;
             this.facing = facing;
+            this.lastFacing = "";
+            this.lastX = 0;
+            this.lastY = 0;
         }
         Player.prototype.getX = function () {
             return this.x;
@@ -175,6 +178,7 @@ var engine;
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
             e.loadBoxes();
+            e.displayBoxes = [];
             e.fpsFrames = 0;
             e.fpsTime = 0;
             e.fpsTimeLast = 0;
@@ -183,6 +187,7 @@ var engine;
             e.debugElement = document.getElementById("debug");
             document.addEventListener("keydown", function (evt) { e.readInput(evt); });
             e.zAnim = 0;
+            e.zAnimB = false;
             e.zChanged = false;
             e.slide = 0;
             e.turnPush = 0;
@@ -376,10 +381,18 @@ var engine;
         };
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
-            var displayBoxes = [];
             var playerBox = (e.zAnim > 0) ? -1 : 0;
             var stop = false;
             var steps = 0;
+            if (e.myPlayer.lastFacing == facing && e.myPlayer.lastX == e.myPlayer.x && e.myPlayer.lastY == e.myPlayer.y && !e.zAnimB)
+                return e.displayBoxes;
+            e.myPlayer.lastFacing = facing;
+            e.myPlayer.lastX = e.myPlayer.x;
+            e.myPlayer.lastY = e.myPlayer.y;
+            e.zAnimB = false;
+            if (playerBox == -1)
+                e.zAnimB = true;
+            e.displayBoxes = [];
             switch (facing) {
                 case "north":
                     var getBox = function (i, w) { return e.boxes[myX + w][myY - i]; };
@@ -424,32 +437,32 @@ var engine;
             if (stop) {
                 if (isThere(steps, -1) && getBox(steps, 0).getPattern(left) == null) {
                     if (isThere(steps + 1, -1) && getBox(steps, -1).getPattern(facing) == null)
-                        displayBoxes.push(getBox(steps + 1, -1));
+                        e.displayBoxes.push(getBox(steps + 1, -1));
                     leftUnce = true;
                 }
                 if (isThere(steps, 1) && getBox(steps, 0).getPattern(right) == null) {
                     if (isThere(steps + 1, 1) && getBox(steps, 1).getPattern(facing) == null)
-                        displayBoxes.push(getBox(steps + 1, 1));
+                        e.displayBoxes.push(getBox(steps + 1, 1));
                     rightUnce = true;
                 }
                 if (leftUnce)
-                    displayBoxes.push(getBox(steps, -1));
+                    e.displayBoxes.push(getBox(steps, -1));
                 if (rightUnce)
-                    displayBoxes.push(getBox(steps, 1));
+                    e.displayBoxes.push(getBox(steps, 1));
             }
             for (steps--; steps >= playerBox + 1; steps--) {
                 if (isThere(steps, -1))
-                    displayBoxes.push(getBox(steps, -1));
+                    e.displayBoxes.push(getBox(steps, -1));
                 if (isThere(steps, 1))
-                    displayBoxes.push(getBox(steps, 1));
-                displayBoxes.push(getBox(steps, 0));
+                    e.displayBoxes.push(getBox(steps, 1));
+                e.displayBoxes.push(getBox(steps, 0));
             }
             if (getBox(playerBox, 0).getPattern(left) == null)
-                displayBoxes.push(getBox(playerBox, -1));
+                e.displayBoxes.push(getBox(playerBox, -1));
             if (getBox(playerBox, 0).getPattern(right) == null)
-                displayBoxes.push(getBox(playerBox, 1));
-            displayBoxes.push(getBox(playerBox, 0));
-            return displayBoxes;
+                e.displayBoxes.push(getBox(playerBox, 1));
+            e.displayBoxes.push(getBox(playerBox, 0));
+            return e.displayBoxes;
         };
         Engine.prototype.getPlayerPosition = function () {
             return this.myPlayer.getCoordinates();

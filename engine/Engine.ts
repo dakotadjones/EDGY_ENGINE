@@ -17,9 +17,11 @@ export class Engine {
 	texturePack:HTMLImageElement;
 	myPlayer:player.Player;
 	boxes:Array<Array<utils.Box>>;
+	displayBoxes:Array<utils.Box>;
 	rectangle:Float32Array;
 	resolutionLocation:WebGLUniformLocation;
 	zAnim:number;
+	zAnimB:boolean;
 	zChanged:boolean;
 	turnPush:number;
 	slide:number;
@@ -114,6 +116,8 @@ export class Engine {
 	
 		e.loadBoxes();
 		
+		e.displayBoxes = [];
+		
 		//fps stuff
 		e.fpsFrames=0;
 		e.fpsTime=0;
@@ -128,6 +132,7 @@ export class Engine {
 		
 		// initialize the smooth scale 
 		e.zAnim = 0;
+		e.zAnimB = false;
 		
 		// intialize the z watcher, which helps with turning and depth
 		e.zChanged = false;
@@ -334,12 +339,22 @@ export class Engine {
 	
 	getBoxes(facing:string, myX:number, myY:number) {
 		var e = this;
-		var displayBoxes = [];
 		var playerBox = (e.zAnim > 0) ? -1 : 0;
 		
 		//tracing
 		var stop:boolean = false;
 		var steps:number = 0;
+		
+		if (e.myPlayer.lastFacing == facing && e.myPlayer.lastX == e.myPlayer.x && e.myPlayer.lastY == e.myPlayer.y && !e.zAnimB)
+			return e.displayBoxes;
+		
+		e.myPlayer.lastFacing = facing;
+		e.myPlayer.lastX = e.myPlayer.x;
+		e.myPlayer.lastY = e.myPlayer.y;
+		e.zAnimB = false;
+		if (playerBox == -1)
+			e.zAnimB = true;
+		e.displayBoxes = [];
 		
 		switch(facing){
 			case "north":
@@ -381,33 +396,33 @@ export class Engine {
 		if (stop){
 			if (isThere(steps,-1) && getBox(steps,0).getPattern(left) == null ){
 				if (isThere(steps+1,-1) && getBox(steps,-1).getPattern(facing) == null )
-					displayBoxes.push(getBox(steps+1,-1));
+					e.displayBoxes.push(getBox(steps+1,-1));
 				leftUnce=true;
 			}
 			if (isThere(steps,1) && getBox(steps,0).getPattern(right) == null ){
 				if (isThere(steps+1,1) && getBox(steps,1).getPattern(facing) == null )
-					displayBoxes.push(getBox(steps+1,1));
+					e.displayBoxes.push(getBox(steps+1,1));
 				rightUnce=true;
 			}
 			if (leftUnce)
-				displayBoxes.push(getBox(steps,-1));
+				e.displayBoxes.push(getBox(steps,-1));
 			if (rightUnce)
-				displayBoxes.push(getBox(steps,1));
+				e.displayBoxes.push(getBox(steps,1));
 		}
 		for(steps--;steps>=playerBox+1;steps--){
 			if (isThere(steps,-1))
-				displayBoxes.push(getBox(steps,-1));
+				e.displayBoxes.push(getBox(steps,-1));
 			if (isThere(steps,1))
-				displayBoxes.push(getBox(steps,1));
-			displayBoxes.push(getBox(steps,0));
+				e.displayBoxes.push(getBox(steps,1));
+			e.displayBoxes.push(getBox(steps,0));
 		}
 		if (getBox(playerBox,0).getPattern(left) == null)
-			displayBoxes.push(getBox(playerBox,-1));
+			e.displayBoxes.push(getBox(playerBox,-1));
 		if (getBox(playerBox,0).getPattern(right) == null)
-			displayBoxes.push(getBox(playerBox,1));
-		displayBoxes.push(getBox(playerBox,0));
+			e.displayBoxes.push(getBox(playerBox,1));
+		e.displayBoxes.push(getBox(playerBox,0));
 		
-		return displayBoxes;
+		return e.displayBoxes;
 	}
 	
 	getPlayerPosition() {
