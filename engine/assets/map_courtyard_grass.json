@@ -559,7 +559,7 @@
 	"south":null,
 	"east":null,
 	"west":null,
-	"thing":{"kind":"slenderman","facing":"east"}
+	"thing":{"kind":"character", "name":"slenderman","facing":"east"}
 },
 "8,6":{
 	"ceil":"blue",

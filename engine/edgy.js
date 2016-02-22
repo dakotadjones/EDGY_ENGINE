@@ -1,24 +1,13 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
+var thing;
+(function (thing) {
+    var Thing = (function () {
+        function Thing() {
+        }
+        return Thing;
+    })();
+    thing.Thing = Thing;
+})(thing || (thing = {}));
+/// <reference path="Thing.ts" />
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -155,12 +144,11 @@ var player;
 /// <reference path="Shader.ts" />
 /// <reference path="Box.ts" />
 /// <reference path="Player.ts" />
+/// <reference path="Thing.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
-        function Engine() {
-        }
-        Engine.prototype.load = function (id) {
+        function Engine(id) {
             var e = this;
             e.myPlayer = new player.Player();
             this.id = id;
@@ -168,7 +156,7 @@ var engine;
             this.texturePack.src = SRC + '.png';
             this.texturePack.crossOrigin = 'anonymous';
             this.texturePack.onload = function () { e.init(); };
-        };
+        }
         Engine.prototype.init = function () {
             var e = this;
             e.canvas = document.getElementById(e.id);
@@ -193,7 +181,7 @@ var engine;
             e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MIN_FILTER, e.gl.NEAREST);
             e.gl.texParameteri(e.gl.TEXTURE_2D, e.gl.TEXTURE_MAG_FILTER, e.gl.NEAREST);
             e.alphaUniform = e.gl.getUniformLocation(e.program, "uAlpha");
-            e.tileOpacity = 1.0;
+            e.tileOpacity = 1;
             e.gl.blendFunc(e.gl.SRC_ALPHA, e.gl.ONE_MINUS_SRC_ALPHA);
             e.gl.enable(e.gl.BLEND);
             e.gl.disable(e.gl.DEPTH_TEST);
@@ -233,6 +221,17 @@ var engine;
                     }
                     if (e.boxes[x] === undefined) {
                         e.boxes[x] = [];
+                    }
+                    if (map[coord]["thing"]) {
+                        switch (map[coord]["thing"].kind) {
+                            case "character":
+                                console.log("dododo");
+                                break;
+                            case "interactable":
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     e.boxes[x].push(box);
                 }
@@ -694,15 +693,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-var thing;
-(function (thing) {
-    var Thing = (function () {
-        function Thing() {
-        }
-        return Thing;
-    })();
-    thing.Thing = Thing;
-})(thing || (thing = {}));
 /// <reference path="Engine.ts" />
 var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';
@@ -771,6 +761,5 @@ function getTextureLocations(pixel_locs) {
     }
 }
 function run() {
-    edgy = new engine.Engine();
-    edgy.load("gameport");
+    edgy = new engine.Engine("gameport");
 }

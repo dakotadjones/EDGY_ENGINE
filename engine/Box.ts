@@ -1,3 +1,5 @@
+/// <reference path="Thing.ts" />
+
 /*
  * Version 1.0
  * The box module keeps track of a basic map unit
@@ -31,7 +33,7 @@ module utils {
 		x:number;
 		y:number;
 		z:number;
-		occupant:boolean; // perhaps an object in the future
+		occupant:thing.Thing; 
 		
 		constructor(x, y, parts: JSON) {
 			this.x = x;
@@ -65,7 +67,6 @@ module utils {
 					return this.westSurface;
 					break;				
 			}
-		}
-		
+		}		
 	}
 }

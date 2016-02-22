@@ -1,6 +1,7 @@
 /// <reference path="Shader.ts" />
 /// <reference path="Box.ts" />
 /// <reference path="Player.ts" />
+/// <reference path="Thing.ts" />
 
 module engine {
 export class Engine {
@@ -37,7 +38,7 @@ export class Engine {
 	fpsTimeCounter:number;
 	fpsElement:HTMLElement;
 		
-	load(id:string) {
+	constructor(id:string) {
 		// set up object reference 
 		var e = this;
         
@@ -99,7 +100,7 @@ export class Engine {
 		// texture alpha
 		e.alphaUniform = e.gl.getUniformLocation(e.program, "uAlpha");
 		// opacity for drawings 
-		e.tileOpacity = 1.0;
+		e.tileOpacity = 1;
 		
 		// transparency
 		e.gl.blendFunc(e.gl.SRC_ALPHA, e.gl.ONE_MINUS_SRC_ALPHA);
@@ -155,6 +156,9 @@ export class Engine {
 			} else {
 				var x = coord.split(',')[0];
 				var y = coord.split(',')[1];
+				
+				
+				
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
 					e.boxes = [];				
@@ -162,6 +166,20 @@ export class Engine {
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
+				
+				if (map[coord]["thing"]) {
+				     switch (map[coord]["thing"].kind) {
+						case "character":
+							console.log("dododo");
+							break;
+						case "interactable":
+						 	break;
+						default:
+							break;
+					 }
+					//box.setOccupant(map[coord]["thing"]);
+				}
+				
 				e.boxes[x].push(box)
 			}
 		}
@@ -195,7 +213,7 @@ export class Engine {
 			e.drawBoxes(displayBoxes, facing, x, y);
 		}
 		e.gl.flush();
-        // code for animating movement
+        // animate forward/backward movement
 		if (e.zAnim < 0.05 && e.zAnim > -0.05){
 			e.zAnim=0;
 		}
@@ -205,7 +223,7 @@ export class Engine {
 		else if (e.zAnim > 0) {
 			e.zAnim -= .05;
 		}
-		// code for sliding movement as you turn left or right
+		// liding movement as you turn left or right
 		if (e.slide >= -2 && e.slide <= 8) {
 			e.slide = 0;
 		}
@@ -431,7 +449,7 @@ export class Engine {
 		var scenePush = 0;
 		var diff;
 
-		// logic for setting temp variable to be used for drawing turning farther than canvas size
+		// set temp variable to be used for drawing turning farther than canvas size
 		if (push) {
             if(e.slide < 0) {
 			     scenePush = e.cw;

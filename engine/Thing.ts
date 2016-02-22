@@ -5,5 +5,9 @@ module thing {
 		moves:boolean;
 		facing:string;
 		height:number;
+	
+		constructor() {
+			
+		}
 	}
 }
