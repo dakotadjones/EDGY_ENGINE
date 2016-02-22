@@ -339,8 +339,6 @@ export class Engine {
 		var playerBox = (e.zAnim > 0) ? -1 : 0;
 		
 		//tracing
-		var leftVision:boolean[] = [];
-		var rightVision:boolean[] = []; 
 		var stop:boolean = false;
 		var steps:number = 0;
 		
@@ -348,67 +346,62 @@ export class Engine {
 			case "north":
 			 var getBox = function(i:number,w:number){return e.boxes[myX+w][myY - i];};
 			 var isThere = function(i:number,w:number){
-				 return (typeof e.boxes[myX+w] !== "undefined" && typeof e.boxes[myX+w][myY-i] !== "undefined");};
+				 return (e.boxes[myX+w] !== undefined && e.boxes[myX+w][myY-i] !== undefined);};
 			 var left = "west";
 			 var right = "east";
 			break;
 			case "east":
 			 var getBox = function(i:number,w:number){return e.boxes[myX + i][myY+w];};
 			 var isThere = function(i:number,w:number){
-				 return (typeof e.boxes[myX+i] !== "undefined" && typeof e.boxes[myX+i][myY+w] !== "undefined");};
+				 return (e.boxes[myX+i] !== undefined && e.boxes[myX+i][myY+w] !== undefined);};
 			 var left = "north";
 			 var right = "south";
 			break;
 			case "south":
 			 var getBox = function(i:number,w:number){return e.boxes[myX-w][myY + i];};
 			 var isThere = function(i:number,w:number){
-				 return (typeof e.boxes[myX-w] !== "undefined" && typeof e.boxes[myX-w][myY+i] !== "undefined");};
+				 return (e.boxes[myX-w] !== undefined && e.boxes[myX-w][myY+i] !== undefined);};
 			 var left = "east";
 			 var right = "west";
 			break;
 			case "west":
 			 var getBox = function(i:number,w:number){return e.boxes[myX - i][myY-w];};
 			 var isThere = function(i:number,w:number){
-				 return (typeof e.boxes[myX-i] !== "undefined" && typeof e.boxes[myX-i][myY-w] !== "undefined");};
+				 return (e.boxes[myX-i] !== undefined && e.boxes[myX-i][myY-w] !== undefined);};
 			 var left = "south";
 			 var right = "north";
 			break;
 		}
 		var max=4;
 		for(steps=playerBox;steps<=max && !stop;steps++){
-			if (getBox(steps,0).getPattern(left) == null){
-				leftVision[steps]=true;
-				if (isThere(steps,-1) && getBox(steps,-1).getPattern(facing) == null && steps+1<=max){
-					leftVision[steps+1]=true;
-					if (isThere(steps+1,-1) && getBox(steps+1,-1).getPattern(facing) == null && steps+2<=max)
-						leftVision[steps+2]=true;
-				}
-			}
-			else if (!leftVision[steps]){
-				leftVision[steps]=false;
-			}
-			if (getBox(steps,0).getPattern(right) == null){
-				rightVision[steps]=true;
-				if (isThere(steps,1) && getBox(steps,1).getPattern(facing) == null && steps+1<=max){
-					rightVision[steps+1]=true;
-					if (isThere(steps+1,1) && getBox(steps+1,1).getPattern(facing) == null && steps+2<=max)
-						rightVision[steps+2]=true;
-				}
-			}
-			else if (!rightVision[steps]){
-				rightVision[steps]=false;
-			}
 			if (!isThere(steps,0) || getBox(steps,0).getPattern(facing)){
 				stop = true;
 			}
 		}
-		for(steps--;steps>=playerBox;steps--){
-			if(leftVision.pop())
+		if (stop){
+			if (isThere(steps,-1) && getBox(steps,0).getPattern(left) == null ){
+				if (isThere(steps+1,-1) && getBox(steps,-1).getPattern(facing) == null )
+					displayBoxes.push(getBox(steps+1,-1));
 				displayBoxes.push(getBox(steps,-1));
-			if (rightVision.pop())
+			}
+			if (isThere(steps,1) && getBox(steps,0).getPattern(right) == null ){
+				if (isThere(steps+1,1) && getBox(steps,1).getPattern(facing) == null )
+					displayBoxes.push(getBox(steps+1,1));
+				displayBoxes.push(getBox(steps,1));
+			}
+		}
+		for(steps--;steps>=playerBox+1;steps--){
+			if (isThere(steps,-1))
+				displayBoxes.push(getBox(steps,-1));
+			if (isThere(steps,1))
 				displayBoxes.push(getBox(steps,1));
 			displayBoxes.push(getBox(steps,0));
 		}
+		if (getBox(playerBox,0).getPattern(left) == null)
+			displayBoxes.push(getBox(playerBox,-1));
+		if (getBox(playerBox,0).getPattern(right) == null)
+			displayBoxes.push(getBox(playerBox,1));
+		displayBoxes.push(getBox(playerBox,0));
 		
 		return displayBoxes;
 	}
