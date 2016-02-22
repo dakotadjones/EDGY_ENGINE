@@ -377,7 +377,6 @@ var engine;
         Engine.prototype.getBoxes = function (facing, myX, myY) {
             var e = this;
             var displayBoxes = [];
-            var order = [-1, 1, 0];
             var playerBox = (e.zAnim > 0) ? -1 : 0;
             var stop = false;
             var steps = 0;
@@ -415,23 +414,28 @@ var engine;
                     var right = "north";
                     break;
             }
-            var max = 4;
-            for (steps = playerBox; steps <= max && !stop; steps++) {
+            for (steps = playerBox; steps <= 4 && !stop; steps++) {
                 if (!isThere(steps, 0) || getBox(steps, 0).getPattern(facing)) {
                     stop = true;
                 }
             }
+            var leftUnce = false;
+            var rightUnce = false;
             if (stop) {
                 if (isThere(steps, -1) && getBox(steps, 0).getPattern(left) == null) {
                     if (isThere(steps + 1, -1) && getBox(steps, -1).getPattern(facing) == null)
                         displayBoxes.push(getBox(steps + 1, -1));
-                    displayBoxes.push(getBox(steps, -1));
+                    leftUnce = true;
                 }
                 if (isThere(steps, 1) && getBox(steps, 0).getPattern(right) == null) {
                     if (isThere(steps + 1, 1) && getBox(steps, 1).getPattern(facing) == null)
                         displayBoxes.push(getBox(steps + 1, 1));
-                    displayBoxes.push(getBox(steps, 1));
+                    rightUnce = true;
                 }
+                if (leftUnce)
+                    displayBoxes.push(getBox(steps, -1));
+                if (rightUnce)
+                    displayBoxes.push(getBox(steps, 1));
             }
             for (steps--; steps >= playerBox + 1; steps--) {
                 if (isThere(steps, -1))
