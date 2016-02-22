@@ -144,7 +144,7 @@ export class Engine {
 		e.turnPush = 0;
 		
 		// determine how far back to draw
-		e.drawDistance = 5;
+		e.drawDistance = 6;
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
@@ -386,7 +386,7 @@ export class Engine {
 			 var right = "north";
 			break;
 		}
-		for(steps=playerBox;steps<=4 && !stop;steps++){
+		for(steps=playerBox;steps<=e.drawDistance && !stop;steps++){
 			if (!isThere(steps,0) || getBox(steps,0).getPattern(facing)){
 				stop = true;
 			}

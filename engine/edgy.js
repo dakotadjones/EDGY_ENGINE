@@ -191,7 +191,7 @@ var engine;
             e.zChanged = false;
             e.slide = 0;
             e.turnPush = 0;
-            e.drawDistance = 5;
+            e.drawDistance = 6;
             e.draw();
         };
         Engine.prototype.loadBoxes = function () {
@@ -427,7 +427,7 @@ var engine;
                     var right = "north";
                     break;
             }
-            for (steps = playerBox; steps <= 4 && !stop; steps++) {
+            for (steps = playerBox; steps <= e.drawDistance && !stop; steps++) {
                 if (!isThere(steps, 0) || getBox(steps, 0).getPattern(facing)) {
                     stop = true;
                 }
