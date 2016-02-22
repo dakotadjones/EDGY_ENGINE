@@ -29,6 +29,8 @@ export class Engine {
 	fpsTimeLast:number;
 	fpsTimeCounter:number;
 	fpsElement:HTMLElement;
+	
+	debugElement:HTMLElement;
 		
 	load(id:string) {
 		// set up object reference 
@@ -105,6 +107,9 @@ export class Engine {
 		e.fpsTimeLast=0;
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
+		
+		//debug stuff
+		e.debugElement=document.getElementById("debug");
 
 		//document.onkeydown = function() { console.log("keydown"); e.myPlayer.setFacing("north"); };
 		document.addEventListener("keydown", function(evt){e.readInput(evt)});
@@ -131,12 +136,12 @@ export class Engine {
 				var y = coord.split(',')[1];
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
-					e.boxes = [];				
+					e.boxes = [];
 				}
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
-				e.boxes[x].push(box)
+				e.boxes[x].push(box);
 			}
 		}
 	}
@@ -285,56 +290,79 @@ export class Engine {
 		var displayBoxes = [];
 		var order = [-1, 1, 0];
 		var playerBox = (e.zAnim > 0) ? -1 : 0;
-		switch(facing) {
+		
+		//tracing
+		var leftVision:boolean[] = [];
+		var rightVision:boolean[] = []; 
+		var stop:boolean = false;
+		var steps:number = 0;
+		
+		switch(facing){
 			case "north":
-				for (var y = 8; y >= playerBox; y--) {
-						var rowNum = myY - y;
-						for (var x = 0; x < order.length; x++) {
-							var xx = myX + order[x];
-							var pos  = xx.toString() + "," + rowNum.toString();
-							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
-								displayBoxes.push(e.boxes[xx][rowNum]);
-							}
-						}
-				}
-				break;
-			case "south":
-				for (var y = 8; y >= playerBox; y--) {
-						var rowNum = myY + y;
-						for (var x = 0; x < order.length; x++) {
-							var xx = myX + order[x];
-							var pos  = xx.toString() + "," + rowNum.toString();
-							if (typeof e.boxes[xx] !== "undefined" && typeof e.boxes[xx][rowNum] !== "undefined") {
-								displayBoxes.push(e.boxes[xx][rowNum]);
-							}
-						}
-				}
-				break;
+			 var getBox = function(i:number,w:number){return e.boxes[myX+w][myY - i];};
+			 var isThere = function(i:number,w:number){
+				 return (typeof e.boxes[myX+w] !== "undefined" && typeof e.boxes[myX+w][myY-i] !== "undefined");};
+			 var left = "west";
+			 var right = "east";
+			break;
 			case "east":
-				for (var x = 8; x >= playerBox; x--) {
-					var colNum = myX + x;
-					for (var y = 0; y < order.length; y++) {
-						var yy = myY + order[y];
-						var pos  = colNum.toString() + "," + yy.toString();
-						if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
-							displayBoxes.push(e.boxes[colNum][yy]);
-						}
-					}
-				}
-				break;
+			 var getBox = function(i:number,w:number){return e.boxes[myX + i][myY+w];};
+			 var isThere = function(i:number,w:number){
+				 return (typeof e.boxes[myX+i] !== "undefined" && typeof e.boxes[myX+i][myY+w] !== "undefined");};
+			 var left = "north";
+			 var right = "south";
+			break;
+			case "south":
+			 var getBox = function(i:number,w:number){return e.boxes[myX-w][myY + i];};
+			 var isThere = function(i:number,w:number){
+				 return (typeof e.boxes[myX-w] !== "undefined" && typeof e.boxes[myX-w][myY+i] !== "undefined");};
+			 var left = "east";
+			 var right = "west";
+			break;
 			case "west":
-				for (var x = 8; x >= playerBox; x--) {
-						var colNum = myX - x;
-						for (var y = 0; y < order.length; y++) {
-							var yy = myY + order[y];
-							var pos  = colNum.toString() + "," + yy.toString();
-							if (typeof e.boxes[colNum] !== "undefined" && typeof e.boxes[colNum][yy] !== "undefined") {
-								displayBoxes.push(e.boxes[colNum][yy]);
-							}
-						}
-				}
-				break;		
+			 var getBox = function(i:number,w:number){return e.boxes[myX - i][myY-w];};
+			 var isThere = function(i:number,w:number){
+				 return (typeof e.boxes[myX-i] !== "undefined" && typeof e.boxes[myX-i][myY-w] !== "undefined");};
+			 var left = "south";
+			 var right = "north";
+			break;
 		}
+		var max=4;
+		for(steps=playerBox;steps<=max && !stop;steps++){
+			if (getBox(steps,0).getPattern(left) == null){
+				leftVision[steps]=true;
+				if (isThere(steps,-1) && getBox(steps,-1).getPattern(facing) == null && steps+1<=max){
+					leftVision[steps+1]=true;
+					if (isThere(steps+1,-1) && getBox(steps+1,-1).getPattern(facing) == null && steps+2<=max)
+						leftVision[steps+2]=true;
+				}
+			}
+			else if (!leftVision[steps]){
+				leftVision[steps]=false;
+			}
+			if (getBox(steps,0).getPattern(right) == null){
+				rightVision[steps]=true;
+				if (isThere(steps,1) && getBox(steps,1).getPattern(facing) == null && steps+1<=max){
+					rightVision[steps+1]=true;
+					if (isThere(steps+1,1) && getBox(steps+1,1).getPattern(facing) == null && steps+2<=max)
+						rightVision[steps+2]=true;
+				}
+			}
+			else if (!rightVision[steps]){
+				rightVision[steps]=false;
+			}
+			if (!isThere(steps,0) || getBox(steps,0).getPattern(facing)){
+				stop = true;
+			}
+		}
+		for(steps--;steps>=playerBox;steps--){
+			if(leftVision.pop())
+				displayBoxes.push(getBox(steps,-1));
+			if (rightVision.pop())
+				displayBoxes.push(getBox(steps,1));
+			displayBoxes.push(getBox(steps,0));
+		}
+		
 		return displayBoxes;
 	}
 	
@@ -379,10 +407,10 @@ export class Engine {
 		// logic for setting temp variable to be used for drawing turning farther than canvas size
 		if (push)
             if(e.slide<0){
-			     temp = e.cw;
+			     temp = e.cw/2;
             }
             else{
-                temp = -e.cw;
+                temp = -e.cw/2;
             }
 		switch(surfaceType) {
 			case "left_center":
@@ -502,7 +530,7 @@ export class Engine {
 				e.zAnim = 1;
 				break;
 			case "a":
-				e.slide = -e.cw; 
+				e.slide = -e.cw/2; 
 				if (e.myPlayer.getFacing()=="east") {
 					e.turnFace = "east";
 				    e.myPlayer.setFacing("north");	
@@ -535,7 +563,7 @@ export class Engine {
 				e.zAnim = -1;
 				break;
 			case "d":
-                e.slide = e.cw;
+                e.slide = e.cw/2;
 				if (e.myPlayer.getFacing()=="east"){
                     e.turnFace = "east";
 					e.myPlayer.setFacing("south");
@@ -588,6 +616,11 @@ export class Engine {
 			default:
 				return false;
 		}
+	}
+	
+	debug(output:string){
+		var e = this;
+		e.debugElement.innerHTML=output;
 	}
 		
 } // end engine 
