@@ -9,6 +9,14 @@ module player {
 			this.facing = facing;			
 		}
 		
+		getX() {
+			return this.x;
+		}
+		
+		getY(){
+			return this.y;
+		}
+		
 		setX(x:number) {
 			this.x = x;
 		}

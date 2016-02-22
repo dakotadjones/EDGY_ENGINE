@@ -2,7 +2,7 @@
 <head>		
     <meta charset="UTF-8">
 	<title>Interactive</title>
-    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
 </head>
 <script id="shader-fs" type="x-shader/x-fragment">
 precision mediump float;
@@ -13,10 +13,12 @@ uniform sampler2D u_image;
 // the texCoords passed in from the vertex shader
 varying vec2 v_texCoord;
 
+// alpha for transparency
+uniform float uAlpha;
+
 void main() {
     vec4 color = texture2D(u_image, v_texCoord);
-
-    gl_FragColor = color;
+    gl_FragColor = vec4(color.rgb, color.a * uAlpha); //color;
 }
 </script>
 <script id="shader-vs" type="x-shader/x-vertex">
@@ -44,10 +46,10 @@ void main() {
 }
 </script>
 <body>
-    <canvas id="gameport" height="550" width="1000" style="background-color:black"></canvas>
-    <div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 10px; left: 10px; text-align: center;
-                                 width: 50px; height: 18px; background-color: #111111; font-size: 14px; color: grey; 
-                                 border-radius: 18px;">FPS</div>
+    <canvas id="gameport" height="450" width="800" style="background-color:black"></canvas>
+    <div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 60px; left: 300px; color: white;
+                                 width: 50px; text-align: center; height: 18px; background-color: #111111; font-size: 14px;
+                                 color: grey; border-radius: 18px;">FPS</div>
     
     <div id="debug-wrapper" style="position: absolute; z-index: 1000; display: block; top: 10px; right: 10px; color: white;
                                  width: 250px; text-align: center; height: auto; background-color: #111111; font-size: 14px;
