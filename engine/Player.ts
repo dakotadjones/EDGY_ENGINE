@@ -3,10 +3,16 @@ module player {
 		x:number;
 		y:number;
 		facing:string;
+		lastFacing:string;
+		lastX:number;
+		lastY:number;
 		constructor(x=0, y=0, facing="east") {
 			this.x = x;
 			this.y = y;
-			this.facing = facing;			
+			this.facing = facing;	
+			this.lastFacing = "";
+			this.lastX = 0;
+			this.lastY = 0;		
 		}
 		
 		getX() {

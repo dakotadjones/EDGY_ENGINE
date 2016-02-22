@@ -1,0 +1,32 @@
+##### Script that renders two pngs of the scene with correct cubes #####
+
+import bpy
+import bmesh
+
+# set object mode 
+bpy.ops.object.mode_set(mode='OBJECT')
+
+# set file names to where the render saves will go
+filePath = "C:\\Users\\Dakota\\Desktop\\Blender Render Outputs\\test_script1.png"
+filePath2 = "C:\\Users\\Dakota\\Desktop\\Blender Render Outputs\\test_script2.png"
+
+cube = bpy.data.objects.get("Cube")
+scene = bpy.data.scenes.get("Scene")
+leftCube = bpy.data.objects.get("leftCube")
+rightCube = bpy.data.objects.get("rightCube")
+
+# Renders and saves first png to designated file location just showing middle cube
+leftCube.hide_render = True;
+rightCube.hide_render = True; 
+bpy.data.scenes['Scene'].render.filepath = filePath
+bpy.ops.render.render( write_still=True) 
+leftCube.hide_render = False;
+rightCube.hide_render = False;
+
+# Renders and saves the second png to designated file showing outside cubes
+cube.hide_render = True 
+bpy.data.scenes['Scene'].render.filepath = filePath2
+bpy.ops.render.render( write_still=True) 
+cube.hide_render = False 
+
+##### END SCRIPT #####

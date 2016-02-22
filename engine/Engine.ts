@@ -18,9 +18,11 @@ export class Engine {
 	texturePack:HTMLImageElement;
 	myPlayer:player.Player;
 	boxes:Array<Array<utils.Box>>;
+	displayBoxes:Array<utils.Box>;
 	rectangle:Float32Array;
 	resolutionLocation:WebGLUniformLocation;
 	zAnim:number;
+	zAnimB:boolean;
 	zChanged:boolean;
 	turnPush:number;
 	slide:number;
@@ -37,6 +39,8 @@ export class Engine {
 	fpsTimeLast:number;
 	fpsTimeCounter:number;
 	fpsElement:HTMLElement;
+	
+	debugElement:HTMLElement;
 		
 	constructor(id:string) {
 		// set up object reference 
@@ -118,17 +122,23 @@ export class Engine {
 	
 		e.loadBoxes();
 		
+		e.displayBoxes = [];
+		
 		//fps stuff
 		e.fpsFrames=0;
 		e.fpsTime=0;
 		e.fpsTimeLast=0;
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
+		
+		//debug stuff
+		e.debugElement=document.getElementById("debug");
 
 		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
 		// initialize the smooth scale 
 		e.zAnim = 0;
+		e.zAnimB = false;
 		
 		// intialize the z watcher, which helps with turning and depth
 		e.zChanged = false;
@@ -140,7 +150,7 @@ export class Engine {
 		e.turnPush = 0;
 		
 		// determine how far back to draw
-		e.drawDistance = 5;
+		e.drawDistance = 6;
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
@@ -161,11 +171,12 @@ export class Engine {
 				
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
-					e.boxes = [];				
+					e.boxes = [];
 				}
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
+
 				
 				if (map[coord]["thing"]) {
 				     switch (map[coord]["thing"].kind) {
@@ -352,60 +363,91 @@ export class Engine {
 	
 	getBoxes(facing:string, myX:number, myY:number) {
 		var e = this;
-		var displayBoxes = [];
-		var order = [-1, 1, 0];
 		var playerBox = (e.zAnim > 0) ? -1 : 0;
-		switch(facing) {
+		
+		//tracing
+		var stop:boolean = false;
+		var steps:number = 0;
+		
+		if (e.myPlayer.lastFacing == facing && e.myPlayer.lastX == e.myPlayer.x && e.myPlayer.lastY == e.myPlayer.y && !e.zAnimB)
+			return e.displayBoxes;
+		
+		e.myPlayer.lastFacing = facing;
+		e.myPlayer.lastX = e.myPlayer.x;
+		e.myPlayer.lastY = e.myPlayer.y;
+		e.zAnimB = false;
+		if (playerBox == -1)
+			e.zAnimB = true;
+		e.displayBoxes = [];
+		
+		switch(facing){
 			case "north":
-				for (var y = e.drawDistance; y >= playerBox; y--) {
-						var rowNum = myY - y;
-						for (var x = 0; x < order.length; x++) {
-							var xx = myX + order[x];
-							var pos  = xx.toString() + "," + rowNum.toString();
-							if ( e.boxes[xx] !== undefined &&  e.boxes[xx][rowNum] !== undefined) {
-								displayBoxes.push(e.boxes[xx][rowNum]);
-							}
-						}
-				}
-				break;
-			case "south":
-				for (var y = e.drawDistance; y >= playerBox; y--) {
-						var rowNum = myY + y;
-						for (var x = 0; x < order.length; x++) {
-							var xx = myX + order[x];
-							var pos  = xx.toString() + "," + rowNum.toString();
-							if ( e.boxes[xx] !== undefined &&  e.boxes[xx][rowNum] !== undefined) {
-								displayBoxes.push(e.boxes[xx][rowNum]);
-							}
-						}
-				}
-				break;
+			 var getBox = function(i:number,w:number){return e.boxes[myX+w][myY - i];};
+			 var isThere = function(i:number,w:number){
+				 return (e.boxes[myX+w] !== undefined && e.boxes[myX+w][myY-i] !== undefined);};
+			 var left = "west";
+			 var right = "east";
+			break;
 			case "east":
-				for (var x = e.drawDistance; x >= playerBox; x--) {
-					var colNum = myX + x;
-					for (var y = 0; y < order.length; y++) {
-						var yy = myY + order[y];
-						var pos  = colNum.toString() + "," + yy.toString();
-						if ( e.boxes[colNum] !== undefined &&  e.boxes[colNum][yy] !== undefined) {
-							displayBoxes.push(e.boxes[colNum][yy]);
-						}
-					}
-				}
-				break;
+			 var getBox = function(i:number,w:number){return e.boxes[myX + i][myY+w];};
+			 var isThere = function(i:number,w:number){
+				 return (e.boxes[myX+i] !== undefined && e.boxes[myX+i][myY+w] !== undefined);};
+			 var left = "north";
+			 var right = "south";
+			break;
+			case "south":
+			 var getBox = function(i:number,w:number){return e.boxes[myX-w][myY + i];};
+			 var isThere = function(i:number,w:number){
+				 return (e.boxes[myX-w] !== undefined && e.boxes[myX-w][myY+i] !== undefined);};
+			 var left = "east";
+			 var right = "west";
+			break;
 			case "west":
-				for (var x = e.drawDistance; x >= playerBox; x--) {
-						var colNum = myX - x;
-						for (var y = 0; y < order.length; y++) {
-							var yy = myY + order[y];
-							var pos  = colNum.toString() + "," + yy.toString();
-							if ( e.boxes[colNum] !== undefined &&  e.boxes[colNum][yy] !== undefined) {
-								displayBoxes.push(e.boxes[colNum][yy]);
-							}
-						}
-				}
-				break;		
+			 var getBox = function(i:number,w:number){return e.boxes[myX - i][myY-w];};
+			 var isThere = function(i:number,w:number){
+				 return (e.boxes[myX-i] !== undefined && e.boxes[myX-i][myY-w] !== undefined);};
+			 var left = "south";
+			 var right = "north";
+			break;
 		}
-		return displayBoxes;
+		
+		for(steps=playerBox;steps<=e.drawDistance && !stop;steps++){
+			if (!isThere(steps,0) || getBox(steps,0).getPattern(facing)){
+				stop = true;
+			}
+		}
+		var leftUnce = false;
+		var rightUnce = false;
+		if (stop){
+			if (isThere(steps,-1) && getBox(steps,0).getPattern(left) == null ){
+				if (isThere(steps+1,-1) && getBox(steps,-1).getPattern(facing) == null )
+					e.displayBoxes.push(getBox(steps+1,-1));
+				leftUnce=true;
+			}
+			if (isThere(steps,1) && getBox(steps,0).getPattern(right) == null ){
+				if (isThere(steps+1,1) && getBox(steps,1).getPattern(facing) == null )
+					e.displayBoxes.push(getBox(steps+1,1));
+				rightUnce=true;
+			}
+			if (leftUnce)
+				e.displayBoxes.push(getBox(steps,-1));
+			if (rightUnce)
+				e.displayBoxes.push(getBox(steps,1));
+		}
+		for(steps--;steps>=playerBox+1;steps--){
+			if (isThere(steps,-1))
+				e.displayBoxes.push(getBox(steps,-1));
+			if (isThere(steps,1))
+				e.displayBoxes.push(getBox(steps,1));
+			e.displayBoxes.push(getBox(steps,0));
+		}
+		if (getBox(playerBox,0).getPattern(left) == null)
+			e.displayBoxes.push(getBox(playerBox,-1));
+		if (getBox(playerBox,0).getPattern(right) == null)
+			e.displayBoxes.push(getBox(playerBox,1));
+		e.displayBoxes.push(getBox(playerBox,0));
+		
+		return e.displayBoxes;
 	}
 	
 	getPlayerPosition() {
@@ -688,6 +730,11 @@ export class Engine {
 			default:
 				return false;
 		}
+	}
+	
+	debug(output:string){
+		var e = this;
+		e.debugElement.innerHTML=output;
 	}
 		
 } // end engine 
