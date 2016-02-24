@@ -1,5 +1,6 @@
 {
 "player":{"x":12, "y":5, "facing":"west"},
+"character":{"name":"slenderman","x":8,"y":5,"facing":"east","scale":0.9},
 "0,0":{
 	"ceil":null,
 	"floor":null,
@@ -558,8 +559,7 @@
 	"north":null,
 	"south":null,
 	"east":null,
-	"west":null,
-	"thing":{"kind":"character", "name":"slenderman","facing":"east"}
+	"west":null
 },
 "8,6":{
 	"ceil":"blue",

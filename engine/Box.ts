@@ -33,7 +33,6 @@ module utils {
 		x:number;
 		y:number;
 		z:number;
-		occupant:thing.Thing; 
 		
 		constructor(x, y, parts: JSON) {
 			this.x = x;

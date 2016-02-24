@@ -1,7 +1,7 @@
 /// <reference path="Shader.ts" />
 /// <reference path="Box.ts" />
 /// <reference path="Player.ts" />
-/// <reference path="Thing.ts" />
+/// <reference path="Character.ts" />
 
 module engine {
 export class Engine {
@@ -31,7 +31,10 @@ export class Engine {
 	drawDistance:number;
 	alphaUniform:WebGLUniformLocation;
 	tileOpacity:number;
-	maxMonsterHeight:number;
+	
+	//character stuff
+	maxCharacterHeight:number;
+	myCharacters:Array<Array<utils.Character>>;
 
 	// Frames Per Second for developer reference
 	fpsFrames:number;
@@ -72,7 +75,7 @@ export class Engine {
 		e.tileSizeRef = e.canvas.height-e.canvas.height/16; 
 		
 		// if a monster is in the middle of a box, this is their maximum height;
-		e.maxMonsterHeight = e.tileSizeRef/1.5;
+		e.maxCharacterHeight = e.tileSizeRef/1.5;
 
 		// graphics library
 		e.gl = <WebGLRenderingContext>e.canvas.getContext('webgl', {antialias: true});
@@ -160,14 +163,15 @@ export class Engine {
 		var e = this;
 		for (var coord in map) {
 			if (coord == "player") {
-					e.myPlayer.setX(map[coord]["x"]);
-					e.myPlayer.setY(map[coord]["y"]);
-					e.myPlayer.setFacing(map[coord]["facing"]);
+				e.myPlayer.setX(map[coord]["x"]);
+				e.myPlayer.setY(map[coord]["y"]);
+				e.myPlayer.setFacing(map[coord]["facing"]);
+			} else if (coord == "character"){
+				var character = new utils.Character(map[coord]);
+				e.myCharacters[map[coord].x][map[coord].y] = character;
 			} else {
 				var x = coord.split(',')[0];
 				var y = coord.split(',')[1];
-				
-				
 				
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
@@ -176,20 +180,18 @@ export class Engine {
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
-
-				
-				if (map[coord]["thing"]) {
-				     switch (map[coord]["thing"].kind) {
-						case "character":
-							console.log("dododo");
-							break;
-						case "interactable":
-						 	break;
-						default:
-							break;
-					 }
-					//box.setOccupant(map[coord]["thing"]);
-				}
+				// if (map[coord]["thing"]) {
+				//      switch (map[coord]["thing"].kind) {
+				// 		case "character":
+				// 			console.log("dododo");
+				// 			break;
+				// 		case "interactable":
+				// 		 	break;
+				// 		default:
+				// 			break;
+				// 	 }
+				// 	//box.setOccupant(map[coord]["thing"]);
+				// }
 				
 				e.boxes[x].push(box)
 			}
@@ -357,6 +359,10 @@ export class Engine {
 					e.setUpTexture(pattern, surface);
 					e.drawSurface(z, pattern, surface, push);
 				}
+			}
+			var charTemp = e.getCharacter(box.x,box.y)
+			if (charTemp){
+				
 			}
 		}
 	}
@@ -730,6 +736,11 @@ export class Engine {
 			default:
 				return false;
 		}
+	}
+	getCharacter(x:number,y:number){
+		if (this.myCharacters[x][y] === undefined)
+			return null;
+		return this.myCharacters[x][y];
 	}
 	
 	debug(output:string){

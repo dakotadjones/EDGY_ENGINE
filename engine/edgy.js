@@ -1,13 +1,3 @@
-var thing;
-(function (thing) {
-    var Thing = (function () {
-        function Thing() {
-        }
-        return Thing;
-    })();
-    thing.Thing = Thing;
-})(thing || (thing = {}));
-/// <reference path="Thing.ts" />
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -47,9 +37,26 @@ var utils;
     })();
     utils.Box = Box;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
+var utils;
+(function (utils) {
+    var Character = (function () {
+        function Character(parts) {
+            this.x = parts["x"];
+            this.y = parts["y"];
+            this.name = parts["name"];
+            this.facing = parts["facing"];
+            this.scale = parts["scale"];
+        }
+        Character.prototype.update = function () {
+            switch (name) {
+                case "slenderman":
+                    break;
+            }
+        };
+        return Character;
+    })();
+    utils.Character = Character;
+})(utils || (utils = {}));
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -144,10 +151,6 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
-/// <reference path="Thing.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -166,7 +169,7 @@ var engine;
             e.cw = e.canvas.width;
             e.ch = e.canvas.height;
             e.tileSizeRef = e.canvas.height - e.canvas.height / 16;
-            e.maxMonsterHeight = e.tileSizeRef / 1.5;
+            e.maxCharacterHeight = e.tileSizeRef / 1.5;
             e.gl = e.canvas.getContext('webgl', { antialias: true });
             var shader = new utils.Shader(e.gl);
             shader.getShader('shader-fs');
@@ -218,6 +221,10 @@ var engine;
                     e.myPlayer.setY(map[coord]["y"]);
                     e.myPlayer.setFacing(map[coord]["facing"]);
                 }
+                else if (coord == "character") {
+                    var character = new utils.Character(map[coord]);
+                    e.myCharacters[map[coord].x][map[coord].y] = character;
+                }
                 else {
                     var x = coord.split(',')[0];
                     var y = coord.split(',')[1];
@@ -227,17 +234,6 @@ var engine;
                     }
                     if (e.boxes[x] === undefined) {
                         e.boxes[x] = [];
-                    }
-                    if (map[coord]["thing"]) {
-                        switch (map[coord]["thing"].kind) {
-                            case "character":
-                                console.log("dododo");
-                                break;
-                            case "interactable":
-                                break;
-                            default:
-                                break;
-                        }
                     }
                     e.boxes[x].push(box);
                 }
@@ -403,6 +399,9 @@ var engine;
                         e.setUpTexture(pattern, surface);
                         e.drawSurface(z, pattern, surface, push);
                     }
+                }
+                var charTemp = e.getCharacter(box.x, box.y);
+                if (charTemp) {
                 }
             }
         };
@@ -704,6 +703,11 @@ var engine;
                     return false;
             }
         };
+        Engine.prototype.getCharacter = function (x, y) {
+            if (this.myCharacters[x][y] === undefined)
+                return null;
+            return this.myCharacters[x][y];
+        };
         Engine.prototype.debug = function (output) {
             var e = this;
             e.debugElement.innerHTML = output;
@@ -731,7 +735,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
@@ -799,5 +802,6 @@ function getTextureLocations(pixel_locs) {
     }
 }
 function run() {
+    console.log(pack.thing);
     edgy = new engine.Engine("gameport");
 }
