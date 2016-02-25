@@ -1,0 +1,146 @@
+##### Script that copies cube and creates a left and right cube and then runs the exponential perspective changes on the scene #####
+
+import bpy
+import bmesh
+
+# set object mode 
+bpy.ops.object.mode_set(mode='OBJECT')
+# folder path for ouput 
+filePath = "C:\\Users\\Dakota\\Desktop\\Blender Render Outputs"
+# get objects for all surfaces and puts into array 
+center_ceiling = bpy.data.objects.get("center_ceiling")
+center_floor = bpy.data.objects.get("center_floor")
+center_front = bpy.data.objects.get("center_front")
+center_left_wall = bpy.data.objects.get("center_left_wall")
+center_right_wall = bpy.data.objects.get("center_right_wall")
+center_cam = bpy.data.objects.get("center_cam")
+left_cam = bpy.data.objects.get("left_cam")
+right_cam = bpy.data.objects.get("right_cam")
+scene = bpy.data.scenes.get("Scene")
+
+
+# loop for creating left cube 
+for obj in bpy.data.objects:
+    location = Vector((-2.0,0.0,0.0))
+    if (obj.type == 'MESH'):
+        if(obj.name == "center_ceiling"):
+            name = "left_ceiling"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_floor"):
+            name = "left_floor"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_front"):
+            name = "left_front"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_left_wall"):
+            name = "left_left_wall"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_right_wall"):
+            continue
+
+# loop for creating right cube 
+for obj in bpy.data.objects:
+    location = Vector((2.0,0.0,0.0))
+    if (obj.type == 'MESH'):
+        if(obj.name == "center_ceiling"):
+            name = "right_ceiling"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_floor"):
+            name = "right_floor"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_front"):
+            name = "right_front"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+        elif(obj.name == "center_left_wall"):
+            continue
+        elif(obj.name == "center_right_wall"):
+            name = "right_right_wall"
+            mesh = bpy.data.meshes.new(name)
+            copySurface = bpy.data.objects.new(name, mesh)
+            copySurface.data = obj.data.copy()
+            copySurface.scale = obj.scale
+            copySurface.location = location
+            scene.objects.link(copySurface)
+ 
+
+# Exponential perspective script
+for obj in bpy.data.objects:
+    if (obj.type == 'MESH'):
+        m0 = obj.location.x
+        m1 = obj.location.y
+        m2 = obj.location.z
+        #mesh = obj.getData(mesh=1)
+        for v in obj.data.vertices:
+            x = v.co[0] + m0
+            z = v.co[1] + m1
+            y = v.co[2] + m2
+            xp = x / pow(2,z/2)
+            yp = y / pow(2,z/2)				
+            # Leave as Orthographic
+            v.co[0] = xp - m0
+            v.co[2] = yp - m2                       				
+            # Or.. Convert Back to perspective
+            # xt = xp*z
+            # yt = yp*z
+            # v.co[0] = xt - m0
+            # v.co[2] = yt - m2
+
+# hides everything from rendering 
+for obj in bpy.data.objects:
+    if(obj.type == 'MESH'):
+        obj.hide_render = True
+
+# loops through and renders one image per surface also switches cameras based on which cube you are at  
+counter = 0
+for obj in bpy.data.objects:
+    if (counter == 5):
+        bpy.context.scene.camera = left_cam
+    if (counter == 9):
+        bpy.context.scene.camera = right_cam     
+    if (obj.type == 'MESH'):
+        counter += 1
+        filePathComplete = filePath + "\\image%d.png" % counter
+        obj.hide_render = False
+        bpy.data.scenes['Scene'].render.filepath = filePathComplete
+        bpy.ops.render.render(write_still=True)
+        obj.hide_render = True 
+
+##### END SCRIPT #####
+
+  
+    
