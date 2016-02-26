@@ -1,3 +1,24 @@
+/*
+ * Version 1.0
+ * The box module keeps track of a basic map unit
+ * The game map will be drawn using boxes
+ * Each box has:
+ * 	- 2 walls
+ * 	- a floor
+ *  - a ceiling
+ * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
+ * Walls are always just 1 tile
+ *
+ * Box initial structure:
+ * {
+ * 	"ceiling":{},
+ * 	"floor":{},
+ * 	"north":{},
+ * 	"east":{},
+ * 	"south":{}
+ * }
+ * So, a box is just a bunch of textures that is rendered based on the user's view of it
+ */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -57,6 +78,9 @@ var utils;
     })();
     utils.Character = Character;
 })(utils || (utils = {}));
+/*
+ * Shader class that creates the programs for specified WebGL context
+ */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -151,6 +175,10 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
+/// <reference path="Shader.ts" />
+/// <reference path="Box.ts" />
+/// <reference path="Player.ts" />
+/// <reference path="Character.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -196,6 +224,7 @@ var engine;
             e.texCoordBuffer = e.gl.createBuffer();
             e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
             e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
+            e.myCharacters = {};
             e.loadBoxes();
             e.displayBoxes = [];
             e.fpsFrames = 0;
@@ -216,6 +245,8 @@ var engine;
         Engine.prototype.loadBoxes = function () {
             var e = this;
             for (var coord in map) {
+                var x = coord.split(',')[0];
+                var y = coord.split(',')[1];
                 if (coord == "player") {
                     e.myPlayer.setX(map[coord]["x"]);
                     e.myPlayer.setY(map[coord]["y"]);
@@ -223,11 +254,9 @@ var engine;
                 }
                 else if (coord == "character") {
                     var character = new utils.Character(map[coord]);
-                    e.myCharacters[map[coord].x][map[coord].y] = character;
+                    e.myCharacters[x + y] = character;
                 }
                 else {
-                    var x = coord.split(',')[0];
-                    var y = coord.split(',')[1];
                     var box = new utils.Box(x, y, map[coord]);
                     if (e.boxes === undefined) {
                         e.boxes = [];
@@ -238,6 +267,7 @@ var engine;
                     e.boxes[x].push(box);
                 }
             }
+            console.log(e.myCharacters);
         };
         Engine.prototype.draw = function () {
             var e = this;
@@ -704,9 +734,6 @@ var engine;
             }
         };
         Engine.prototype.getCharacter = function (x, y) {
-            if (this.myCharacters[x][y] === undefined)
-                return null;
-            return this.myCharacters[x][y];
         };
         Engine.prototype.debug = function (output) {
             var e = this;
@@ -735,6 +762,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
+/// <reference path="Engine.ts" />
 var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
@@ -802,6 +830,5 @@ function getTextureLocations(pixel_locs) {
     }
 }
 function run() {
-    console.log(pack.thing);
     edgy = new engine.Engine("gameport");
 }

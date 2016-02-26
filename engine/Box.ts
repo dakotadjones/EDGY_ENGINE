@@ -1,5 +1,3 @@
-/// <reference path="Thing.ts" />
-
 /*
  * Version 1.0
  * The box module keeps track of a basic map unit

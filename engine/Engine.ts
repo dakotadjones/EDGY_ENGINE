@@ -34,7 +34,7 @@ export class Engine {
 	
 	//character stuff
 	maxCharacterHeight:number;
-	myCharacters:Array<Array<utils.Character>>;
+	myCharacters:JSON;
 
 	// Frames Per Second for developer reference
 	fpsFrames:number;
@@ -123,8 +123,10 @@ export class Engine {
 		e.gl.texImage2D(e.gl.TEXTURE_2D, 0, e.gl.RGBA, e.gl.RGBA, e.gl.UNSIGNED_BYTE, e.texturePack);
 		e.resolutionLocation = e.gl.getUniformLocation(e.program, "u_resolution");
 	
-		e.loadBoxes();
+		// character stuff
+		e.myCharacters = <JSON>{};
 		
+		e.loadBoxes();
 		e.displayBoxes = [];
 		
 		//fps stuff
@@ -160,19 +162,19 @@ export class Engine {
 	}
 	
 	loadBoxes() {
-		var e = this;
+		var e = this;				
 		for (var coord in map) {
+			var x = coord.split(',')[0];
+			var y = coord.split(',')[1];
 			if (coord == "player") {
 				e.myPlayer.setX(map[coord]["x"]);
 				e.myPlayer.setY(map[coord]["y"]);
 				e.myPlayer.setFacing(map[coord]["facing"]);
 			} else if (coord == "character"){
 				var character = new utils.Character(map[coord]);
-				e.myCharacters[map[coord].x][map[coord].y] = character;
-			} else {
-				var x = coord.split(',')[0];
-				var y = coord.split(',')[1];
 				
+				e.myCharacters[x+y] = character;
+			} else {
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
 					e.boxes = [];
@@ -180,22 +182,12 @@ export class Engine {
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
-				// if (map[coord]["thing"]) {
-				//      switch (map[coord]["thing"].kind) {
-				// 		case "character":
-				// 			console.log("dododo");
-				// 			break;
-				// 		case "interactable":
-				// 		 	break;
-				// 		default:
-				// 			break;
-				// 	 }
-				// 	//box.setOccupant(map[coord]["thing"]);
-				// }
 				
 				e.boxes[x].push(box)
 			}
 		}
+
+		console.log(e.myCharacters);
 	}
 	
 	draw() {
@@ -737,10 +729,13 @@ export class Engine {
 				return false;
 		}
 	}
-	getCharacter(x:number,y:number){
+	
+	getCharacter(x:number,y:number) {
+		/*
 		if (this.myCharacters[x][y] === undefined)
 			return null;
 		return this.myCharacters[x][y];
+		*/
 	}
 	
 	debug(output:string){
