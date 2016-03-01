@@ -159,6 +159,8 @@ export class Engine {
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
+		
+	    console.log(pack);
 	}
 	
 	loadBoxes() {
@@ -170,10 +172,9 @@ export class Engine {
 				e.myPlayer.setX(map[coord]["x"]);
 				e.myPlayer.setY(map[coord]["y"]);
 				e.myPlayer.setFacing(map[coord]["facing"]);
-			} else if (coord == "character"){
+			} else if (coord == "character") {
 				var character = new utils.Character(map[coord]);
-				
-				e.myCharacters[x+y] = character;
+				e.myCharacters[String(character.getX())+","+String(character.getY())] = character;
 			} else {
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
@@ -186,8 +187,6 @@ export class Engine {
 				e.boxes[x].push(box)
 			}
 		}
-
-		console.log(e.myCharacters);
 	}
 	
 	draw() {
@@ -352,9 +351,10 @@ export class Engine {
 					e.drawSurface(z, pattern, surface, push);
 				}
 			}
-			var charTemp = e.getCharacter(box.x,box.y)
-			if (charTemp){
-				
+			
+			var drawCharacter = e.getCharacter(box.x,box.y);
+			if (drawCharacter) {
+				e.setUpTexture(drawCharacter.getName(), e.getPlayerPerspective(facing, drawCharacter.getFacing()), true);
 			}
 		}
 	}
@@ -455,19 +455,73 @@ export class Engine {
 	getPlayerFacing() {
 		return this.myPlayer.getFacing();
 	}
+	
+	getPlayerPerspective(myFacing:string, thingFacing:string) {
+		var e = this;
+		if (myFacing == thingFacing) {
+			return "back";
+		} else if (e.leftFace(myFacing) == thingFacing) {
+			return "left";
+		} else if (e.rightFace(myFacing) == thingFacing) {
+			return "right";
+		} else {
+			return "front";
+		}
+		
+	}
+	
+	rightFace(myFacing:string) {
+		switch (myFacing) {
+			case "north":
+				return "east";
+				break;
+			case "east":
+				return "north";
+				break;
+			case "south":
+				return "west";
+				break;
+			case "west":
+				return "south";
+				break;
+		}
+	}
+	
+	leftFace(myFacing:string) {
+		switch (myFacing) {
+			case "north":
+				return "west";
+				break;
+			case "east":
+				return "south";
+				break;
+			case "south":
+				return "east";
+				break;
+			case "west":
+				return "north";
+				break;
+		}
+	}
 
-	setUpTexture(pattern:string, surfaceType:string) {
+	setUpTexture(pattern:string, surfaceType:string, thing=false) {
 		var e = this;
 		var bufferStart = new Date().getTime();
 		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
 		e.gl.enableVertexAttribArray(e.texCoordLocation);
 		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
-
-		var x = pack[pattern][surfaceType]["x"];
-		var y = pack[pattern][surfaceType]["y"];
-		var w = pack[pattern][surfaceType]["w"];
-		var h = pack[pattern][surfaceType]["h"];
-	
+		var packObj = pack;
+		if (thing) {
+			e.debug("a thing!");
+			packObj = pack["thing"];
+		}
+		var x = packObj[pattern][surfaceType]["x"];
+		var y = packObj[pattern][surfaceType]["y"];
+		var w = packObj[pattern][surfaceType]["w"];
+		var h = packObj[pattern][surfaceType]["h"];
+		if (thing) {
+			e.debug("p: " + pattern + "s: " + surfaceType + "x: " + x + "y: " + y + "w: " + w + "h: " + h);
+		}
 		setRectangle(e.gl, x, y, w, h, e.rectangle);
 	}
 	
@@ -731,11 +785,10 @@ export class Engine {
 	}
 	
 	getCharacter(x:number,y:number) {
-		/*
-		if (this.myCharacters[x][y] === undefined)
+		var coord = String(x) + "," + String(y);
+		if (this.myCharacters[coord] === undefined)
 			return null;
-		return this.myCharacters[x][y];
-		*/
+		return this.myCharacters[coord];
 	}
 	
 	debug(output:string){

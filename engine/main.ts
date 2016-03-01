@@ -34,7 +34,7 @@ function addThing(thingInfo:JSON, itMoves:boolean) {
 	var things = pack["thing"];
 	var key_array = thingInfo["filename"].split('_');
 	var name = key_array[1];
-	var thing_perspective = key_array[2] + "_" + key_array[3].split('.')[0];
+	var thing_perspective = key_array[2].split('.')[0]; //+ "_" + key_array[3].split('.')[0];
 	if (!things.hasOwnProperty(name)) {
 		things[name] = {};		
 	}

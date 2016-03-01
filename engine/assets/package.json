@@ -1,5 +1,4 @@
 {"frames": [
-
 {
 	"filename": "black_front_center.png",
 	"frame": {"x":2,"y":1006,"w":500,"h":500},
@@ -127,7 +126,7 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "character_slenderman_front_center.png",
+	"filename": "character_slenderman_front.png",
 	"frame": {"x":2,"y":510,"w":339,"h":409},
 	"rotated": false,
 	"trimmed": false,

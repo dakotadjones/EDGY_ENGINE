@@ -67,7 +67,38 @@ var utils;
             this.name = parts["name"];
             this.facing = parts["facing"];
             this.scale = parts["scale"];
+            this.boxScale = 1;
         }
+        Character.prototype.getFacing = function () {
+            return this.facing;
+        };
+        Character.prototype.getName = function () {
+            return this.name;
+        };
+        Character.prototype.getX = function () {
+            return this.x;
+        };
+        Character.prototype.getY = function () {
+            return this.y;
+        };
+        Character.prototype.getScale = function () {
+            return this.scale;
+        };
+        Character.prototype.getBoxScale = function () {
+            return this.boxScale;
+        };
+        Character.prototype.setBoxScale = function (boxScale) {
+            this.boxScale = boxScale;
+        };
+        Character.prototype.setFacing = function (facing) {
+            this.facing = facing;
+        };
+        Character.prototype.setX = function (x) {
+            this.x = x;
+        };
+        Character.prototype.setY = function (y) {
+            this.y = y;
+        };
         Character.prototype.update = function () {
             switch (name) {
                 case "slenderman":
@@ -241,6 +272,7 @@ var engine;
             e.turnPush = 0;
             e.drawDistance = 6;
             e.draw();
+            console.log(pack);
         };
         Engine.prototype.loadBoxes = function () {
             var e = this;
@@ -254,7 +286,7 @@ var engine;
                 }
                 else if (coord == "character") {
                     var character = new utils.Character(map[coord]);
-                    e.myCharacters[x + y] = character;
+                    e.myCharacters[String(character.getX()) + "," + String(character.getY())] = character;
                 }
                 else {
                     var box = new utils.Box(x, y, map[coord]);
@@ -267,7 +299,6 @@ var engine;
                     e.boxes[x].push(box);
                 }
             }
-            console.log(e.myCharacters);
         };
         Engine.prototype.draw = function () {
             var e = this;
@@ -430,8 +461,9 @@ var engine;
                         e.drawSurface(z, pattern, surface, push);
                     }
                 }
-                var charTemp = e.getCharacter(box.x, box.y);
-                if (charTemp) {
+                var drawCharacter = e.getCharacter(box.x, box.y);
+                if (drawCharacter) {
+                    e.setUpTexture(drawCharacter.getName(), e.getPlayerPerspective(facing, drawCharacter.getFacing()), true);
                 }
             }
         };
@@ -526,16 +558,72 @@ var engine;
         Engine.prototype.getPlayerFacing = function () {
             return this.myPlayer.getFacing();
         };
-        Engine.prototype.setUpTexture = function (pattern, surfaceType) {
+        Engine.prototype.getPlayerPerspective = function (myFacing, thingFacing) {
+            var e = this;
+            if (myFacing == thingFacing) {
+                return "back";
+            }
+            else if (e.leftFace(myFacing) == thingFacing) {
+                return "left";
+            }
+            else if (e.rightFace(myFacing) == thingFacing) {
+                return "right";
+            }
+            else {
+                return "front";
+            }
+        };
+        Engine.prototype.rightFace = function (myFacing) {
+            switch (myFacing) {
+                case "north":
+                    return "east";
+                    break;
+                case "east":
+                    return "north";
+                    break;
+                case "south":
+                    return "west";
+                    break;
+                case "west":
+                    return "south";
+                    break;
+            }
+        };
+        Engine.prototype.leftFace = function (myFacing) {
+            switch (myFacing) {
+                case "north":
+                    return "west";
+                    break;
+                case "east":
+                    return "south";
+                    break;
+                case "south":
+                    return "east";
+                    break;
+                case "west":
+                    return "north";
+                    break;
+            }
+        };
+        Engine.prototype.setUpTexture = function (pattern, surfaceType, thing) {
+            if (thing === void 0) { thing = false; }
             var e = this;
             var bufferStart = new Date().getTime();
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.texCoordBuffer);
             e.gl.enableVertexAttribArray(e.texCoordLocation);
             e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
-            var x = pack[pattern][surfaceType]["x"];
-            var y = pack[pattern][surfaceType]["y"];
-            var w = pack[pattern][surfaceType]["w"];
-            var h = pack[pattern][surfaceType]["h"];
+            var packObj = pack;
+            if (thing) {
+                e.debug("a thing!");
+                packObj = pack["thing"];
+            }
+            var x = packObj[pattern][surfaceType]["x"];
+            var y = packObj[pattern][surfaceType]["y"];
+            var w = packObj[pattern][surfaceType]["w"];
+            var h = packObj[pattern][surfaceType]["h"];
+            if (thing) {
+                e.debug("p: " + pattern + "s: " + surfaceType + "x: " + x + "y: " + y + "w: " + w + "h: " + h);
+            }
             setRectangle(e.gl, x, y, w, h, e.rectangle);
         };
         Engine.prototype.drawSurface = function (z, pattern, surfaceType, push) {
@@ -734,6 +822,10 @@ var engine;
             }
         };
         Engine.prototype.getCharacter = function (x, y) {
+            var coord = String(x) + "," + String(y);
+            if (this.myCharacters[coord] === undefined)
+                return null;
+            return this.myCharacters[coord];
         };
         Engine.prototype.debug = function (output) {
             var e = this;
@@ -790,7 +882,7 @@ function addThing(thingInfo, itMoves) {
     var things = pack["thing"];
     var key_array = thingInfo["filename"].split('_');
     var name = key_array[1];
-    var thing_perspective = key_array[2] + "_" + key_array[3].split('.')[0];
+    var thing_perspective = key_array[2].split('.')[0];
     if (!things.hasOwnProperty(name)) {
         things[name] = {};
     }
