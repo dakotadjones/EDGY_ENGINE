@@ -341,7 +341,7 @@ export class Engine {
 			}
 
 			for (var j = 0; j <= relSurfaces.length; j++) {
-				var wasFrontFar = false;
+
 				var rsurface = relSurfaces[j];
 				var asurface = absSurfaces[j];
 				var pattern = box.getPattern(asurface);
@@ -355,6 +355,7 @@ export class Engine {
 			
 			var character = e.getCharacter(box.x,box.y);
 			if (character) {
+				// TODO draw characters correctly when turning
 				var characterPattern = character.getName();
 				var characterPerspective = e.getPlayerPerspective(facing, character.getFacing());
 				e.setUpTexture(characterPattern, characterPerspective, true);
@@ -676,33 +677,21 @@ export class Engine {
                 scenePush = -e.cw;
             }
 		}
-
-		/* front center tile
-		(e.cw/2-(e.tileSizeRef/(zScale*2)))+e.slide+scenePush
-		front center monster
-		(e.cw/2-(w/(zScale*2)))+e.slide+scenePush
-		 */
-		/* front left 
-		e.cw/2-(3*e.tileSizeRef/(zScale*2)))+e.slide+scenePush
-		*/
-        /* front right 
-		(e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush
-		*/
-		
-		switch(perspective+leftRightCenter) {
-			case "frontleft":
+		// TODO do we even need perspective param?
+		switch(leftRightCenter) {
+			case "left":
 				setRectangle(e.gl, (e.cw/2-((4*w)/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
 							 w/(zScale),
 							 (h/zScale), e.rectangle);
 				break;
-			case "frontright":
+			case "right":
 				setRectangle(e.gl, (e.cw/2+(2*w/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
 							 w/(zScale),
 							 (h/zScale), e.rectangle);
 				break;
-			case "frontcenter":
+			case "center":
 				setRectangle(e.gl, (e.cw/2-(w/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
 							 w/(zScale),

@@ -332,10 +332,10 @@ var engine;
                 e.slide = 0;
             }
             else if (e.slide < 0) {
-                e.slide += e.cw / 10;
+                e.slide += 10;
             }
             else if (e.slide > 0) {
-                e.slide -= e.cw / 10;
+                e.slide -= 10;
             }
             requestAnimationFrame(this.draw.bind(this));
         };
@@ -444,7 +444,6 @@ var engine;
                     e.drawSquare(push);
                 }
                 for (var j = 0; j <= relSurfaces.length; j++) {
-                    var wasFrontFar = false;
                     var rsurface = relSurfaces[j];
                     var asurface = absSurfaces[j];
                     var pattern = box.getPattern(asurface);
@@ -708,14 +707,14 @@ var engine;
                     scenePush = -e.cw;
                 }
             }
-            switch (perspective + leftRightCenter) {
-                case "frontleft":
+            switch (leftRightCenter) {
+                case "left":
                     setRectangle(e.gl, (e.cw / 2 - ((4 * w) / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
                     break;
-                case "frontright":
+                case "right":
                     setRectangle(e.gl, (e.cw / 2 + (2 * w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
                     break;
-                case "frontcenter":
+                case "center":
                     setRectangle(e.gl, (e.cw / 2 - (w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
                     break;
             }
@@ -883,7 +882,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
 }
 /// <reference path="Engine.ts" />
 var SRC = 'assets/package';
-var MAPSRC = 'assets/map_fourbythree.json';
+var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
 var map;
 var edgy;
