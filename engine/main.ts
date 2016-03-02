@@ -1,6 +1,6 @@
 /// <reference path="Engine.ts" />
 var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard_grass.json'
+var MAPSRC = 'assets/map_fourbythree.json'
 var pack;
 var map;
 var edgy;
@@ -30,7 +30,7 @@ function mapRequestListener() {
 	map = JSON.parse(this.responseText);
 }
 
-function addThing(thingInfo:JSON, itMoves:boolean) {
+function addThing(thingInfo:JSON) {
 	var things = pack["thing"];
 	var key_array = thingInfo["filename"].split('_');
 	var name = key_array[1];
@@ -61,7 +61,7 @@ function getTextureLocations(pixel_locs:JSON) {
 		var key_array = key.split('_');
 		var pattern = key_array[0];
 		if (pattern == "character") {
-			addThing(pixel_locs['frames'][i], true);
+			addThing(pixel_locs['frames'][i]);
 			continue;
 		}
 		var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
