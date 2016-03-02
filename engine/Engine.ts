@@ -159,8 +159,7 @@ export class Engine {
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
-		
-	    //console.log(pack);
+		//console.log(pack);	
 	}
 	
 	loadBoxes() {
@@ -172,9 +171,11 @@ export class Engine {
 				e.myPlayer.setX(map[coord]["x"]);
 				e.myPlayer.setY(map[coord]["y"]);
 				e.myPlayer.setFacing(map[coord]["facing"]);
-			} else if (coord == "character") {
-				var character = new utils.Character(map[coord]);
-				e.myCharacters[String(character.getX())+","+String(character.getY())] = character;
+			} else if (coord == "characters") {
+				for(var c in map[coord]) {
+					var character = new utils.Character(map[coord][c]);
+					e.myCharacters[String(character.getX())+","+String(character.getY())] = character;
+				}
 			} else {
 				var box = new utils.Box(x,y, map[coord]);
 				if (e.boxes === undefined) {
@@ -514,7 +515,6 @@ export class Engine {
 		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
 		var packObj = pack;
 		if (thing) {
-			// e.debug("a thing!");
 			packObj = pack["thing"];
 		}
 		var x = packObj[pattern][surfaceType]["x"];
@@ -676,14 +676,39 @@ export class Engine {
                 scenePush = -e.cw;
             }
 		}
+
+		/* front center tile
+		(e.cw/2-(e.tileSizeRef/(zScale*2)))+e.slide+scenePush
+		front center monster
+		(e.cw/2-(w/(zScale*2)))+e.slide+scenePush
+		 */
+		/* front left 
+		e.cw/2-(3*e.tileSizeRef/(zScale*2)))+e.slide+scenePush
+		*/
+        /* front right 
+		(e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush
+		*/
 		
 		switch(perspective+leftRightCenter) {
+			case "frontleft":
+				setRectangle(e.gl, (e.cw/2-((4*w)/(zScale*2)))+e.slide+scenePush, 
+							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
+							 w/(zScale),
+							 (h/zScale), e.rectangle);
+				break;
+			case "frontright":
+				setRectangle(e.gl, (e.cw/2+(2*w/(zScale*2)))+e.slide+scenePush, 
+							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
+							 w/(zScale),
+							 (h/zScale), e.rectangle);
+				break;
 			case "frontcenter":
 				setRectangle(e.gl, (e.cw/2-(w/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
 							 w/(zScale),
 							 (h/zScale), e.rectangle);
 				break;
+			
 		}
 		
 		//setRectangle();

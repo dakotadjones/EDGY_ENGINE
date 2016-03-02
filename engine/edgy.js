@@ -276,9 +276,11 @@ var engine;
                     e.myPlayer.setY(map[coord]["y"]);
                     e.myPlayer.setFacing(map[coord]["facing"]);
                 }
-                else if (coord == "character") {
-                    var character = new utils.Character(map[coord]);
-                    e.myCharacters[String(character.getX()) + "," + String(character.getY())] = character;
+                else if (coord == "characters") {
+                    for (var c in map[coord]) {
+                        var character = new utils.Character(map[coord][c]);
+                        e.myCharacters[String(character.getX()) + "," + String(character.getY())] = character;
+                    }
                 }
                 else {
                     var box = new utils.Box(x, y, map[coord]);
@@ -707,6 +709,12 @@ var engine;
                 }
             }
             switch (perspective + leftRightCenter) {
+                case "frontleft":
+                    setRectangle(e.gl, (e.cw / 2 - ((4 * w) / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
+                    break;
+                case "frontright":
+                    setRectangle(e.gl, (e.cw / 2 + (2 * w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
+                    break;
                 case "frontcenter":
                     setRectangle(e.gl, (e.cw / 2 - (w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
                     break;
@@ -875,7 +883,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
 }
 /// <reference path="Engine.ts" />
 var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard_grass.json';
+var MAPSRC = 'assets/map_fourbythree.json';
 var pack;
 var map;
 var edgy;
@@ -897,7 +905,7 @@ function locationRequestListener() {
 function mapRequestListener() {
     map = JSON.parse(this.responseText);
 }
-function addThing(thingInfo, itMoves) {
+function addThing(thingInfo) {
     var things = pack["thing"];
     var key_array = thingInfo["filename"].split('_');
     var name = key_array[1];
@@ -924,7 +932,7 @@ function getTextureLocations(pixel_locs) {
         var key_array = key.split('_');
         var pattern = key_array[0];
         if (pattern == "character") {
-            addThing(pixel_locs['frames'][i], true);
+            addThing(pixel_locs['frames'][i]);
             continue;
         }
         var surface_perspective = key_array[1] + "_" + key_array[2].split('.')[0];
