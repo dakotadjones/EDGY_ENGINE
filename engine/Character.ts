@@ -5,15 +5,13 @@ module utils {
 		facing:string;
 		name:string;
 		scale:number;
-		boxScale:number; // for moving between boxes
-	
+			
 		constructor(parts:JSON) {
 			this.x = parts["x"];
 			this.y = parts["y"];
 			this.name = parts["name"];
 			this.facing = parts["facing"];
 			this.scale = parts["scale"];
-			this.boxScale = 1;
 		}
 		
 		getFacing() {
@@ -34,14 +32,6 @@ module utils {
 		
 		getScale() {
 			return this.scale;
-		}
-		
-		getBoxScale() {
-			return this.boxScale;
-		}
-		
-		setBoxScale(boxScale:number) {
-			this.boxScale = boxScale;
 		}
 		
 		setFacing(facing:string) {

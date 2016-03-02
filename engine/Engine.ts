@@ -160,7 +160,7 @@ export class Engine {
 		// TODO ensure draw gets called after load boxes
 		e.draw();
 		
-	    console.log(pack);
+	    //console.log(pack);
 	}
 	
 	loadBoxes() {
@@ -352,9 +352,12 @@ export class Engine {
 				}
 			}
 			
-			var drawCharacter = e.getCharacter(box.x,box.y);
-			if (drawCharacter) {
-				e.setUpTexture(drawCharacter.getName(), e.getPlayerPerspective(facing, drawCharacter.getFacing()), true);
+			var character = e.getCharacter(box.x,box.y);
+			if (character) {
+				var characterPattern = character.getName();
+				var characterPerspective = e.getPlayerPerspective(facing, character.getFacing());
+				e.setUpTexture(characterPattern, characterPerspective, true);
+				e.drawCharacter(z, characterPattern, characterPerspective, leftRightCenter, character.getScale(), push);
 			}
 		}
 	}
@@ -378,7 +381,7 @@ export class Engine {
 			e.zAnimB = true;
 		e.displayBoxes = [];
 		
-		switch(facing){
+		switch(facing) {
 			case "north":
 			 var getBox = function(i:number,w:number){return e.boxes[myX+w][myY - i];};
 			 var isThere = function(i:number,w:number){
@@ -467,7 +470,6 @@ export class Engine {
 		} else {
 			return "front";
 		}
-		
 	}
 	
 	rightFace(myFacing:string) {
@@ -512,16 +514,14 @@ export class Engine {
 		e.gl.vertexAttribPointer(e.texCoordLocation, 2, e.gl.FLOAT, false, 0, 0);
 		var packObj = pack;
 		if (thing) {
-			e.debug("a thing!");
+			// e.debug("a thing!");
 			packObj = pack["thing"];
 		}
 		var x = packObj[pattern][surfaceType]["x"];
 		var y = packObj[pattern][surfaceType]["y"];
 		var w = packObj[pattern][surfaceType]["w"];
 		var h = packObj[pattern][surfaceType]["h"];
-		if (thing) {
-			e.debug("p: " + pattern + "s: " + surfaceType + "x: " + x + "y: " + y + "w: " + w + "h: " + h);
-		}
+	
 		setRectangle(e.gl, x, y, w, h, e.rectangle);
 	}
 	
@@ -648,6 +648,45 @@ export class Engine {
 				break;
 		}
 
+		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
+	}
+	
+	drawCharacter(z:number, pattern:string, perspective:string, leftRightCenter:string, scale:number, push:boolean) {
+		var e = this;
+		// lookup uniforms
+		// set the resolution
+		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
+		e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
+		e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
+		e.gl.enableVertexAttribArray(e.positionLocation);
+		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
+		
+		var w = +pack["thing"][pattern][perspective]["w"];
+		var h = +pack["thing"][pattern][perspective]["h"];
+		w=2*scale*e.tileSizeRef*w/h;
+		h=2*e.tileSizeRef*scale;		
+
+		var zScale = Math.pow(2,z+0.5+e.zAnim);
+		var scenePush = 0;
+		if (push) {
+            if(e.slide < 0) {
+			     scenePush = e.cw;
+            }
+            else {
+                scenePush = -e.cw;
+            }
+		}
+		
+		switch(perspective+leftRightCenter) {
+			case "frontcenter":
+				setRectangle(e.gl, (e.cw/2-(w/(zScale*2)))+e.slide+scenePush, 
+							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
+							 w/(zScale),
+							 (h/zScale), e.rectangle);
+				break;
+		}
+		
+		//setRectangle();
 		e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
 	}
 	
