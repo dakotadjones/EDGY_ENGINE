@@ -547,13 +547,13 @@ var engine;
                     return "east";
                     break;
                 case "east":
-                    return "north";
+                    return "south";
                     break;
                 case "south":
                     return "west";
                     break;
                 case "west":
-                    return "south";
+                    return "north";
                     break;
             }
         };
@@ -563,13 +563,13 @@ var engine;
                     return "west";
                     break;
                 case "east":
-                    return "south";
+                    return "north";
                     break;
                 case "south":
                     return "east";
                     break;
                 case "west":
-                    return "north";
+                    return "south";
                     break;
             }
         };
@@ -684,7 +684,7 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 - (w / (2 * zScale))) + e.slide + scenePush - (e.tileSizeRef / zScale), e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
                     break;
                 case "right":
-                    setRectangle(e.gl, (e.cw / 2 + (w / (2 * zScale))) + e.slide + scenePush + (e.tileSizeRef / zScale), e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (w / (2 * zScale))) + e.slide + scenePush + (e.tileSizeRef / zScale), e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
                     break;
                 case "center":
                     setRectangle(e.gl, (e.cw / 2 - (w / (2 * zScale))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);

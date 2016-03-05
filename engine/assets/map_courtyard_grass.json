@@ -1,6 +1,8 @@
 {
 "player":{"x":12, "y":5, "facing":"west"},
-"characters":[{"name":"slenderman","x":8,"y":4,"facing":"west","scale":0.8},{"name":"slenderman","x":8,"y":5,"facing":"west","scale":0.8}],
+"characters":[{"name":"slenderman","x":8,"y":4,"facing":"west","scale":0.8},
+			  {"name":"slenderman","x":8,"y":5,"facing":"west","scale":0.8},
+			  {"name":"slenderman","x":10,"y":1,"facing":"south","scale":0.8}],
 "0,0":{
 	"ceil":null,
 	"floor":null,
