@@ -6,99 +6,99 @@
 	{"name":"slenderman","x":1,"y":0,"facing":"west","scale":0.8},
 	{"name":"slenderman","x":1,"y":2,"facing":"west","scale":0.8}],
 "0,0":{
-	"ceil":"blue",
-	"floor":"purple",
-	"north":"blue",
+	"ceil":"grass",
+	"floor":"grass",
+	"north":"grass",
 	"south":null,
 	"east":null,
-	"west":"blue"
+	"west":"grass"
 },
 "0,1":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
 	"south":null,
 	"east":null,
-	"west":"blue"
+	"west":"grass"
 },
 "0,2":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
-	"south":"blue",
+	"south":"grass",
 	"east":null,
-	"west":"blue"
+	"west":"grass"
 },
 "1,0":{
-	"ceil":"blue",
-	"floor":"purple",
-	"north":"blue",
+	"ceil":"grass",
+	"floor":"grass",
+	"north":"grass",
 	"south":null,
 	"east":null,
 	"west":null
 },
 "1,1":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
 	"south":null,
 	"east":null,
 	"west":null
 },
 "1,2":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
-	"south":"blue",
+	"south":"grass",
 	"east":null,
 	"west":null
 },
 "2,0":{
-	"ceil":"blue",
-	"floor":"purple",
-	"north":"blue",
+	"ceil":"grass",
+	"floor":"grass",
+	"north":"grass",
 	"south":null,
 	"east":null,
 	"west":null
 },
 "2,1":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
 	"south":null,
 	"east":null,
 	"west":null
 },
 "2,2":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
-	"south":"blue",
+	"south":"grass",
 	"east":null,
 	"west":null
 },
 "3,0":{
-	"ceil":"blue",
-	"floor":"purple",
-	"north":"blue",
+	"ceil":"grass",
+	"floor":"grass",
+	"north":"grass",
 	"south":null,
-	"east":"blue",
+	"east":"grass",
 	"west":null
 },
 "3,1":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
 	"south":null,
-	"east":"blue",
+	"east":"grass",
 	"west":null
 },
 "3,2":{
-	"ceil":"blue",
-	"floor":"purple",
+	"ceil":"grass",
+	"floor":"grass",
 	"north":null,
-	"south":"blue",
-	"east":"blue",
+	"south":"grass",
+	"east":"grass",
 	"west":null
 }
 }

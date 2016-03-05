@@ -1,6 +1,6 @@
 /// <reference path="Engine.ts" />
-var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard_grass.json'
+var SRC = 'assets/grass_test';
+var MAPSRC = 'assets/map_fourbythree.json'
 var pack;
 var map;
 var edgy;
@@ -72,8 +72,8 @@ function getTextureLocations(pixel_locs:JSON) {
 			pack[pattern][surface_perspective] = {};
 		}
 
-		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['sourceSize']['h']/total_height
-		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['sourceSize']['w']/total_width
+		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['spriteSourceSize']['h']/total_height
+		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['spriteSourceSize']['w']/total_width
 		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y']/total_height
 		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x']/total_width
 	}

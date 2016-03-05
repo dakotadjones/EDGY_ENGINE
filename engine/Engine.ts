@@ -337,8 +337,8 @@ export class Engine {
 				} else if (e.zAnim < 0 && z == e.drawDistance) {
 						e.tileOpacity = 1 + e.zAnim;
 				}
-				e.setUpTexture("black", "front_center");
-				e.drawSquare(push);
+				//e.setUpTexture("black", "front_center");
+				//e.drawSquare(push);
 			}
 
 			for (var j = 0; j <= relSurfaces.length; j++) {
