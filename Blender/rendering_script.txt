@@ -13,9 +13,7 @@ center_floor = bpy.data.objects.get("center_floor")
 center_front = bpy.data.objects.get("center_front")
 center_left_wall = bpy.data.objects.get("center_left_wall")
 center_right_wall = bpy.data.objects.get("center_right_wall")
-center_cam = bpy.data.objects.get("center_cam")
-left_cam = bpy.data.objects.get("left_cam")
-right_cam = bpy.data.objects.get("right_cam")
+camera = bpy.data.objects.get(“camera”)
 scene = bpy.data.scenes.get("Scene")
 
 
@@ -127,11 +125,7 @@ for obj in bpy.data.objects:
 
 # loops through and renders one image per surface also switches cameras based on which cube you are at  
 counter = 0
-for obj in bpy.data.objects:
-    if (counter == 5):
-        bpy.context.scene.camera = left_cam
-    if (counter == 9):
-        bpy.context.scene.camera = right_cam     
+for obj in bpy.data.objects:   
     if (obj.type == 'MESH'):
         counter += 1
         filePathComplete = filePath + "\\image%d.png" % counter
