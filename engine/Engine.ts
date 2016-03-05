@@ -75,6 +75,7 @@ export class Engine {
 		e.tileSizeRef = e.canvas.height-e.canvas.height/16; 
 		
 		// if a monster is in the middle of a box, this is their maximum height;
+		// probably not needed since we control the scale in zScale
 		e.maxCharacterHeight = e.tileSizeRef/1.5;
 
 		// graphics library
@@ -354,7 +355,7 @@ export class Engine {
 			}
 			
 			var character = e.getCharacter(box.x,box.y);
-			if (character) {
+			if (character && (!e.slide || push)) {
 				// TODO draw characters correctly when turning
 				var characterPattern = character.getName();
 				var characterPerspective = e.getPlayerPerspective(facing, character.getFacing());
@@ -664,10 +665,12 @@ export class Engine {
 		
 		var w = +pack["thing"][pattern][perspective]["w"];
 		var h = +pack["thing"][pattern][perspective]["h"];
-		w=2*scale*e.tileSizeRef*w/h;
-		h=2*e.tileSizeRef*scale;		
+		
+		//do not change
+		w=scale*e.tileSizeRef*w/h;
+		h=scale*e.tileSizeRef;
 
-		var zScale = Math.pow(2,z+0.5+e.zAnim);
+		var zScale = Math.pow(2,z-0.5+e.zAnim);
 		var scenePush = 0;
 		if (push) {
             if(e.slide < 0) {
@@ -677,25 +680,25 @@ export class Engine {
                 scenePush = -e.cw;
             }
 		}
-		// TODO do we even need perspective param?
+		
 		switch(leftRightCenter) {
 			case "left":
-				setRectangle(e.gl, (e.cw/2-((4*w)/(zScale*2)))+e.slide+scenePush, 
+				setRectangle(e.gl, (e.cw/2-(w/(2*zScale)))+e.slide+scenePush-(e.tileSizeRef/zScale), 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
-							 w/(zScale),
-							 (h/zScale), e.rectangle);
+							 w/zScale,
+							 h/zScale, e.rectangle);
 				break;
 			case "right":
-				setRectangle(e.gl, (e.cw/2+(2*w/(zScale*2)))+e.slide+scenePush, 
+				setRectangle(e.gl, (e.cw/2+(w/(2*zScale)))+e.slide+scenePush+(e.tileSizeRef/zScale), 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
-							 w/(zScale),
-							 (h/zScale), e.rectangle);
+							 w/zScale,
+							 h/zScale, e.rectangle);
 				break;
 			case "center":
-				setRectangle(e.gl, (e.cw/2-(w/(zScale*2)))+e.slide+scenePush, 
+				setRectangle(e.gl, (e.cw/2-(w/(2*zScale)))+e.slide+scenePush, 
 							 e.ch/2-(h/(zScale*2))+(e.tileSizeRef*(1-scale))/(zScale), 
-							 w/(zScale),
-							 (h/zScale), e.rectangle);
+							 w/zScale,
+							 h/zScale, e.rectangle);
 				break;
 			
 		}
@@ -847,6 +850,10 @@ export class Engine {
 	debug(output:string){
 		var e = this;
 		e.debugElement.innerHTML=output;
+	}
+	debugAdd(output:string){
+		var e = this;
+		e.debugElement.innerHTML=e.debugElement.innerHTML + "<br>" + output;
 	}
 		
 } // end engine 

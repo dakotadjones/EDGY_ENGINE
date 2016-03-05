@@ -1,24 +1,3 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -102,9 +81,6 @@ var utils;
     })();
     utils.Character = Character;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -199,10 +175,6 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
-/// <reference path="Character.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -332,10 +304,10 @@ var engine;
                 e.slide = 0;
             }
             else if (e.slide < 0) {
-                e.slide += 10;
+                e.slide += e.cw / 10;
             }
             else if (e.slide > 0) {
-                e.slide -= 10;
+                e.slide -= e.cw / 10;
             }
             requestAnimationFrame(this.draw.bind(this));
         };
@@ -455,7 +427,7 @@ var engine;
                     }
                 }
                 var character = e.getCharacter(box.x, box.y);
-                if (character) {
+                if (character && (!e.slide || push)) {
                     var characterPattern = character.getName();
                     var characterPerspective = e.getPlayerPerspective(facing, character.getFacing());
                     e.setUpTexture(characterPattern, characterPerspective, true);
@@ -695,9 +667,9 @@ var engine;
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
             var w = +pack["thing"][pattern][perspective]["w"];
             var h = +pack["thing"][pattern][perspective]["h"];
-            w = 2 * scale * e.tileSizeRef * w / h;
-            h = 2 * e.tileSizeRef * scale;
-            var zScale = Math.pow(2, z + 0.5 + e.zAnim);
+            w = scale * e.tileSizeRef * w / h;
+            h = scale * e.tileSizeRef;
+            var zScale = Math.pow(2, z - 0.5 + e.zAnim);
             var scenePush = 0;
             if (push) {
                 if (e.slide < 0) {
@@ -709,13 +681,13 @@ var engine;
             }
             switch (leftRightCenter) {
                 case "left":
-                    setRectangle(e.gl, (e.cw / 2 - ((4 * w) / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (w / (2 * zScale))) + e.slide + scenePush - (e.tileSizeRef / zScale), e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
                     break;
                 case "right":
-                    setRectangle(e.gl, (e.cw / 2 + (2 * w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 + (w / (2 * zScale))) + e.slide + scenePush + (e.tileSizeRef / zScale), e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
                     break;
                 case "center":
-                    setRectangle(e.gl, (e.cw / 2 - (w / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / (zScale), (h / zScale), e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (w / (2 * zScale))) + e.slide + scenePush, e.ch / 2 - (h / (zScale * 2)) + (e.tileSizeRef * (1 - scale)) / (zScale), w / zScale, h / zScale, e.rectangle);
                     break;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
@@ -857,6 +829,10 @@ var engine;
             var e = this;
             e.debugElement.innerHTML = output;
         };
+        Engine.prototype.debugAdd = function (output) {
+            var e = this;
+            e.debugElement.innerHTML = e.debugElement.innerHTML + "<br>" + output;
+        };
         return Engine;
     })();
     engine.Engine = Engine;
@@ -880,7 +856,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 var SRC = 'assets/package';
 var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
@@ -915,8 +890,8 @@ function addThing(thingInfo) {
     if (!things[name].hasOwnProperty(thing_perspective)) {
         things[name][thing_perspective] = {};
     }
-    things[name][thing_perspective]['h'] = thingInfo['sourceSize']['h'] / pack["packHeight"];
-    things[name][thing_perspective]['w'] = thingInfo['sourceSize']['w'] / pack["packWidth"];
+    things[name][thing_perspective]['h'] = thingInfo['frame']['h'] / pack["packHeight"];
+    things[name][thing_perspective]['w'] = thingInfo['frame']['w'] / pack["packWidth"];
     things[name][thing_perspective]['y'] = thingInfo['frame']['y'] / pack["packHeight"];
     things[name][thing_perspective]['x'] = thingInfo['frame']['x'] / pack["packWidth"];
 }

@@ -42,8 +42,8 @@ function addThing(thingInfo:JSON) {
 		things[name][thing_perspective] = {};
 	}
 	
-	things[name][thing_perspective]['h'] = thingInfo['sourceSize']['h']/pack["packHeight"];
-	things[name][thing_perspective]['w'] = thingInfo['sourceSize']['w']/pack["packWidth"];
+	things[name][thing_perspective]['h'] = thingInfo['frame']['h']/pack["packHeight"];
+	things[name][thing_perspective]['w'] = thingInfo['frame']['w']/pack["packWidth"];
 	things[name][thing_perspective]['y'] = thingInfo['frame']['y']/pack["packHeight"];
 	things[name][thing_perspective]['x'] = thingInfo['frame']['x']/pack["packWidth"];
 	
