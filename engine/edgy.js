@@ -193,6 +193,7 @@ var engine;
             e.cw = e.canvas.width;
             e.ch = e.canvas.height;
             e.tileSizeRef = e.canvas.height - e.canvas.height / 16;
+            e.packRatio = pack["packHeight"] / pack["packWidth"];
             e.maxCharacterHeight = e.tileSizeRef / 1.5;
             e.gl = e.canvas.getContext('webgl', { antialias: true });
             var shader = new utils.Shader(e.gl);
@@ -599,8 +600,12 @@ var engine;
             e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
             var w = +pack[pattern][surfaceType]["w"];
             var h = +pack[pattern][surfaceType]["h"];
-            w = e.tileSizeRef * w / h;
-            h = e.tileSizeRef;
+            if (surfaceType == "left_left")
+                e.debug(w + "<br>" + h);
+            w = e.tileSizeRef * w;
+            h = e.tileSizeRef * h * (e.packRatio);
+            if (surfaceType == "left_left")
+                e.debugAdd(e.tileSizeRef + "<br>" + w + "<br>" + h + "<br>");
             var zScale = Math.pow(2, z + e.zAnim);
             var scenePush = 0;
             var diff;
@@ -614,46 +619,54 @@ var engine;
             }
             switch (surfaceType) {
                 case "left_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    diff = (w * 4 - h) / 2;
+                    setRectangle(e.gl, (e.cw / 2 - ((e.tileSizeRef - diff + 2) / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, (e.tileSizeRef + diff + 2) / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "ceiling_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    diff = (h * 4 - w);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef + diff - 8) / (zScale)), 2 * e.tileSizeRef / zScale + 2, (e.tileSizeRef + diff + 8) / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
-                    diff = h - w / 4;
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
+                    diff = (h * 4 - w);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff - 9) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff + 9) / (zScale * 2), e.rectangle);
                     break;
                 case "right_center":
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    diff = (w * 4 - h) / 2;
+                    setRectangle(e.gl, (e.cw / 2 + ((e.tileSizeRef + diff - 6) / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef + 8) / (zScale)), (e.tileSizeRef + diff + 14) / (zScale * 2) + 1, 2 * (e.tileSizeRef + 10) / (zScale), e.rectangle);
                     break;
                 case "front_center":
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
+                    diff = h - w;
+                    setRectangle(e.gl, e.cw / 2 - ((e.tileSizeRef - diff) / (zScale * 2)) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), (e.tileSizeRef + diff + 4) / zScale, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "left_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    diff = (h / 2 - w);
+                    setRectangle(e.gl, (e.cw / 2 - ((3 * e.tileSizeRef + diff - 12) / (zScale))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, (3 * e.tileSizeRef + diff + 24) / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_left":
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
-                    diff = h - w / 5;
+                    diff = (h * 5 - w) * 1.5;
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
-                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    diff = (h * 5 - w) / 2;
+                    setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef + diff - 21) / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff + 21) / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "right_right":
-                    setRectangle(e.gl, (e.cw / 2 + (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, 3 * e.tileSizeRef / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
+                    diff = (w - h / 2) * 8;
+                    setRectangle(e.gl, (e.cw / 2 + ((3 * e.tileSizeRef - diff - 12) / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)) - 1, (3 * e.tileSizeRef + diff + 32) / (zScale * 2) + 1, 2 * e.tileSizeRef / (zScale) + 2, e.rectangle);
                     break;
                 case "front_right":
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
-                    diff = h - w / 5;
+                    diff = (h * 5 - w) * 1.5;
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":
-                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
+                    diff = (h * 5 - w) / 2;
+                    setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef + diff - 21) / (zScale)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff + 21) / (zScale * 2) + 1, e.rectangle);
                     break;
             }
             e.gl.drawArrays(e.gl.TRIANGLES, 0, 6);
@@ -856,8 +869,8 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard_grass.json';
+var SRC = 'assets/painted_pack';
+var MAPSRC = 'assets/map_courtyard.json';
 var pack;
 var map;
 var edgy;
