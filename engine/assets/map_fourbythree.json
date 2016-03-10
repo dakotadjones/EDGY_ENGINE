@@ -1,44 +1,39 @@
 {
 "player":{"x":0, "y":1, "facing":"east"},
-"characters":[{"name":"slenderman","x":2,"y":2,"facing":"west","scale":0.8},
-	{"name":"slenderman","x":2,"y":1,"facing":"west","scale":0.8},
-	{"name":"slenderman","x":2,"y":0,"facing":"west","scale":0.8},
-	{"name":"slenderman","x":1,"y":0,"facing":"west","scale":0.8},
-	{"name":"slenderman","x":1,"y":2,"facing":"west","scale":0.8}],
 "0,0":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
-	"north":"grass",
+	"north":"ground",
 	"south":null,
 	"east":null,
-	"west":"grass"
+	"west":"ground"
 },
 "0,1":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
 	"south":null,
 	"east":null,
-	"west":"grass"
+	"west":"ground"
 },
 "0,2":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
-	"south":"grass",
+	"south":"ground",
 	"east":null,
-	"west":"grass"
+	"west":"ground"
 },
 "1,0":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
-	"north":"grass",
+	"north":"ground",
 	"south":null,
 	"east":null,
 	"west":null
 },
 "1,1":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
 	"south":null,
@@ -46,23 +41,23 @@
 	"west":null
 },
 "1,2":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
-	"south":"grass",
+	"south":"ground",
 	"east":null,
 	"west":null
 },
 "2,0":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
-	"north":"grass",
+	"north":"ground",
 	"south":null,
 	"east":null,
 	"west":null
 },
 "2,1":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
 	"south":null,
@@ -70,35 +65,35 @@
 	"west":null
 },
 "2,2":{
-	"ceil":"grass",
-	"floor":"grass",
+	"ceil":"ground",
+	"floor":"ground",
 	"north":null,
-	"south":"grass",
+	"south":"ground",
 	"east":null,
 	"west":null
 },
 "3,0":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
-	"north":"grass",
+	"north":"ground",
 	"south":null,
-	"east":"grass",
+	"east":"ground",
 	"west":null
 },
 "3,1":{
-	"ceil":"grass",
-	"floor":"grass",
+	"ceil":"ground",
+	"floor":"ground",
 	"north":null,
 	"south":null,
-	"east":"grass",
+	"east":"ground",
 	"west":null
 },
 "3,2":{
-	"ceil":"grass",
+	"ceil":"ground",
 	"floor":"grass",
 	"north":null,
-	"south":"grass",
-	"east":"grass",
+	"south":"ground",
+	"east":"ground",
 	"west":null
 }
 }

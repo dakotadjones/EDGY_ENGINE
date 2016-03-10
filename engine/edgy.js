@@ -883,8 +883,8 @@ function setRectangle(gl, x, y, width, height, buffer) {
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
 /// <reference path="Engine.ts" />
-var SRC = 'assets/grass_test';
-var MAPSRC = 'assets/map_fourbythree.json';
+var SRC = 'assets/ground_and_grass';
+var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
 var map;
 var edgy;
@@ -943,8 +943,8 @@ function getTextureLocations(pixel_locs) {
         if (!pack[pattern].hasOwnProperty(surface_perspective)) {
             pack[pattern][surface_perspective] = {};
         }
-        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['spriteSourceSize']['h'] / total_height;
-        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['spriteSourceSize']['w'] / total_width;
+        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['frame']['h'] / total_height;
+        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['frame']['w'] / total_width;
         pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y'] / total_height;
         pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x'] / total_width;
     }

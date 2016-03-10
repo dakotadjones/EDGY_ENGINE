@@ -1,0 +1,156 @@
+{"frames": [
+
+{
+	"filename": "grass_floor_center.png",
+	"frame": {"x":172,"y":1725,"w":533,"h":148},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":533,"h":148},
+	"sourceSize": {"w":533,"h":148},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "grass_floor_left.png",
+	"frame": {"x":817,"y":375,"w":724,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":724,"h":158},
+	"sourceSize": {"w":724,"h":158},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "grass_floor_right.png",
+	"frame": {"x":1,"y":501,"w":719,"h":158},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":719,"h":158},
+	"sourceSize": {"w":720,"h":158},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_ceiling_center.png",
+	"frame": {"x":840,"y":1,"w":833,"h":207},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":833,"h":207},
+	"sourceSize": {"w":833,"h":207},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_ceiling_left.png",
+	"frame": {"x":1,"y":1,"w":837,"h":168},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":837,"h":168},
+	"sourceSize": {"w":838,"h":168},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_ceiling_right.png",
+	"frame": {"x":1,"y":338,"w":814,"h":161},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":814,"h":161},
+	"sourceSize": {"w":814,"h":161},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_floor_center.png",
+	"frame": {"x":722,"y":535,"w":705,"h":176},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":705,"h":176},
+	"sourceSize": {"w":705,"h":176},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_floor_left.png",
+	"frame": {"x":827,"y":210,"w":816,"h":163},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":816,"h":163},
+	"sourceSize": {"w":816,"h":163},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_floor_right.png",
+	"frame": {"x":1,"y":171,"w":824,"h":165},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":824,"h":165},
+	"sourceSize": {"w":824,"h":165},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_front_center.png",
+	"frame": {"x":1675,"y":1,"w":346,"h":346},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":346,"h":346},
+	"sourceSize": {"w":346,"h":346},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_front_left.png",
+	"frame": {"x":1645,"y":349,"w":346,"h":346},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":346,"h":346},
+	"sourceSize": {"w":346,"h":346},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_front_right.png",
+	"frame": {"x":1608,"y":697,"w":346,"h":346},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":346,"h":346},
+	"sourceSize": {"w":346,"h":346},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_left_center.png",
+	"frame": {"x":1429,"y":535,"w":177,"h":706},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":177,"h":706},
+	"sourceSize": {"w":177,"h":706},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_left_left.png",
+	"frame": {"x":1,"y":661,"w":290,"h":579},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":290,"h":579},
+	"sourceSize": {"w":290,"h":579},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_right_center.png",
+	"frame": {"x":1,"y":1243,"w":169,"h":684},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":169,"h":684},
+	"sourceSize": {"w":169,"h":684},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "ground_right_right.png",
+	"frame": {"x":1608,"y":1045,"w":335,"h":678},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":335,"h":678},
+	"sourceSize": {"w":335,"h":678},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ground_and_grass.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e2fc18e16c4f1abf9ae4c1b11a76a3c3:963882662fcd17ee9a99eac77f878f6e:0906679285465e8895b3cbbfd966fcdb$"
+}
+}
