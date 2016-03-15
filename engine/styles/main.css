@@ -1,4 +1,4 @@
-body {
+html,body {
 	height:100%;
 	width:100%;
 	margin:0;
@@ -18,3 +18,13 @@ canvas {
     background-color:lightGrey;
 }
 
+#map-generator {
+}
+
+.sidebar {
+background-color:black;
+color:white;
+padding:10px;
+height:100%;
+width:400px;
+}
