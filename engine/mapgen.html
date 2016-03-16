@@ -54,18 +54,24 @@ void main() {
 			<button id="upload-your-own">Upload Custom</button>
 			<button id="use-edgy">Developer Pack</button><br>
 		</div>
-		<div id="upload-custom">
+		<div class="hidden" id="upload-custom">
 			<div id="json-custom">
-				<label for="json"><img src="styles/arrow-upload-icon.png"/>JSON</label>
-				<input id="json" type="file" name="user" accept=".json" onchange="uploadJson()"/>
+				<span class="title">Upload TexturePacker JSON output</span>
+				<label class="cute" for="json"><img src="styles/arrow-upload-icon.png"/>JSON</label>
+				<input class="hidden" id="json" type="file" name="user" accept=".json" onchange="uploadJson()"/>
 			</div>
 			<div id="png-custom">
-				<label for="png"><img src="styles/arrow-upload-icon.png"/>PNG</label>
-				<input id="png" type="file" name="user" accept=".png" onchange="uploadPng()"/>
+				<span class="title">Upload texture pack PNG</span>
+				<label class="cute" for="png"><img src="styles/arrow-upload-icon.png"/>PNG</label>
+				<input class="hidden" id="png" type="file" name="user" accept=".png" onchange="uploadPng()"/>
 			</div>
-	<div>
-	
-	<div id="texture-pack-display"></div>
+		</div>
+		<div class="hidden" id="developer-choices"><span class="title">Developer Packs Available</span>
+		</div>
+	</div>
+		
+	<div class="hidden" id="texture-pack-display"></div>
+	<canvas class="hidden" id="map"></canvas>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
