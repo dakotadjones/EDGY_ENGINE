@@ -14,7 +14,6 @@ function uploadJson() {
                 data: form_data,                         // Setting the data attribute of ajax with file_data
                 type: 'post',
 				complete: function() { console.log("completed upload");}
-				
        });
 
 }

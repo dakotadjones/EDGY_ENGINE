@@ -30,16 +30,24 @@ width:400px;
 #upload-custom label {
 display:inline-block;
 font-family:"Courier New";
-background-color:#ED686E;
+background-color:#ED686E; 
+border:none;
 height:30px;
+padding:0 10px;
 line-height:30px;
-padding:5px 10px 5px 5px;
-margin:10px 0 ;
-border-radius:5px;
+border-style:solid;
+border-width:0 3px 5px 0;
+border-color:#8F383C;
+color:white;
+margin:0;
+margin:10px 0 10px 0px;
 }
 
 #upload-custom label:hover {
 background-color:#BD5055;
+box-shadow: inset 0 0 0 1px #BD5055,inset 0 5px 30px #8F383C;
+border:none;
+padding:0 13px 5px 10px;
 }
 
 #choose  {
@@ -49,7 +57,6 @@ font-family:"Lucida Console";
 #map-generator button {
 font-family:"Courier New";
 background-color:#ED686E; 
-border:none;
 height:30px;
 padding:0 10px;
 line-height:30px;
@@ -61,27 +68,19 @@ color:white;
 margin:0;
 margin:10px 0 10px 0px;
 }
-/*
-#map-generator button:hover {
-border-width:5px 0 0 5px;
-border-color:#8F383C;
-border-style:solid;
-background-color:#BD5055;
-//padding:10px 5px 5px 10px;
-}
-*/
+
 
 #map-generator button:hover {
-  box-shadow: inset 0 0 0 1px #BD5055,inset 0 5px 30px #8F383C;
-  border:none;
-  padding:0 13px 15px 10px;
+box-shadow: inset 0 0 0 1px #BD5055,inset 0 5px 30px #8F383C;
+border:none;
+padding:0 13px 15px 10px;
 }
 
 #upload-custom img {
 position:relative;
 height:20px;
 width:20px;
-top:3px;
+top:5px;
 margin-right:5px;
 }
 
@@ -92,5 +91,9 @@ text-transform: uppercase;
 
 input[type=file]{
 display:none;
+}
+
+#upload-custom {
+//display:none;
 }
 
