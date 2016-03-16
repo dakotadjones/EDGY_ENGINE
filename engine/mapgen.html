@@ -2,6 +2,7 @@
 <head>		
     <meta charset="UTF-8">
 	<title>Interactive</title>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
 </head>
 <script id="shader-fs" type="x-shader/x-fragment">
@@ -47,10 +48,24 @@ void main() {
 </script>
 <body id="map-generator">
 	<div class="sidebar">
-		<input id="json" type="file" name="user" accept=".json" />
-		<button id="upload" value="upload">Upload</button>
+		<h1>EDGY Map Generator</h1>
+		<div id="choose">
+			Upload Custom or Use Developer Packs
+			<button id="upload-your-own">Upload Custom</button>
+			<button id="use-edgy">Developer Pack</button><br>
+		</div>
+		<div id="upload-custom">
+			<div id="json-custom">
+				<label for="json"><img src="styles/arrow-upload-icon.png"/>JSON</label>
+				<input id="json" type="file" name="user" accept=".json" onchange="uploadJson()"/>
+			</div>
+			<div id="png-custom">
+				<label for="png"><img src="styles/arrow-upload-icon.png"/>PNG</label>
+				<input id="png" type="file" name="user" accept=".png" onchange="uploadPng()"/>
+			</div>
 	<div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="mapgen.js"></script>
 </html>
