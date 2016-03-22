@@ -735,8 +735,9 @@ export class Engine {
 		var e = this;
 		if (e.zAnim != 0 || e.slide != 0)
 			return;
-		switch(keyEvent.key) {
-			case "w":
+		// KEEP KEYCODE, it doesn't break in chrome or with caps
+		switch(keyEvent.keyCode) {
+			case 87:
 			 	if (e.checkWall()) {
 				 	e.zAnim = -0.3;
 					return;
@@ -751,7 +752,7 @@ export class Engine {
 					e.myPlayer.setY(e.myPlayer.getY()+1);
 				e.zAnim = 1;
 				break;
-			case "a":
+			case 65:
 				e.slide = -e.cw;
 				if (e.getPlayerFacing()=="east") {
 					e.turnFace = "east";
@@ -770,7 +771,7 @@ export class Engine {
 					e.myPlayer.setFacing("east");
 				}
 				break;
-			case "s":
+			case 83:
 				if(e.checkWall(true)) { 
 					return;
 				}
@@ -784,7 +785,7 @@ export class Engine {
 					e.myPlayer.setY(e.myPlayer.getY()-1);
 				e.zAnim = -1;
 				break;
-			case "d":
+			case 68:
                 e.slide = e.cw;
 				if (e.getPlayerFacing()=="east"){
                     e.turnFace = "east";
