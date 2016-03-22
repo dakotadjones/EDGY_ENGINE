@@ -1,5 +1,6 @@
 // mapgen.js
 //var mapgrid = document.getElementById("");
+/// <reference path="helpers.ts" />
 var checkedDirectory = false;
 
 function uploadJson() {
@@ -12,9 +13,14 @@ function uploadJson() {
                 cache: false,
                 contentType: false,
                 processData: false,
-                data: form_data,                         // Setting the data attribute of ajax with file_data
+                data: form_data, // Setting the data attribute of ajax with file_data
                 type: 'post',
-				complete: function() { console.log("completed upload");}
+				complete: function(data) {
+					$("#uploaded-file-json").val(data.responseText);
+					if ($("#uploaded-file-png").val().length) {
+						$("#parse").show();
+					}
+				}
        });
 
 }
@@ -28,9 +34,14 @@ function uploadPng() {
                 cache: false,
                 contentType: false,
                 processData: false,
-                data: form_data,                         // Setting the data attribute of ajax with file_data
+                data: form_data, // Setting the data attribute of ajax with file_data
                 type: 'post',
-				complete: function() { console.log("completed upload");}
+				complete: function(data) { 
+					$("#uploaded-file-png").val(data.responseText);
+					if ($("#uploaded-file-json").val().length) {
+						$("#parse").show();
+					}
+				}
 				
        });
 }
@@ -59,7 +70,7 @@ function getDevOptions() {
 					}
 					 if ($("#upload-custom").is(":visible")) { hideChoices("#upload-custom", function() { showChoices("#developer-choices") });  }
 					 else { showChoices("#developer-choices"); }
-					checkedDirectory = true;
+					 checkedDirectory = true;
 				}
        });
 }
@@ -67,9 +78,20 @@ function getDevOptions() {
 $("#use-edgy").click( function() { 
 	if(!checkedDirectory) {
 		getDevOptions();
-	} else if ($("#upload-custom").is(":visible")) { console.log("fire"); hideChoices("#upload-custom", function() { showChoices("#developer-choices") });  }
+	} else if ($("#upload-custom").is(":visible")) { hideChoices("#upload-custom", function() { showChoices("#developer-choices") });  }
 });
+
 $("#upload-your-own").click( function() { 
 	if ($("#developer-choices").is(":visible")) { hideChoices("#developer-choices", function(){	showChoices("#upload-custom");}); }
 	else { 	showChoices("#upload-custom"); }
+});
+
+$("#parse").click( function() {
+	var json = $("#uploaded-file-json").val();
+	var png = $("#uploaded-file-png").val();
+	var request = new XMLHttpRequest();	
+	request.onload = locationRequestListener;
+	request.overrideMimeType("application/json");
+	request.open("get", 'uploads/' +  json, true);
+	request.send();
 });

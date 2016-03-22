@@ -743,8 +743,8 @@ var engine;
             var e = this;
             if (e.zAnim != 0 || e.slide != 0)
                 return;
-            switch (keyEvent.key) {
-                case "w":
+            switch (keyEvent.keyCode) {
+                case 87:
                     if (e.checkWall()) {
                         e.zAnim = -0.3;
                         return;
@@ -759,7 +759,7 @@ var engine;
                         e.myPlayer.setY(e.myPlayer.getY() + 1);
                     e.zAnim = 1;
                     break;
-                case "a":
+                case 65:
                     e.slide = -e.cw;
                     if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
@@ -778,7 +778,7 @@ var engine;
                         e.myPlayer.setFacing("east");
                     }
                     break;
-                case "s":
+                case 83:
                     if (e.checkWall(true)) {
                         return;
                     }
@@ -792,7 +792,7 @@ var engine;
                         e.myPlayer.setY(e.myPlayer.getY() - 1);
                     e.zAnim = -1;
                     break;
-                case "d":
+                case 68:
                     e.slide = e.cw;
                     if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
@@ -885,22 +885,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
 /// <reference path="Engine.ts" />
-var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard.json';
-var pack;
-var map;
-var edgy;
-window.onload = run;
-var request = new XMLHttpRequest();
-request.onload = locationRequestListener;
-request.overrideMimeType("application/json");
-request.open("get", SRC + '.json', true);
-request.send();
-var mapRequest = new XMLHttpRequest();
-mapRequest.onload = mapRequestListener;
-mapRequest.overrideMimeType("application/json");
-mapRequest.open("get", MAPSRC, true);
-mapRequest.send();
 function locationRequestListener() {
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
@@ -945,12 +929,31 @@ function getTextureLocations(pixel_locs) {
         if (!pack[pattern].hasOwnProperty(surface_perspective)) {
             pack[pattern][surface_perspective] = {};
         }
-        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['sourceSize']['h'] / total_height;
-        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['sourceSize']['w'] / total_width;
+        pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['frame']['h'] / total_height;
+        pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['frame']['w'] / total_width;
         pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y'] / total_height;
         pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x'] / total_width;
     }
 }
 function run() {
     edgy = new engine.Engine("gameport");
+}
+/// <reference path="helpers.ts" />
+if (document.getElementById("gameport")) {
+    var SRC = 'assets/package';
+    var MAPSRC = 'assets/map_courtyard.json';
+    var pack;
+    var map;
+    var edgy;
+    window.onload = run;
+    var request = new XMLHttpRequest();
+    request.onload = locationRequestListener;
+    request.overrideMimeType("application/json");
+    request.open("get", SRC + '.json', true);
+    request.send();
+    var mapRequest = new XMLHttpRequest();
+    mapRequest.onload = mapRequestListener;
+    mapRequest.overrideMimeType("application/json");
+    mapRequest.open("get", MAPSRC, true);
+    mapRequest.send();
 }

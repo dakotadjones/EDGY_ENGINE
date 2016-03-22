@@ -59,11 +59,14 @@ void main() {
 				<span class="title">Upload TexturePacker JSON output</span>
 				<label class="cute" for="json"><img src="styles/arrow-upload-icon.png"/>JSON</label>
 				<input class="hidden" id="json" type="file" name="user" accept=".json" onchange="uploadJson()"/>
+				<input type="text" id="uploaded-file-json" readonly></input>
 			</div>
 			<div id="png-custom">
 				<span class="title">Upload texture pack PNG</span>
 				<label class="cute" for="png"><img src="styles/arrow-upload-icon.png"/>PNG</label>
 				<input class="hidden" id="png" type="file" name="user" accept=".png" onchange="uploadPng()"/>
+				<input type="text" id="uploaded-file-png" readonly></input><br>
+				<button id="parse" class="hidden">Parse</button>
 			</div>
 		</div>
 		<div class="hidden" id="developer-choices"><span class="title">Developer Packs Available</span>

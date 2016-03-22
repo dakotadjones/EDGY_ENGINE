@@ -60,7 +60,6 @@ background-color:#ED686E;
 height:30px;
 padding:0 10px;
 line-height:30px;
-//border-radius:5px;
 border-style:solid;
 border-width:0 3px 5px 0;
 border-color:#8F383C;
@@ -98,3 +97,8 @@ font-family:"Lucida Sans Unicode";
 display:none;
 }
 
+input[type=text] {
+background-color:black;
+color:white;
+border:none;
+}
