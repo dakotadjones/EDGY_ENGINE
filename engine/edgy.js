@@ -631,7 +631,7 @@ var engine;
             h = e.tileSizeRef;
             var zScale = Math.pow(2, z + e.zAnim);
             var scenePush = 0;
-            var diff;
+            var diff = 0;
             if (push) {
                 if (e.slide < 0) {
                     scenePush = e.cw;
@@ -648,7 +648,6 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale)), 2 * e.tileSizeRef / zScale + 2, e.tileSizeRef / (zScale * 2) + 1, e.rectangle);
                     break;
                 case "floor_center":
-                    diff = h - w / 4;
                     setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 2 * e.tileSizeRef / zScale + 3, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "right_center":
@@ -664,7 +663,6 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_left":
-                    diff = h - w / 5;
                     setRectangle(e.gl, (e.cw / 2 - (3 * e.tileSizeRef / (zScale)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_left":
@@ -677,7 +675,6 @@ var engine;
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2))) + e.slide + scenePush, e.ch / 2 - (e.tileSizeRef / (zScale * 2)), e.tileSizeRef / zScale + 1, e.tileSizeRef / zScale + 1, e.rectangle);
                     break;
                 case "floor_right":
-                    diff = h - w / 5;
                     setRectangle(e.gl, (e.cw / 2 + (e.tileSizeRef / (zScale * 2)) - 1) + e.slide + scenePush, e.ch / 2 + ((e.tileSizeRef - diff) / (zScale * 2)), 5 * e.tileSizeRef / (zScale * 2) + 2, (e.tileSizeRef + diff) / (zScale * 2) + 1.5, e.rectangle);
                     break;
                 case "ceiling_right":
@@ -886,6 +883,7 @@ function setRectangle(gl, x, y, width, height, buffer) {
 }
 /// <reference path="Engine.ts" />
 function locationRequestListener() {
+    console.log("fire");
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
 }
@@ -940,8 +938,8 @@ function run() {
 }
 /// <reference path="helpers.ts" />
 if (document.getElementById("gameport")) {
-    var SRC = 'assets/package';
-    var MAPSRC = 'assets/map_courtyard.json';
+    var SRC = 'assets/painted_pack';
+    var MAPSRC = 'assets/map_courtyard_painted.json';
     var pack;
     var map;
     var edgy;

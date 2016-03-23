@@ -1,5 +1,6 @@
 /// <reference path="Engine.ts" />
 function locationRequestListener() {
+	console.log("fire");
 	var packJson = JSON.parse(this.responseText);
 	getTextureLocations(packJson);
 }

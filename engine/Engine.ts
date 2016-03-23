@@ -543,7 +543,7 @@ export class Engine {
 		h=e.tileSizeRef;		
 		var zScale = Math.pow(2,z+e.zAnim);
 		var scenePush = 0;
-		var diff;
+		var diff = 0;
 
 		// set temp variable to be used for drawing turning farther than canvas size
 		if (push) {
@@ -571,7 +571,7 @@ export class Engine {
 							 e.tileSizeRef/(zScale*2)+1, e.rectangle);
 				break;
 			case "floor_center":
-				diff = h-w/4;
+				//diff = h-w/4;
 				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
 							 2*e.tileSizeRef/zScale+3, 
@@ -606,7 +606,7 @@ export class Engine {
 							 e.tileSizeRef/zScale+1, e.rectangle);
 				break;
 			case "floor_left":
-				diff = h-w/5;
+				//diff = h-w/5;
 				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
 							 5*e.tileSizeRef/(zScale*2)+2, 
@@ -635,7 +635,7 @@ export class Engine {
 							 e.tileSizeRef/zScale+1, e.rectangle);
 				break;
 			case "floor_right":
-				diff = h-w/5;
+				//diff = h-w/5;
 				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2))-1)+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
 							 5*e.tileSizeRef/(zScale*2)+2, 
