@@ -1,9 +1,9 @@
 /// <reference path="helpers.ts" />
+var pack;
 
 if (document.getElementById("gameport")) {
 	var SRC = 'assets/painted_pack';
-	var MAPSRC = 'assets/map_courtyard_painted.json'
-	var pack;
+	var MAPSRC = 'assets/map_courtyard_painted.json'	
 	var map;
 	var edgy;
 	
@@ -22,4 +22,4 @@ if (document.getElementById("gameport")) {
 	mapRequest.overrideMimeType("application/json");
 	mapRequest.open("get", MAPSRC, true);
 	mapRequest.send();
-}
+} 

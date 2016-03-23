@@ -75,6 +75,16 @@ function getDevOptions() {
        });
 }
 
+function savePack(filename) {
+	// should have the new "pack" object now, overwrite it in the file so that the engine can use it later
+	var json = JSON.stringify(pack);
+	var encoded = btoa(json);
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST','scripts/savepack.php',true);
+	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	xhr.send('json=' + encoded + "&filename=" + filename);
+}
+
 $("#use-edgy").click( function() { 
 	if(!checkedDirectory) {
 		getDevOptions();
@@ -87,6 +97,7 @@ $("#upload-your-own").click( function() {
 });
 
 $("#parse").click( function() {
+	hideChoices("#upload-custom", function() { showChoices("#map-options")});
 	var json = $("#uploaded-file-json").val();
 	var png = $("#uploaded-file-png").val();
 	var request = new XMLHttpRequest();	
@@ -94,4 +105,5 @@ $("#parse").click( function() {
 	request.overrideMimeType("application/json");
 	request.open("get", 'uploads/' +  json, true);
 	request.send();
+	request.addEventListener("load", function() { savePack(json) });
 });

@@ -54,6 +54,10 @@ padding:0 13px 5px 10px;
 font-family:"Lucida Console";
 }
 
+#map-generator > * {
+    font-family:"Lucida Console", Monaco, monospace;
+}
+
 #map-generator button {
 font-family:"Courier New";
 background-color:#ED686E; 
@@ -97,8 +101,20 @@ font-family:"Lucida Sans Unicode";
 display:none;
 }
 
-input[type=text] {
+input[type=text]:read-only {
 background-color:black;
 color:white;
 border:none;
+}
+
+.indicator {
+height:150px;
+width:270px;
+background-image:url('progress.gif');
+background-size:cover;
+display:none;
+}
+
+input[type=text] {
+width:25px;    
 }

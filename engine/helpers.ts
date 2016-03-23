@@ -1,6 +1,5 @@
 /// <reference path="Engine.ts" />
 function locationRequestListener() {
-	console.log("fire");
 	var packJson = JSON.parse(this.responseText);
 	getTextureLocations(packJson);
 }
@@ -25,7 +24,6 @@ function addThing(thingInfo:JSON) {
 	things[name][thing_perspective]['w'] = thingInfo['frame']['w']/pack["packWidth"];
 	things[name][thing_perspective]['y'] = thingInfo['frame']['y']/pack["packHeight"];
 	things[name][thing_perspective]['x'] = thingInfo['frame']['x']/pack["packWidth"];
-	
 }
 
 function getTextureLocations(pixel_locs:JSON) {
@@ -55,6 +53,7 @@ function getTextureLocations(pixel_locs:JSON) {
 		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['frame']['w']/total_width
 		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y']/total_height
 		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x']/total_width
+	
 	}
 }
 

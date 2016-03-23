@@ -883,7 +883,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
 }
 /// <reference path="Engine.ts" />
 function locationRequestListener() {
-    console.log("fire");
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
 }
@@ -937,10 +936,10 @@ function run() {
     edgy = new engine.Engine("gameport");
 }
 /// <reference path="helpers.ts" />
+var pack;
 if (document.getElementById("gameport")) {
     var SRC = 'assets/painted_pack';
     var MAPSRC = 'assets/map_courtyard_painted.json';
-    var pack;
     var map;
     var edgy;
     window.onload = run;
