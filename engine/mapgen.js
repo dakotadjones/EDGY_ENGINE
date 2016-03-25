@@ -2,6 +2,10 @@
 //var mapgrid = document.getElementById("");
 /// <reference path="helpers.ts" />
 var checkedDirectory = false;
+var c = document.getElementById("map");
+var ctx = c.getContext("2d");
+var square = 15;
+var map; // JSON containing your new map :) 
 
 function uploadJson() {
 	var json_file_data = $("#json").prop("files")[0];
@@ -85,6 +89,20 @@ function savePack(filename) {
 	xhr.send('json=' + encoded + "&filename=" + filename);
 }
 
+
+function drawBaseMap(width, height) {
+	for (var h = 0; h < height; h++) {
+		for (var w = 0; w < width; w++) {
+			ctx.rect(h*square, w*square, square, square);
+		}
+	}
+	ctx.stroke();
+}
+
+function destroyMap() {
+	ctx.clearRect(0, 0, c.width, c.height);
+}
+
 $("#use-edgy").click( function() { 
 	if(!checkedDirectory) {
 		getDevOptions();
@@ -107,3 +125,22 @@ $("#parse").click( function() {
 	request.send();
 	request.addEventListener("load", function() { savePack(json) });
 });
+
+$("#map-size").click(function () {
+	var w = parseInt($("#map-width").val());
+	var h = parseInt($("#map-height").val());
+	if (w <= 666 && h <= 666) {
+		drawBaseMap(w, h);
+	} else {
+		alert("Invalid dimensions");
+	}
+})
+
+$("#clear").click(destroyMap);
+
+$("#map").click( function(e) {
+	var x = Math.floor(e.offsetX/square) * square;
+	var y = Math.floor(e.offsetY/square) * square;
+	
+	ctx.clearRect(x, y, square, square);
+})
