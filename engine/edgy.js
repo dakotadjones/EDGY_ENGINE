@@ -728,8 +728,8 @@ var engine;
             var e = this;
             if (e.zAnim != 0 || e.slide != 0)
                 return;
-            switch (keyEvent.key) {
-                case "w":
+            switch (keyEvent.keyCode) {
+                case 87:
                     if (e.checkWall()) {
                         e.zAnim = -0.3;
                         return;
@@ -744,7 +744,7 @@ var engine;
                         e.myPlayer.setY(e.myPlayer.getY() + 1);
                     e.zAnim = 1;
                     break;
-                case "a":
+                case 65:
                     e.slide = -e.cw;
                     if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
@@ -763,7 +763,7 @@ var engine;
                         e.myPlayer.setFacing("east");
                     }
                     break;
-                case "s":
+                case 83:
                     if (e.checkWall(true)) {
                         return;
                     }
@@ -777,7 +777,7 @@ var engine;
                         e.myPlayer.setY(e.myPlayer.getY() - 1);
                     e.zAnim = -1;
                     break;
-                case "d":
+                case 68:
                     e.slide = e.cw;
                     if (e.getPlayerFacing() == "east") {
                         e.turnFace = "east";
@@ -869,8 +869,8 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-var SRC = 'assets/painted_pack';
-var MAPSRC = 'assets/map_courtyard.json';
+var SRC = 'assets/package';
+var MAPSRC = 'assets/map_courtyard_grass.json';
 var pack;
 var map;
 var edgy;
