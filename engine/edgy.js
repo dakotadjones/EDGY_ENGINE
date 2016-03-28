@@ -869,8 +869,8 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-var SRC = 'assets/package';
-var MAPSRC = 'assets/map_courtyard_grass.json';
+var SRC = 'assets/painted_pack';
+var MAPSRC = 'assets/map_courtyard.json';
 var pack;
 var map;
 var edgy;
