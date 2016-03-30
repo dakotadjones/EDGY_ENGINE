@@ -129,7 +129,7 @@ $("#parse").click( function() {
 $("#map-size").click(function () {
 	var w = parseInt($("#map-width").val());
 	var h = parseInt($("#map-height").val());
-	if (w <= 666 && h <= 666) {
+	if (w <= 666 && h <= 666 && !(isNaN(w) || isNaN(h)) ) {
 		drawBaseMap(w, h);
 	} else {
 		alert("Invalid dimensions");
@@ -138,9 +138,65 @@ $("#map-size").click(function () {
 
 $("#clear").click(destroyMap);
 
-$("#map").click( function(e) {
-	var x = Math.floor(e.offsetX/square) * square;
-	var y = Math.floor(e.offsetY/square) * square;
+var initialW, initialH;
+var endX,endY;
+$("#map").mousedown(function(e) {
+		
+        $(".ghost-select").addClass("ghost-active");
+		
+	    $(".ghost-select").css({
+            'left': e.offsetX,
+            'top': 	e.offsetY,
+        });
+		
+        initialW = e.offsetX;
+        initialH = e.offsetY;
+
+        $(document).bind("mouseup", selectElements); 
+        $("#map").bind("mousemove", openSelector);
+		
+});
+
+function openSelector(e) {
 	
-	ctx.clearRect(x, y, square, square);
-})
+	var w = Math.abs(initialW - e.offsetX);
+    var h = Math.abs(initialH - e.offsetY);
+
+    $(".ghost-select").css({
+        'width': w,
+        'height': h
+	});
+	
+	endX = e.offsetX;
+	endY = e.offsetY;
+	
+	$(".ghost-select").css({
+      'left': Math.min(e.offsetX, initialW),
+      'top': Math.min(e.offsetY, initialH)
+    });
+	
+}
+
+function selectElements() {
+    $("#map").unbind("mousemove", openSelector);
+    $("#map").unbind("mouseup", selectElements);
+
+	// top left corner of the drawn box
+	var l = Math.min(initialW, endX);
+	var t = Math.min(initialH, endY);
+	
+	// opposite corner
+	var w = Math.max(initialW, endX);
+	var h = Math.max(initialH, endY);
+	
+	// dimensions of drawn box
+	var totalHeight = Math.abs(t-h);
+	var totalWidth = Math.abs(l-w);
+	
+	drawSelectedMap(l, t, totalWidth, totalHeight);
+	
+    $(".ghost-select").removeClass("ghost-active");
+    $(".ghost-select").width(0).height(0);
+	
+}
+

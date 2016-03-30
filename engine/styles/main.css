@@ -10,14 +10,6 @@ canvas {
     display: block;
 }
 
-.map {
-    position:absolute;
-    margin-left:20%;
-    width:80%;
-    height:100%;
-    background-color:lightGrey;
-}
-
 .sidebar {
 float:left;
 background-color:black;
@@ -54,7 +46,7 @@ padding:0 13px 5px 10px;
 font-family:"Lucida Console";
 }
 
-#map-generator > * {
+.sidebar > * {
     font-family:"Lucida Console", Monaco, monospace;
 }
 
@@ -127,14 +119,17 @@ font-weight: bold;
 }
 
 .mapCompassContainer {
-height:640px;
+position:relative;
+height:600px;
 }
 
 .mapContainer {
+margin:20px;
+position:relative;
 display:inline-block;
 overflow:scroll;
-height:600px;
-width:800px;
+height:500px;
+width:666px;
 background-color:LightGrey;
 }
 
@@ -143,12 +138,12 @@ width:5px;
 height:5px;
 }
  
-/* Track */
 ::-webkit-scrollbar-track {
 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+background:LightGrey;
 }
  
-/* Handle */
+
 ::-webkit-scrollbar-thumb {
 background: #ED686E; 
 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
@@ -174,7 +169,7 @@ width: -webkit-calc(100% - 440px);
 width: -o-calc(100% - 440px);
 /* Standard */
 width: calc(100% - 440px);
-padding-top:50px;
+padding-top:10px;
 }
 
 #map-generator canvas {
@@ -182,3 +177,36 @@ display:inline-block;
 background-color:LightGrey;
 margin:0;
 }
+
+/*select*/
+.ghost-select {
+  pointer-events: none;
+  top:0;
+  left:0;
+  height:0;
+  width:0;
+  display: none;
+  z-index: 9000;
+  position:absolute !important;
+  cursor: default !important;
+}
+
+.ghost-active {
+  display: block !important;
+}
+
+.ghost-select > span {
+  background-color: rgba(239, 28, 190, 0.6);
+  border: 1px solid #b20e8c;
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+
+.unselectable {
+        user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -o-user-select: none;
+} 

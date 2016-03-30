@@ -79,16 +79,17 @@ void main() {
 		</div>
 		
 	</div>
-	<div class="mainContainer">
+	<div class="mainContainer unselectable">
 		<span class="title">Game Map</span><br>
-		<div class="mapCompassContainer">
-			<span class="compass">N</span><br>
-			<span class="compass middle">W</span>
-			<div class="mapContainer">
+		<div class="mapCompassContainer unselectable">
+			<span class="compass unselectable" unselectable="on">N</span><br>
+			<span class="compass middle unselectable" unselectable="on">W</span>
+			<div class="mapContainer unselectable" unselectable="on">
+				<div class="ghost-select"><span></span></div>
 				<canvas id="map" width="10000" height="10000"></canvas>
 			</div>
-			<span class="compass middle">E</span><br>
-			<span class="compass">S</span>
+			<span class="compass middle unselectable" unselectable="on">E</span><br>
+			<span class="compass unselectable" unselectable="on">S</span>
 		</div>
 	</div>
 </body>
