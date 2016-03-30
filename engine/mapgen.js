@@ -6,6 +6,8 @@ var c = document.getElementById("map");
 var ctx = c.getContext("2d");
 var square = 20;
 var map; // JSON containing your new map :) 
+var mapHeight;
+var mapWidth;
 
 function uploadJson() {
 	var json_file_data = $("#json").prop("files")[0];
@@ -91,17 +93,22 @@ function savePack(filename) {
 
 
 function drawBaseMap(width, height) {
-	ctx.clearRect(0, 0, c.width, c.height);
+	ctx.restore();
 	for (var h = 0; h < height; h++) {
 		for (var w = 0; w < width; w++) {
 			ctx.rect(h*square, w*square, square, square);
 		}
 	}
 	ctx.stroke();
+	// clear bigger squares if they're there
+	ctx.clearRect(width*square, 0, c.width, c.height);
+	ctx.clearRect(0, height*square, c.width, c.height);
+
 }
 
 function destroyMap() {	
 	ctx.clearRect(0, 0, c.width, c.height);
+	ctx.save();
 }
 
 
@@ -133,6 +140,7 @@ $("#map-size").click(function () {
 	var h = parseInt($("#map-height").val());
 	if (w <= c.width/square && h <= c.height/square && !(isNaN(w) || isNaN(h)) ) {
 		drawBaseMap(w, h);
+		setMapDimensions(w, h);
 	} else {
 		alert("Invalid dimensions");
 	}
@@ -158,6 +166,11 @@ $("#map").mousedown(function(e) {
         $("#map").bind("mousemove", openSelector);
 		
 });
+
+function setMapDimensions(width, height) {
+	mapWidth = width*square;
+	mapHeight = height*square;
+}
 
 function openSelector(e) {
 	
@@ -207,7 +220,11 @@ function drawSelectedMap(x, y, w, h) {
 		var cx = Math.ceil(x/square) * square;
 		var cy = Math.ceil(y/square) * square;
 		var cw = Math.floor(Math.abs(w/square)) * square;
-		var ch = Math.floor(Math.abs(h/square)) * square;			
+		var ch = Math.floor(Math.abs(h/square)) * square;
+		
+		if ((cx+cw) > mapWidth) { cw = mapWidth-cx; }
+		if ((cy+ch) > mapHeight) { ch = mapHeight-cy; }
+		
 		ctx.clearRect(cx, cy, cw, ch);
 		ctx.fillStyle = "red";
 		ctx.fillRect(cx, cy, cw, ch);
