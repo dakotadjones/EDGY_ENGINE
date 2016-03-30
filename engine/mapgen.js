@@ -4,7 +4,7 @@
 var checkedDirectory = false;
 var c = document.getElementById("map");
 var ctx = c.getContext("2d");
-var square = 15;
+var square = 20;
 var map; // JSON containing your new map :) 
 
 function uploadJson() {
@@ -91,6 +91,7 @@ function savePack(filename) {
 
 
 function drawBaseMap(width, height) {
+	ctx.clearRect(0, 0, c.width, c.height);
 	for (var h = 0; h < height; h++) {
 		for (var w = 0; w < width; w++) {
 			ctx.rect(h*square, w*square, square, square);
@@ -99,9 +100,10 @@ function drawBaseMap(width, height) {
 	ctx.stroke();
 }
 
-function destroyMap() {
+function destroyMap() {	
 	ctx.clearRect(0, 0, c.width, c.height);
 }
+
 
 $("#use-edgy").click( function() { 
 	if(!checkedDirectory) {
@@ -129,7 +131,7 @@ $("#parse").click( function() {
 $("#map-size").click(function () {
 	var w = parseInt($("#map-width").val());
 	var h = parseInt($("#map-height").val());
-	if (w <= 666 && h <= 666 && !(isNaN(w) || isNaN(h)) ) {
+	if (w <= c.width/square && h <= c.height/square && !(isNaN(w) || isNaN(h)) ) {
 		drawBaseMap(w, h);
 	} else {
 		alert("Invalid dimensions");
@@ -152,7 +154,7 @@ $("#map").mousedown(function(e) {
         initialW = e.offsetX;
         initialH = e.offsetY;
 
-        $(document).bind("mouseup", selectElements); 
+        $("#map").bind("mouseup", selectElements); 
         $("#map").bind("mousemove", openSelector);
 		
 });
@@ -200,3 +202,14 @@ function selectElements() {
 	
 }
 
+function drawSelectedMap(x, y, w, h) {
+	if (w > square && h > square) {
+		var cx = Math.ceil(x/square) * square;
+		var cy = Math.ceil(y/square) * square;
+		var cw = Math.floor(Math.abs(w/square)) * square;
+		var ch = Math.floor(Math.abs(h/square)) * square;			
+		ctx.clearRect(cx, cy, cw, ch);
+		ctx.fillStyle = "red";
+		ctx.fillRect(cx, cy, cw, ch);
+	}
+}
