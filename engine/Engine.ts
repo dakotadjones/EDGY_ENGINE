@@ -43,6 +43,8 @@ export class Engine {
 	fpsTimeLast:number;
 	fpsTimeCounter:number;
 	fpsElement:HTMLElement;
+	theoryFPSTime:number;
+	theoryFPSAvg:Array<number>;
 	
 	debugElement:HTMLElement;
 		
@@ -138,6 +140,8 @@ export class Engine {
 		e.fpsTimeLast=0;
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
+		e.theoryFPSTime=0;
+		e.theoryFPSAvg=[];
 		
 		//debug stuff
 		e.debugElement=document.getElementById("debug");
@@ -201,10 +205,18 @@ export class Engine {
 		e.fpsTimeCounter += e.fpsTime - e.fpsTimeLast;
 		e.fpsTimeLast = e.fpsTime;
 		e.fpsFrames++;
+		e.theoryFPSTime = new Date().getTime();
 		 if (e.fpsTimeCounter>1000){
 			e.fpsElement.innerHTML=Math.round(1000*e.fpsFrames/e.fpsTimeCounter) + " fps";
 			e.fpsTimeCounter = 0;
 			e.fpsFrames = 0;
+			var sum = 0;
+			for(var i=0;i<e.theoryFPSAvg.length;i++){
+				sum += e.theoryFPSAvg[i];
+			}
+			e.debug("Theoretical FPS:");
+			e.debugAdd((1000/(sum/e.theoryFPSAvg.length)).toString());
+			e.theoryFPSAvg = [];
 		 }
 		
 		var xy = e.getPlayerPosition();
@@ -240,6 +252,8 @@ export class Engine {
 		} else if (e.slide > 0) {
 			e.slide -= e.cw/10;
 		}
+		
+		e.theoryFPSAvg.push((new Date().getTime())-e.theoryFPSTime);
 		
 		requestAnimationFrame(this.draw.bind(this));
 	}
@@ -541,10 +555,6 @@ export class Engine {
 
 		var w = +pack[pattern][surfaceType]["w_raw"];
 		var h = +pack[pattern][surfaceType]["h_raw"];
-		if (surfaceType == "left_left"){
-			e.debug("w_: "+w+"<br>h_: "+h);
-			e.debugAdd("s: "+e.tileSizeRef+"<br>r: "+e.packRatio+"<br>diff: "+(((w-(h/2))/w)*e.tileSizeRef));
-		}
 		var zScale = Math.pow(2,z+e.zAnim);
 		var scenePush = 0;
 		var diff;
