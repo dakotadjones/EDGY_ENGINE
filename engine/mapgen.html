@@ -49,11 +49,20 @@ void main() {
 <body id="map-generator">
 	<div class="sidebar">
 		<h1>EDGY Map Generator</h1>
-		<div id="map-options">
+		<div id="map-options" class="hidden">
 		 	Enter custom map width and height<br>
-			<input id="map-width" type="text"/> X <input id="map-height" type="text"/>
+			<input id="map-width" type="text"/> X <input id="map-height" type="text"/><br>
 			<button id="map-size">apply</button>
-			<button id="clear">clear</button>
+			<button id="clear">clear</button> <br>
+			Enter Player Position<br>
+			x: <input id="player-x" type="text"/> y:<input id="player-y" type="text"/> 
+			facing: <select id="player-face">
+				<option value="north">North</option>
+				<option value="east">East</option>
+				<option value="west">West</option>
+				<option value="south">South</option>
+			</select><br>
+			<button id="move-player">move player</button><br>
 		</div>
 		<div id="choose">
 			Upload Custom or Use Developer Packs
@@ -77,7 +86,7 @@ void main() {
 		</div>
 		<div class="hidden" id="developer-choices"><span class="title">Developer Packs Available</span>
 		</div>
-		
+
 		<div id="tile-pattern-panel" class="patternPanel hidden">
 			<div id="north-wall" class="tileRep north">N</div>
 			<div id="west-wall" class="tileRep west">W</div>
@@ -85,7 +94,7 @@ void main() {
 			<div id="east-wall" class="tileRep east">E</div>
 			<div id="ceiling" class="tileRep ceiling">C</div>
 			<div id="south-wall" class="tileRep south">S</div>
-			<label for="package-options">Tile Pattern Options</label>
+			<label for="package-options">Texture Options</label>
 			<select id="package-options">
 				<option value="null">None</option>
 			</select>

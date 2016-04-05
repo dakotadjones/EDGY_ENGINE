@@ -109,6 +109,7 @@ display:none;
 
 input[type=text]:not([readonly]) {
 width:25px;    
+margin-top:5px;
 }
 
 .compass {
@@ -159,6 +160,7 @@ margin-top:10px;
 }
 
 .mainContainer {
+min-width:770px;
 text-align:center;
 float:right;
 /* Firefox */
@@ -224,7 +226,7 @@ background:black;
 }
 
 .patternPanel {
-margin:7px 0;
+margin:15px 0;
 position:relative;
 height:300px;
 width:100%;

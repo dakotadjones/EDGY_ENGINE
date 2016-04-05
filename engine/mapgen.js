@@ -11,29 +11,21 @@ var square = 20;
 var devPackChosen;
 
 var map; // JSON containing your new map :) 
-/* map structure
- {
-"player":{"x":12, "y":5, "facing":"west"},
-"characters":[{"name":"slenderman","x":8,"y":4,"facing":"west","scale":0.8},
-			  {"name":"slenderman","x":8,"y":5,"facing":"west","scale":0.8},
-			  {"name":"slenderman","x":10,"y":1,"facing":"south","scale":0.8}],
-"0,0":{
-	"ceil":null,
-	"floor":null,
-	"north":null,
-	"south":null,
-	"east":null,
-	"west":null
-},
-"0,1":{
-	"ceil":"blue",
-	"floor":"blue",
-	"north":"purple",
-	"south":null,
-	"east":null,
-	"west":"purple"
-},...
- */
+
+// could be greatly expanded
+var colorMap = {
+	"blue":"#003399",
+	"grass":"#006633",
+	"ground":"#604020",
+	"brown":"#604020",
+	"dirt":"#604020",
+	"purple":"#993399",
+	"brick":"#cc3300",
+	"sky":"#003399",
+	"sand":"#ffd633",
+	"default":"#66ff66"
+}
+
 function uploadJson() {
 	var json_file_data = $("#json").prop("files")[0];
 	var form_data = new FormData();// Creating object of FormData class
@@ -114,7 +106,7 @@ function savePack(filename) {
 	xhr.open('POST','scripts/savepack.php',true);
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	xhr.send('json=' + encoded + "&filename=" + filename);
-	hideChoices("#choose", function() {showChoices("#tile-pattern-panel");})
+	hideChoices("#choose", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options")})
 }
 
 function drawBaseMap(width, height) {
@@ -300,10 +292,27 @@ $("#map-size").click(function () {
 	}
 });
 
+$("#move-player").click(function() {
+	var w = parseInt($("#map-width").val());
+	var h = parseInt($("#map-height").val());
+	var x = parseInt($("#player-x").val());
+	var y = parseInt($("#player-y").val());
+	if (!(x<=w && y<=h && !(isNaN(x) || isNaN(y)))) {
+		alert("Invalid location");
+	} else if (map !== undefined && map.player !== undefined) {
+		destroyMap();
+		map.player.x = x;
+		map.player.y = y;
+		map.player.facing = $("#player-face").val();
+		drawBaseMap(w,h);
+	}
+		
+});
+
 $("#developer-choices").on("click", "button", function() {
 	devPackChosen = $(this).attr('id');
 	hideChoices("#choose");
-	hideChoices("#developer-choices", function() {showChoices("#tile-pattern-panel");});
+	hideChoices("#developer-choices", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options")});
 	
 	var request = new XMLHttpRequest();
 	request.onload = locationRequestListener;
@@ -314,6 +323,7 @@ $("#developer-choices").on("click", "button", function() {
 
 $("#clear").click(function() { 
 	destroyMap(); 
+	resetPatterns();
 	map = {"player":{"x":1,"y":1,"facing":"east"}, "characters":[]};
 });
 
