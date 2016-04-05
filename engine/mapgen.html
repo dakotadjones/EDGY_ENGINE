@@ -49,6 +49,12 @@ void main() {
 <body id="map-generator">
 	<div class="sidebar">
 		<h1>EDGY Map Generator</h1>
+		<div id="map-options">
+		 	Enter custom map width and height<br>
+			<input id="map-width" type="text"/> X <input id="map-height" type="text"/>
+			<button id="map-size">apply</button>
+			<button id="clear">clear</button>
+		</div>
 		<div id="choose">
 			Upload Custom or Use Developer Packs
 			<button id="upload-your-own">Upload Custom</button>
@@ -71,14 +77,23 @@ void main() {
 		</div>
 		<div class="hidden" id="developer-choices"><span class="title">Developer Packs Available</span>
 		</div>
-		<div id="map-options">
-		 	Enter custom map width and height<br>
-			<input id="map-width" type="text"/> X <input id="map-height" type="text"/>
-			<button id="map-size">apply</button>
-			<button id="clear">clear</button>
-		</div>
 		
-	</div>
+		<div id="tile-pattern-panel" class="patternPanel hidden">
+			<div id="north-wall" class="tileRep north">N</div>
+			<div id="west-wall" class="tileRep west">W</div>
+			<div id="floor" class="tileRep floor">F</div>
+			<div id="east-wall" class="tileRep east">E</div>
+			<div id="ceiling" class="tileRep ceiling">C</div>
+			<div id="south-wall" class="tileRep south">S</div>
+			<label for="package-options">Tile Pattern Options</label>
+			<select id="package-options">
+				<option value="null">None</option>
+			</select>			
+		</div>
+		<div id="selected-boxes" class="selectedBoxes"></div>
+		
+	</div><!-- end sidebar -->
+	
 	<div class="mainContainer unselectable">
 		<span class="title">Game Map</span><br>
 		<div class="mapCompassContainer unselectable">

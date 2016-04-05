@@ -1,14 +1,39 @@
+/* global key */
 // mapgen.js
 //var mapgrid = document.getElementById("");
 /// <reference path="helpers.ts" />
 var checkedDirectory = false;
 var c = document.getElementById("map");
 var ctx = c.getContext("2d");
+ctx.strokeStyle = "#919191";
+ctx.lineWidth = 2;
 var square = 20;
-var map; // JSON containing your new map :) 
-var mapHeight;
-var mapWidth;
+var devPackChosen;
 
+var map; // JSON containing your new map :) 
+/* map structure
+ {
+"player":{"x":12, "y":5, "facing":"west"},
+"characters":[{"name":"slenderman","x":8,"y":4,"facing":"west","scale":0.8},
+			  {"name":"slenderman","x":8,"y":5,"facing":"west","scale":0.8},
+			  {"name":"slenderman","x":10,"y":1,"facing":"south","scale":0.8}],
+"0,0":{
+	"ceil":null,
+	"floor":null,
+	"north":null,
+	"south":null,
+	"east":null,
+	"west":null
+},
+"0,1":{
+	"ceil":"blue",
+	"floor":"blue",
+	"north":"purple",
+	"south":null,
+	"east":null,
+	"west":"purple"
+},...
+ */
 function uploadJson() {
 	var json_file_data = $("#json").prop("files")[0];
 	var form_data = new FormData();// Creating object of FormData class
@@ -89,87 +114,40 @@ function savePack(filename) {
 	xhr.open('POST','scripts/savepack.php',true);
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	xhr.send('json=' + encoded + "&filename=" + filename);
+	hideChoices("#choose", function() {showChoices("#tile-pattern-panel");})
 }
 
-
 function drawBaseMap(width, height) {
-	ctx.restore();
-	for (var h = 0; h < height; h++) {
-		for (var w = 0; w < width; w++) {
-			ctx.rect(h*square, w*square, square, square);
+	if (map === undefined) {
+		map = {"player":{"x":1,"y":1,"facing":"east"}, "characters":[]};
+	}
+	for (var h = 1; h <= height; h++) {
+		for (var w = 1; w <= width; w++) {
+			var coord = w.toString()+","+h.toString();
+			
+			if (!map.hasOwnProperty(coord)) { map[coord] = {"ceil":null,"floor":null,"north":null,"south":null,"east":null,"west":null}; } 
+			if(map.player.x == w && map.player.y == h) { 
+				drawPlayer(w, h);
+			}
+			
+			ctx.rect(w*square, h*square, square, square);
 		}
 	}
+	ctx.strokeStyle = "#919191";
+	ctx.lineWidth = 2;
 	ctx.stroke();
-	// clear bigger squares if they're there
-	ctx.clearRect(width*square, 0, c.width, c.height);
-	ctx.clearRect(0, height*square, c.width, c.height);
+	
+	ctx.clearRect(0, (height*square)+square+1, c.height-(height*square), c.width);
+	ctx.clearRect((width*square)+square+1, 0, c.width-(width*square), c.height);
+}
 
+function drawPlayer(x, y) {
+	ctx.fillStyle="black"; 
+	ctx.fillRect(x*square, y*square, square, square); 
 }
 
 function destroyMap() {	
 	ctx.clearRect(0, 0, c.width, c.height);
-	ctx.save();
-}
-
-
-$("#use-edgy").click( function() { 
-	if(!checkedDirectory) {
-		getDevOptions();
-	} else if ($("#upload-custom").is(":visible")) { hideChoices("#upload-custom", function() { showChoices("#developer-choices") });  }
-});
-
-$("#upload-your-own").click( function() { 
-	if ($("#developer-choices").is(":visible")) { hideChoices("#developer-choices", function(){	showChoices("#upload-custom");}); }
-	else { 	showChoices("#upload-custom"); }
-});
-
-$("#parse").click( function() {
-	hideChoices("#upload-custom", function() { showChoices("#map-options")});
-	var json = $("#uploaded-file-json").val();
-	var png = $("#uploaded-file-png").val();
-	var request = new XMLHttpRequest();	
-	request.onload = locationRequestListener;
-	request.overrideMimeType("application/json");
-	request.open("get", 'uploads/' +  json, true);
-	request.send();
-	request.addEventListener("load", function() { savePack(json) });
-});
-
-$("#map-size").click(function () {
-	var w = parseInt($("#map-width").val());
-	var h = parseInt($("#map-height").val());
-	if (w <= c.width/square && h <= c.height/square && !(isNaN(w) || isNaN(h)) ) {
-		drawBaseMap(w, h);
-		setMapDimensions(w, h);
-	} else {
-		alert("Invalid dimensions");
-	}
-})
-
-$("#clear").click(destroyMap);
-
-var initialW, initialH;
-var endX,endY;
-$("#map").mousedown(function(e) {
-		
-        $(".ghost-select").addClass("ghost-active");
-		
-	    $(".ghost-select").css({
-            'left': e.offsetX,
-            'top': 	e.offsetY,
-        });
-		
-        initialW = e.offsetX;
-        initialH = e.offsetY;
-
-        $("#map").bind("mouseup", selectElements); 
-        $("#map").bind("mousemove", openSelector);
-		
-});
-
-function setMapDimensions(width, height) {
-	mapWidth = width*square;
-	mapHeight = height*square;
 }
 
 function openSelector(e) {
@@ -188,8 +166,7 @@ function openSelector(e) {
 	$(".ghost-select").css({
       'left': Math.min(e.offsetX, initialW),
       'top': Math.min(e.offsetY, initialH)
-    });
-	
+    });	
 }
 
 function selectElements() {
@@ -212,21 +189,148 @@ function selectElements() {
 	
     $(".ghost-select").removeClass("ghost-active");
     $(".ghost-select").width(0).height(0);
-	
+}
+
+function setCurrentSelectedCoord(x, y, id) {
+	if (!$(id).text().length) {
+		$(id).append("Selected Coords (x, y)<br>")
+	}	
+	$(id).append(x.toString() +",\t\t"+ y.toString() + "<br>")
 }
 
 function drawSelectedMap(x, y, w, h) {
-	if (w > square && h > square) {
+	destroyMap();
+	var uw = parseInt($("#map-width").val());
+	var uh = parseInt($("#map-height").val());
+	drawBaseMap(uw,uh);
+	
+	if (w > square && h > square && uw && uh) {
 		var cx = Math.ceil(x/square) * square;
 		var cy = Math.ceil(y/square) * square;
 		var cw = Math.floor(Math.abs(w/square)) * square;
 		var ch = Math.floor(Math.abs(h/square)) * square;
 		
-		if ((cx+cw) > mapWidth) { cw = mapWidth-cx; }
-		if ((cy+ch) > mapHeight) { ch = mapHeight-cy; }
+		if ((cx+cw) > uw*square) { cw = (uw*square)-cx + square; }
+		if ((cy+ch) > uh*square) { ch = (uh*square)-cy + square; }
+		if (cx == 0) cx = square;
+		if (cy == 0) cy = square;
 		
 		ctx.clearRect(cx, cy, cw, ch);
-		ctx.fillStyle = "red";
+		ctx.fillStyle = "#ED686E";
 		ctx.fillRect(cx, cy, cw, ch);
+		$("#selected-boxes").empty();
+		for (var i = cx; i < cw+cx; i+=square) {
+			for (var j = cy; j < ch+cy; j+=square) {
+				var sx = i/square;
+				var sy = j/square; 
+
+				if (map.player.x == sx && map.player.y == sy) {
+					drawPlayer(sx, sy)
+				}
+
+				setCurrentSelectedCoord(sx, sy, "#selected-boxes");
+
+				ctx.strokeStyle = "#000000";
+				ctx.lineWidth = 1;
+				ctx.strokeRect(i, j, square, square);
+			}
+		}
 	}
 }
+
+function getAvailableTiles(packJson) {
+	rObj = {"ceilings":[], "floors":[], "walls":[] };
+	for (key in packJson) {
+		if($.inArray(key, ["thing","packHeight","packWidth","black"]) == -1) {
+			console.log(key);
+			console.log(packJson[key]);
+		} 
+	}
+}
+
+$("#use-edgy").click( function() { 
+	if(!checkedDirectory) {
+		getDevOptions();
+	} else if ($("#upload-custom").is(":visible")) { hideChoices("#upload-custom", function() { showChoices("#developer-choices") });  }
+});
+
+$("#upload-your-own").click( function() { 
+	if ($("#developer-choices").is(":visible")) { hideChoices("#developer-choices", function(){	showChoices("#upload-custom");}); }
+	else { 	showChoices("#upload-custom"); }
+});
+
+$("#parse").click( function() {
+	hideChoices("#upload-custom", function() { showChoices("#map-options");});
+	var json = $("#uploaded-file-json").val();
+	var png = $("#uploaded-file-png").val();
+	var request = new XMLHttpRequest();	
+	request.onload = locationRequestListener;
+	request.overrideMimeType("application/json");
+	request.open("get", 'uploads/' +  json, true);
+	request.send();
+	request.addEventListener("load", function() { savePack(json) });
+});
+
+$("#map-size").click(function () {
+	var w = parseInt($("#map-width").val());
+	var h = parseInt($("#map-height").val());
+	if (w <= c.width/square && h <= c.height/square && !(isNaN(w) || isNaN(h)) ) {
+		drawBaseMap(w, h);
+	} else {
+		alert("Invalid dimensions");
+	}
+});
+
+$("#developer-choices").on("click", "button", function() {
+	devPackChosen = $(this).attr('id');
+	hideChoices("#choose");
+	hideChoices("#developer-choices", function() {showChoices("#tile-pattern-panel");});
+	
+	var request = new XMLHttpRequest();
+	request.onload = locationRequestListener;
+	request.overrideMimeType("application/json");
+	request.open("get", "assets/" + devPackChosen + '.json', true);
+	request.send();
+});
+
+$("#clear").click(function() { 
+	destroyMap(); 
+	map = {"player":{"x":1,"y":1,"facing":"east"}, "characters":[]};
+});
+
+var initialW, initialH;
+var endX,endY;
+$("#map").mousedown(function(e) {
+        $(".ghost-select").addClass("ghost-active");
+		
+	    $(".ghost-select").css({
+            'left': e.offsetX,
+            'top': 	e.offsetY,
+        });
+        initialW = e.offsetX;
+        initialH = e.offsetY;
+        $("#map").bind("mouseup", selectElements); 
+        $("#map").bind("mousemove", openSelector);
+});
+
+
+$(".tileRep").click(function() {
+	var id = $(this).attr('id');
+	$(this).addClass("selectedTile").siblings(".tileRep").removeClass("selectedTile");
+	var availableTiles = getAvailableTiles(pack);
+	 
+	switch(id) {
+		case "north-wall":
+		case "south-wall":
+		case "west-wall":
+		case "east-wall":
+			
+			break;
+		case "floor":
+			
+			break;
+		case "ceiling":
+			
+			break;		
+	}
+})

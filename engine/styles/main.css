@@ -1,13 +1,13 @@
 html,body {
-	height:100%;
-	width:100%;
-	margin:0;
+height:100%;
+width:100%;
+margin:0;
 }
 
 canvas {
-    background-color:black;
-  	margin:50px auto;
-    display: block;
+background-color:black;
+margin:50px auto;
+display: block;
 }
 
 .sidebar {
@@ -47,7 +47,7 @@ font-family:"Lucida Console";
 }
 
 .sidebar > * {
-    font-family:"Lucida Console", Monaco, monospace;
+font-family:"Lucida Console", Monaco, monospace;
 }
 
 #map-generator button {
@@ -107,7 +107,7 @@ background-size:cover;
 display:none;
 }
 
-input[type=text] {
+input[type=text]:not([readonly]) {
 width:25px;    
 }
 
@@ -137,12 +137,12 @@ background-color:LightGrey;
 width:5px;
 height:5px;
 }
- 
+
 ::-webkit-scrollbar-track {
 -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 background:LightGrey;
 }
- 
+
 
 ::-webkit-scrollbar-thumb {
 background: #ED686E; 
@@ -180,33 +180,108 @@ margin:0;
 
 /*select*/
 .ghost-select {
-  pointer-events: none;
-  top:0;
-  left:0;
-  height:0;
-  width:0;
-  display: none;
-  z-index: 9000;
-  position:absolute !important;
-  cursor: default !important;
+pointer-events: none;
+top:0;
+left:0;
+height:0;
+width:0;
+display: none;
+z-index: 9000;
+position:absolute !important;
+cursor: default !important;
 }
 
 .ghost-active {
-  display: block !important;
+display: block !important;
 }
 
 .ghost-select > span {
-  background-color: rgba(239, 28, 190, 0.6);
-  border: 1px solid #b20e8c;
-  width: 100%;
-  height: 100%;
-  float: left;
+background-color: rgba(239, 28, 190, 0.6);
+border: 1px solid #b20e8c;
+width: 100%;
+height: 100%;
+float: left;
 }
 
 .unselectable {
-        user-select: none;
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -o-user-select: none;
+user-select: none;
+-moz-user-select: none;
+-khtml-user-select: none;
+-webkit-user-select: none;
+-o-user-select: none;
 } 
+
+.selectedBoxes {
+height:100px;
+width:100%;
+overflow-y: scroll;
+font-size:.75em;
+}
+
+.sidebar ::-webkit-scrollbar-track {
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+background:black;
+}
+
+.patternPanel {
+margin-top:5px;
+position:relative;
+height:300px;
+width:100%;
+}
+
+.tileRep {
+position:absolute;
+padding:1px;
+height:75px;
+width:75px;
+color:black;
+background-color:white;
+}
+
+.tileRep:hover:not(.selectedTile) {
+color:white;
+padding:0;
+background-color:black;
+border: solid white 1px;
+}
+
+.north, .floor, .south {
+left:78px;
+}
+
+.west {
+left: 156px;
+}
+
+.ceiling {
+left:234px;
+}
+
+.south {
+top:156px;
+}
+
+.east, .west, .ceiling, .floor {
+top:78px;
+}
+
+.selectedTile {
+	background-color:#FEFF86;
+}
+
+.selectedTile:hover {
+	background-color:yellow;
+}
+
+.patternPanel label {
+	position:absolute;
+	bottom:30px;
+}
+
+#package-options {
+	width:200px;
+	height:25px;
+	position:absolute;
+	bottom:0;
+}
