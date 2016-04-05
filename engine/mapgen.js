@@ -191,6 +191,11 @@ function selectElements() {
     $(".ghost-select").width(0).height(0);
 }
 
+function resetPatterns() {
+	$(".tileRep.selectedTile").removeClass("selectedTile");
+	$("#apply-pattern").addClass("greyed");
+}
+
 function setCurrentSelectedCoord(x, y, id) {
 	if (!$(id).text().length) {
 		$(id).append("Selected Coords (x, y)<br>")
@@ -200,6 +205,7 @@ function setCurrentSelectedCoord(x, y, id) {
 
 function drawSelectedMap(x, y, w, h) {
 	destroyMap();
+	resetPatterns();
 	var uw = parseInt($("#map-width").val());
 	var uh = parseInt($("#map-height").val());
 	drawBaseMap(uw,uh);
@@ -238,14 +244,27 @@ function drawSelectedMap(x, y, w, h) {
 	}
 }
 
-function getAvailableTiles(packJson) {
-	rObj = {"ceilings":[], "floors":[], "walls":[] };
+function isDefined(element, index, array) {
+	return element !== undefined; 
+}
+
+function getAvailablePatterns(packJson) {
+	var rObj = {"ceilings":[], "floors":[], "walls":[] };
 	for (key in packJson) {
 		if($.inArray(key, ["thing","packHeight","packWidth","black"]) == -1) {
-			console.log(key);
-			console.log(packJson[key]);
-		} 
+			
+			if ([packJson[key]["front_center"],packJson[key]["front_right"],packJson[key]["left_center"],packJson[key]["left_left"],packJson[key]["right_center"],packJson[key]["right_right"]].every(isDefined)) {
+				rObj["walls"].push(key)
+			}
+			if ([packJson[key]["floor_center"],packJson[key]["floor_right"],packJson[key]["floor_left"]].every(isDefined)) {
+				rObj["floors"].push(key);
+			}
+			if ([packJson[key]["ceiling_center"],packJson[key]["ceiling_right"],packJson[key]["ceiling_left"]].every(isDefined)) {
+				rObj["ceilings"].push(key);
+			}
+		}
 	}
+	return rObj;
 }
 
 $("#use-edgy").click( function() { 
@@ -317,20 +336,27 @@ $("#map").mousedown(function(e) {
 $(".tileRep").click(function() {
 	var id = $(this).attr('id');
 	$(this).addClass("selectedTile").siblings(".tileRep").removeClass("selectedTile");
-	var availableTiles = getAvailableTiles(pack);
-	 
+	var availablePatterns = getAvailablePatterns(pack);
+	$("#apply-pattern").removeClass("greyed");
+	$("#package-options").html("<option value='null'>None</option>");
 	switch(id) {
 		case "north-wall":
 		case "south-wall":
 		case "west-wall":
 		case "east-wall":
-			
+			$(availablePatterns.walls).each(function(i,v) {
+				$("#package-options").append("<option value='"+v+"'>"+v+"</option>");			
+			})
 			break;
 		case "floor":
-			
+			$(availablePatterns.floors).each(function(i,v) {
+				$("#package-options").append("<option value='"+v+"'>"+v+"</option>");			
+			})
 			break;
 		case "ceiling":
-			
+			$(availablePatterns.ceilings).each(function(i,v) {
+				$("#package-options").append("<option value='"+v+"'>"+v+"</option>");			
+			})
 			break;		
 	}
 })

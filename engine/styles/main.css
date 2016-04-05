@@ -52,12 +52,12 @@ font-family:"Lucida Console", Monaco, monospace;
 
 #map-generator button {
 font-family:"Courier New";
-background-color:#ED686E; 
 height:30px;
 padding:0 10px;
 line-height:30px;
 border-style:solid;
 border-width:0 3px 5px 0;
+background-color:#ED686E;
 border-color:#8F383C;
 color:white;
 margin:0;
@@ -224,7 +224,7 @@ background:black;
 }
 
 .patternPanel {
-margin-top:5px;
+margin:7px 0;
 position:relative;
 height:300px;
 width:100%;
@@ -284,4 +284,19 @@ top:78px;
 	height:25px;
 	position:absolute;
 	bottom:0;
+}
+
+#apply-pattern {
+	position:absolute;
+	bottom:-10px;
+	left:220px;
+}
+
+button.greyed {
+background-color:#787878!important;
+border-color:#303030!important;
+}
+
+button.greyed:hover {
+box-shadow: inset 0 0 0 1px #303030,inset 0 5px 30px #303030!important;
 }
