@@ -24,7 +24,8 @@ function addThing(thingInfo:JSON) {
 	things[name][thing_perspective]['w'] = thingInfo['frame']['w']/pack["packWidth"];
 	things[name][thing_perspective]['y'] = thingInfo['frame']['y']/pack["packHeight"];
 	things[name][thing_perspective]['x'] = thingInfo['frame']['x']/pack["packWidth"];
-}
+	
+} 
 
 function getTextureLocations(pixel_locs:JSON) {
 	pack = {"thing":{}};
@@ -49,11 +50,12 @@ function getTextureLocations(pixel_locs:JSON) {
 			pack[pattern][surface_perspective] = {};
 		}
 
-		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['frame']['h']/total_height
-		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['frame']['w']/total_width
-		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y']/total_height
-		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x']/total_width
-	
+		pack[pattern][surface_perspective]['h'] = pixel_locs['frames'][i]['frame']['h']/total_height;
+		pack[pattern][surface_perspective]['w'] = pixel_locs['frames'][i]['frame']['w']/total_width;
+		pack[pattern][surface_perspective]['h_raw'] = pixel_locs['frames'][i]['frame']['h'];
+		pack[pattern][surface_perspective]['w_raw'] = pixel_locs['frames'][i]['frame']['w'];
+		pack[pattern][surface_perspective]['y'] = pixel_locs['frames'][i]['frame']['y']/total_height;
+		pack[pattern][surface_perspective]['x'] = pixel_locs['frames'][i]['frame']['x']/total_width;
 	}
 }
 

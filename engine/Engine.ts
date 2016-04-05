@@ -28,6 +28,7 @@ export class Engine {
 	slide:number;
 	turnFace:string;
 	tileSizeRef:number;
+	packRatio:number;
 	drawDistance:number;
 	alphaUniform:WebGLUniformLocation;
 	tileOpacity:number;
@@ -42,6 +43,8 @@ export class Engine {
 	fpsTimeLast:number;
 	fpsTimeCounter:number;
 	fpsElement:HTMLElement;
+	theoryFPSTime:number;
+	theoryFPSAvg:Array<number>;
 	
 	debugElement:HTMLElement;
 		
@@ -73,6 +76,7 @@ export class Engine {
 		//lets assume that the closest front_center will be this tall and this wide
 		// this is also the tallest a character can possibly be.
 		e.tileSizeRef = e.canvas.height-e.canvas.height/16; 
+		e.packRatio = pack["packHeight"]/pack["packWidth"];
 		
 		// if a monster is in the middle of a box, this is their maximum height;
 		// probably not needed since we control the scale in zScale
@@ -136,6 +140,8 @@ export class Engine {
 		e.fpsTimeLast=0;
 		e.fpsTimeCounter=0;
 		e.fpsElement=document.getElementById("fps_counter");
+		e.theoryFPSTime=0;
+		e.theoryFPSAvg=[];
 		
 		//debug stuff
 		e.debugElement=document.getElementById("debug");
@@ -199,10 +205,18 @@ export class Engine {
 		e.fpsTimeCounter += e.fpsTime - e.fpsTimeLast;
 		e.fpsTimeLast = e.fpsTime;
 		e.fpsFrames++;
+		e.theoryFPSTime = new Date().getTime();
 		 if (e.fpsTimeCounter>1000){
 			e.fpsElement.innerHTML=Math.round(1000*e.fpsFrames/e.fpsTimeCounter) + " fps";
 			e.fpsTimeCounter = 0;
 			e.fpsFrames = 0;
+			var sum = 0;
+			for(var i=0;i<e.theoryFPSAvg.length;i++){
+				sum += e.theoryFPSAvg[i];
+			}
+			e.debug("Theoretical FPS:");
+			e.debugAdd((1000/(sum/e.theoryFPSAvg.length)).toString());
+			e.theoryFPSAvg = [];
 		 }
 		
 		var xy = e.getPlayerPosition();
@@ -238,6 +252,8 @@ export class Engine {
 		} else if (e.slide > 0) {
 			e.slide -= e.cw/10;
 		}
+		
+		e.theoryFPSAvg.push((new Date().getTime())-e.theoryFPSTime);
 		
 		requestAnimationFrame(this.draw.bind(this));
 	}
@@ -537,15 +553,12 @@ export class Engine {
 		e.gl.enableVertexAttribArray(e.positionLocation);
 		e.gl.vertexAttribPointer(e.positionLocation, 2, e.gl.FLOAT, false, 0, 0);
 
-		var w = +pack[pattern][surfaceType]["w"];
-		var h = +pack[pattern][surfaceType]["h"];
-		w=e.tileSizeRef*w/h;
-		h=e.tileSizeRef;		
+		var w = +pack[pattern][surfaceType]["w_raw"];
+		var h = +pack[pattern][surfaceType]["h_raw"];
 		var zScale = Math.pow(2,z+e.zAnim);
 		var scenePush = 0;
 		var diff = 0;
 
-		// set temp variable to be used for drawing turning farther than canvas size
 		if (push) {
             if(e.slide < 0) {
 			     scenePush = e.cw;
@@ -557,96 +570,96 @@ export class Engine {
 		
 		switch(surfaceType) {
 			case "left_center":
-				// diff = w-h/4; //I commented out what is untested
-				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale)))+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale))-1, 
-							 e.tileSizeRef/(zScale*2)+1, 
-							 2*e.tileSizeRef/(zScale)+2, e.rectangle);
+				diff = ((w-(h/4))/w)*e.tileSizeRef; 
+				setRectangle(e.gl, (e.cw/2-((e.tileSizeRef)/(zScale)))+e.slide+scenePush, 
+							 e.ch/2-(e.tileSizeRef/(zScale)), 
+							 (e.tileSizeRef+diff)/(zScale*2), 
+							 2*e.tileSizeRef/(zScale), e.rectangle);
 				break;
 			case "ceiling_center":
-				// diff = h-w/4;
-				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale)), 
-							 2*e.tileSizeRef/zScale+2, 
-							 e.tileSizeRef/(zScale*2)+1, e.rectangle);
+				diff = ((h-(w/4))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale)))+e.slide+scenePush, 
+							 e.ch/2-((e.tileSizeRef)/(zScale)), 
+							 2*e.tileSizeRef/zScale, 
+							 (e.tileSizeRef+diff+8)/(zScale*2), e.rectangle);
 				break;
 			case "floor_center":
-				//diff = h-w/4;
-				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
+				diff = ((h-(w/4))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale)))+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
-							 2*e.tileSizeRef/zScale+3, 
-							 (e.tileSizeRef+diff)/(zScale*2)+1.5, e.rectangle);
+							 2*e.tileSizeRef/zScale, 
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 			case "right_center":
-				// diff = w-h/4;
-				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale))-1, 
-							 e.tileSizeRef/(zScale*2)+1, 
-							 2*e.tileSizeRef/(zScale)+2, e.rectangle);
+				diff = ((w-(h/4))/w)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef-diff)/(zScale*2))+e.slide+scenePush, 
+							 e.ch/2-((e.tileSizeRef)/(zScale)), 
+							 (e.tileSizeRef+diff)/(zScale*2), 
+							 2*e.tileSizeRef/(zScale), e.rectangle);
 				break;
 			case "front_center":
-				// diff = h-w;//this allows front walls to be extend horizontally
-				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
+				diff = ((w-h)/h)*e.tileSizeRef/2;//this allows front walls to be extend horizontally
+				setRectangle(e.gl, e.cw/2-((e.tileSizeRef+diff)/(zScale*2))+e.slide+scenePush, 
 							 e.ch/2-(e.tileSizeRef/(zScale*2)), 
-							 e.tileSizeRef/zScale+1, 
-							 e.tileSizeRef/zScale+1, e.rectangle);
+							 (e.tileSizeRef+diff)/zScale, 
+							 e.tileSizeRef/zScale, e.rectangle);
 				break;
 			case "left_left":
-				// diff = w-h/2;
-				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale)))+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale))-1, 
-							 3*e.tileSizeRef/(zScale*2)+1, 
-							 2*e.tileSizeRef/(zScale)+2, e.rectangle);
+				diff = ((w-(h/2))/w)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef)/(zScale))+e.slide+scenePush, 
+							 e.ch/2-(e.tileSizeRef/(zScale)), 
+							 (3*(e.tileSizeRef+diff))/(zScale*2), 
+							 2*e.tileSizeRef/(zScale), e.rectangle);
 				break;
 			case "front_left":
-				// diff = h-w;
-				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
+				diff = ((w-h)/h)*e.tileSizeRef/2;
+				setRectangle(e.gl, e.cw/2-((3*e.tileSizeRef+diff)/(zScale*2))+e.slide+scenePush, 
 							 e.ch/2-(e.tileSizeRef/(zScale*2)), 
-							 e.tileSizeRef/zScale+1, 
-							 e.tileSizeRef/zScale+1, e.rectangle);
+							 (e.tileSizeRef+diff)/zScale, 
+							 e.tileSizeRef/zScale, e.rectangle);
 				break;
 			case "floor_left":
-				//diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
+				diff = ((h-(w/5))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale)))+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
-							 5*e.tileSizeRef/(zScale*2)+2, 
-							 (e.tileSizeRef+diff)/(zScale*2)+1.5, e.rectangle);
+							 5*e.tileSizeRef/(zScale*2), 
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_left":
-				// diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale))-1)+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale)), 
-							 5*e.tileSizeRef/(zScale*2)+2, 
-							 e.tileSizeRef/(zScale*2)+1, e.rectangle);
+				diff = ((h-(w/5))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2-(3*e.tileSizeRef/(zScale)))+e.slide+scenePush, 
+							 e.ch/2-((e.tileSizeRef)/(zScale)), 
+							 5*e.tileSizeRef/(zScale*2), 
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 			case "right_right":
-				// diff = w-h/2;
-				setRectangle(e.gl, (e.cw/2+(3*e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale))-1, 
-							 3*e.tileSizeRef/(zScale*2)+1, 
-							 2*e.tileSizeRef/(zScale)+2, e.rectangle);
+				diff = ((w-(h/2))/w)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2+(3*(e.tileSizeRef-diff)/(zScale*2)))+e.slide+scenePush, 
+							 e.ch/2-(e.tileSizeRef/(zScale)), 
+							 3*(e.tileSizeRef+diff)/(zScale*2), 
+							 2*e.tileSizeRef/(zScale), e.rectangle);
 				break;
 			
 			case "front_right":
-				// diff = h-w;
-				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
+				diff = ((w-h)/h)*e.tileSizeRef/2;
+				setRectangle(e.gl, (e.cw/2+((e.tileSizeRef-diff)/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2-(e.tileSizeRef/(zScale*2)), 
-							 e.tileSizeRef/zScale+1, 
-							 e.tileSizeRef/zScale+1, e.rectangle);
+							 (e.tileSizeRef+diff)/zScale, 
+							 e.tileSizeRef/zScale, e.rectangle);
 				break;
 			case "floor_right":
-				//diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2))-1)+e.slide+scenePush, 
+				diff = ((h-(w/5))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
 							 e.ch/2+((e.tileSizeRef-diff)/(zScale*2)), 
-							 5*e.tileSizeRef/(zScale*2)+2, 
-							 (e.tileSizeRef+diff)/(zScale*2)+1.5, e.rectangle);
+							 5*e.tileSizeRef/(zScale*2), 
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 			case "ceiling_right":
-				// diff = h-w/5;
-				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2))-1)+e.slide+scenePush, 
-							 e.ch/2-(e.tileSizeRef/(zScale)), 
-							 5*e.tileSizeRef/(zScale*2)+2, 
-							 e.tileSizeRef/(zScale*2)+1, e.rectangle);
+				diff = ((h-(w/5))/h)*e.tileSizeRef;
+				setRectangle(e.gl, (e.cw/2+(e.tileSizeRef/(zScale*2)))+e.slide+scenePush, 
+							 e.ch/2-((e.tileSizeRef)/(zScale)), 
+							 5*e.tileSizeRef/(zScale*2), 
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 		}
 
@@ -735,7 +748,6 @@ export class Engine {
 		var e = this;
 		if (e.zAnim != 0 || e.slide != 0)
 			return;
-
 		switch(keyEvent.keyCode) {
 			case 87:
 			 	if (e.checkWall()) {

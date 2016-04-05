@@ -23,3 +23,4 @@ if (document.getElementById("gameport")) {
 	mapRequest.open("get", MAPSRC, true);
 	mapRequest.send();
 } 
+
