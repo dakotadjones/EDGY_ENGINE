@@ -12,6 +12,8 @@ var devPackChosen;
 
 var map; // JSON containing your new map :) 
 
+var currCords = [];
+
 // could be greatly expanded
 var colorMap = {
 	"blue":"#003399",
@@ -191,8 +193,9 @@ function resetPatterns() {
 function setCurrentSelectedCoord(x, y, id) {
 	if (!$(id).text().length) {
 		$(id).append("Selected Coords (x, y)<br>")
-	}	
+	}
 	$(id).append(x.toString() +",\t\t"+ y.toString() + "<br>")
+	currCords.push(x.toString()+","+y.toString());
 }
 
 function eraseLastSelection(x,y,w,h) {
@@ -230,6 +233,7 @@ function drawSelectedMap(x, y, w, h) {
 		if (cx == 0) cx = square;
 		if (cy == 0) cy = square;
 		
+		// optimize
 		if (lastRect !== undefined) {
 			eraseLastSelection(lastRect.x, lastRect.y, lastRect.w, lastRect.h);
 		}
@@ -237,7 +241,7 @@ function drawSelectedMap(x, y, w, h) {
 		ctx.fillStyle = "#ED686E";
 		ctx.fillRect(cx, cy, cw, ch);
 		$("#selected-boxes").empty();
-
+		currCords = [];
 		ctx.strokeStyle = "#000000";
 		ctx.lineWidth = 1;
 		for (var i = cx; i < cw+cx; i+=square) {
@@ -252,7 +256,6 @@ function drawSelectedMap(x, y, w, h) {
 			}
 		}
 		lastRect = {"x":cx, "y":cy, "w":cw, "h":ch};
-
 	}
 }
 
@@ -367,13 +370,13 @@ $(".tileRep").click(function() {
 	var id = $(this).attr('id');
 	$(this).addClass("selectedTile").siblings(".tileRep").removeClass("selectedTile");
 	var availablePatterns = getAvailablePatterns(pack);
-	$("#apply-pattern").removeClass("greyed");
+	if (currCords.length > 0) $("#apply-pattern").removeClass("greyed");
 	$("#package-options").html("<option value='null'>None</option>");
 	switch(id) {
-		case "north-wall":
-		case "south-wall":
-		case "west-wall":
-		case "east-wall":
+		case "north":
+		case "south":
+		case "west":
+		case "east":
 			$(availablePatterns.walls).each(function(i,v) {
 				$("#package-options").append("<option value='"+v+"'>"+v+"</option>");			
 			})
@@ -389,4 +392,15 @@ $(".tileRep").click(function() {
 			})
 			break;		
 	}
-})
+});
+
+$("#apply-pattern").click(function() {
+	var surface = $(".tileRep.selectedTile").attr('id');
+	var texture = $("#package-options").val();
+	if (texture == "null") texture = null;
+	if(!$(this).hasClass("greyed")) {
+		for (var c in currCords) {
+			map[currCords[c]][surface] = texture;
+		}
+	}
+});
