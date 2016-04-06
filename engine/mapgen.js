@@ -195,14 +195,31 @@ function setCurrentSelectedCoord(x, y, id) {
 	$(id).append(x.toString() +",\t\t"+ y.toString() + "<br>")
 }
 
+function eraseLastSelection(x,y,w,h) {
+	ctx.clearRect(x,y,w,h);
+	ctx.strokeStyle = "#919191";
+	ctx.lineWidth = 2;
+	for (var i = x; i < x+w; i+=square) {
+			for (var j = y; j < h+y; j+=square) {
+				var sx = i/square;
+				var sy = j/square; 
+				if (map.player.x == sx && map.player.y == sy) {
+					drawPlayer(sx, sy)
+				}
+				ctx.strokeRect(i, j, square, square);
+			}
+	}
+	
+}
+
+var lastRect;
 function drawSelectedMap(x, y, w, h) {
-	destroyMap();
 	resetPatterns();
 	var uw = parseInt($("#map-width").val());
 	var uh = parseInt($("#map-height").val());
-	drawBaseMap(uw,uh);
 	
 	if (w > square && h > square && uw && uh) {
+		
 		var cx = Math.ceil(x/square) * square;
 		var cy = Math.ceil(y/square) * square;
 		var cw = Math.floor(Math.abs(w/square)) * square;
@@ -213,26 +230,29 @@ function drawSelectedMap(x, y, w, h) {
 		if (cx == 0) cx = square;
 		if (cy == 0) cy = square;
 		
+		if (lastRect !== undefined) {
+			eraseLastSelection(lastRect.x, lastRect.y, lastRect.w, lastRect.h);
+		}
 		ctx.clearRect(cx, cy, cw, ch);
 		ctx.fillStyle = "#ED686E";
 		ctx.fillRect(cx, cy, cw, ch);
 		$("#selected-boxes").empty();
+
+		ctx.strokeStyle = "#000000";
+		ctx.lineWidth = 1;
 		for (var i = cx; i < cw+cx; i+=square) {
 			for (var j = cy; j < ch+cy; j+=square) {
 				var sx = i/square;
 				var sy = j/square; 
-
 				if (map.player.x == sx && map.player.y == sy) {
 					drawPlayer(sx, sy)
 				}
-
-				setCurrentSelectedCoord(sx, sy, "#selected-boxes");
-
-				ctx.strokeStyle = "#000000";
-				ctx.lineWidth = 1;
+				setCurrentSelectedCoord(sx, sy, "#selected-boxes");				
 				ctx.strokeRect(i, j, square, square);
 			}
 		}
+		lastRect = {"x":cx, "y":cy, "w":cw, "h":ch};
+
 	}
 }
 
