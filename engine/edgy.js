@@ -265,9 +265,10 @@ var engine;
                     if (e.boxes[x] === undefined) {
                         e.boxes[x] = [];
                     }
-                    e.boxes[x].push(box);
+                    e.boxes[x][y] = box;
                 }
             }
+            console.log(e.boxes);
         };
         Engine.prototype.draw = function () {
             var e = this;
@@ -613,7 +614,7 @@ var engine;
             var h = +pack[pattern][surfaceType]["h_raw"];
             var zScale = Math.pow(2, z + e.zAnim);
             var scenePush = 0;
-            var diff;
+            var diff = 0;
             if (push) {
                 if (e.slide < 0) {
                     scenePush = e.cw;
@@ -629,7 +630,7 @@ var engine;
                     break;
                 case "ceiling_center":
                     diff = ((h - (w / 4)) / h) * e.tileSizeRef;
-                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef) / (zScale)), 2 * e.tileSizeRef / zScale, (e.tileSizeRef + diff + 8) / (zScale * 2), e.rectangle);
+                    setRectangle(e.gl, (e.cw / 2 - (e.tileSizeRef / (zScale))) + e.slide + scenePush, e.ch / 2 - ((e.tileSizeRef) / (zScale)), 2 * e.tileSizeRef / zScale, (e.tileSizeRef + diff) / (zScale * 2), e.rectangle);
                     break;
                 case "floor_center":
                     diff = ((h - (w / 4)) / h) * e.tileSizeRef;
@@ -876,22 +877,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-var SRC = 'assets/painted_pack';
-var MAPSRC = 'assets/map_courtyard.json';
-var pack;
-var map;
-var edgy;
-window.onload = run;
-var request = new XMLHttpRequest();
-request.onload = locationRequestListener;
-request.overrideMimeType("application/json");
-request.open("get", SRC + '.json', true);
-request.send();
-var mapRequest = new XMLHttpRequest();
-mapRequest.onload = mapRequestListener;
-mapRequest.overrideMimeType("application/json");
-mapRequest.open("get", MAPSRC, true);
-mapRequest.send();
 function locationRequestListener() {
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
@@ -946,4 +931,36 @@ function getTextureLocations(pixel_locs) {
 }
 function run() {
     edgy = new engine.Engine("gameport");
+}
+var pack;
+if (document.getElementById("gameport")) {
+    var SRC, MAPSRC, map;
+    if (typeof map_json != 'undefined') {
+        if (pack_type == "up") {
+            SRC = 'uploads/';
+        }
+        else {
+            SRC = 'assets/';
+        }
+        SRC = SRC + pack_name;
+        map = map_json;
+    }
+    else {
+        SRC = 'assets/package';
+        MAPSRC = 'assets/map_courtyard_grass.json';
+    }
+    var edgy;
+    window.onload = run;
+    var request = new XMLHttpRequest();
+    request.onload = locationRequestListener;
+    request.overrideMimeType("application/json");
+    request.open("get", SRC + '.json', true);
+    request.send();
+    if (MAPSRC !== undefined) {
+        var mapRequest = new XMLHttpRequest();
+        mapRequest.onload = mapRequestListener;
+        mapRequest.overrideMimeType("application/json");
+        mapRequest.open("get", MAPSRC, true);
+        mapRequest.send();
+    }
 }

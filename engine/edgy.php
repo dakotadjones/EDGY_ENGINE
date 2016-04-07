@@ -45,6 +45,7 @@ void main() {
 
 }
 </script>
+
 <body>
     <canvas id="gameport" height="450" width="800" style="background-color:black"></canvas>
     <div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 60px; left: 300px; color: white;
@@ -59,6 +60,13 @@ void main() {
 </body>
 <script type="text/javascript">
     var map_json;
+<?php
+if (isset($_POST["map"]) && isset($_POST["packType"]) && isset($_POST["pack"])) {
+    echo "map_json=".$_POST["map"].";\n";
+    echo "var pack_type=\"".$_POST["packType"]."\";\n";
+    echo "var pack_name=\"".$_POST["pack"]."\";";
+}
+?>
 </script>
 <script type="text/javascript" src="edgy.js"></script>
 </html>

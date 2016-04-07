@@ -1,0 +1,147 @@
+<!doctype html >
+<head>		
+    <meta charset="UTF-8">
+	<title>Interactive</title>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+</head>
+<script id="shader-fs" type="x-shader/x-fragment">
+precision mediump float;
+
+// our texture
+uniform sampler2D u_image;
+
+// the texCoords passed in from the vertex shader
+varying vec2 v_texCoord;
+
+// alpha for transparency
+uniform float uAlpha;
+
+void main() {
+    vec4 color = texture2D(u_image, v_texCoord);
+    gl_FragColor = vec4(color.rgb, color.a * uAlpha); //color;
+}
+</script>
+<script id="shader-vs" type="x-shader/x-vertex">
+attribute vec2 a_position; // position of the vertex
+attribute vec2 a_texCoord;
+
+uniform vec2 u_resolution;
+
+varying vec2 v_texCoord;
+
+void main() {
+   vec2 zeroToOne = a_position / u_resolution;
+
+   // convert from 0->1 to 0->2
+   vec2 zeroToTwo = zeroToOne * 2.0;
+
+   // convert from 0->2 to -1->+1 (clipspace)
+   vec2 clipSpace = zeroToTwo - 1.0;
+
+   gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+
+   // pass the texCoord to the fragment shader
+   v_texCoord = a_texCoord;
+
+}
+</script>
+<body id="map-generator">
+	<div class="sidebar">
+		<h1>EDGY Map Generator</h1>
+		<form id="map-form" action="edgy.php" method="post">
+			<input type="hidden" id="map-json" name="map"/>
+			<input type="hidden" id="user-or-dev" name="packType"/>
+			<input type="hidden" id="package-name" name="pack"/>
+		</form>
+		<div id="map-options" class="hidden">
+		 	Enter custom map width and height<br>
+			<input id="map-width" type="text"/> X <input id="map-height" type="text"/><br>
+			<button id="map-size">apply</button>
+			<button id="clear">clear</button> <br>
+			Enter Player Position<br>
+			x: <input id="player-x" type="text"/> y:<input id="player-y" type="text"/> 
+			facing: <select id="player-face">
+				<option value="north">North</option>
+				<option value="east">East</option>
+				<option value="west">West</option>
+				<option value="south">South</option>
+			</select><br>
+			<button id="move-player">move player</button><br>
+		</div>
+		<div id="choose">
+			Upload Custom or Use Developer Packs
+			<button id="upload-your-own">Upload Custom</button>
+			<button id="use-edgy">Developer Pack</button><br>
+		</div>
+		<div class="hidden" id="upload-custom">
+			<div id="json-custom">
+				<span class="title">Upload TexturePacker JSON output</span>
+				<label class="cute" for="json"><img src="styles/arrow-upload-icon.png"/>JSON</label>
+				<input class="hidden" id="json" type="file" name="user" accept=".json" onchange="uploadJson()"/>
+				<input type="text" id="uploaded-file-json" readonly></input>
+			</div>
+			<div id="png-custom">
+				<span class="title">Upload texture pack PNG</span>
+				<label class="cute" for="png"><img src="styles/arrow-upload-icon.png"/>PNG</label>
+				<input class="hidden" id="png" type="file" name="user" accept=".png" onchange="uploadPng()"/>
+				<input type="text" id="uploaded-file-png" readonly></input><br>
+				<button id="parse" class="hidden">Parse</button>
+			</div>
+		</div>
+		<div class="hidden" id="developer-choices"><span class="title">Developer Packs Available</span>
+		</div>
+
+		<div id="tile-pattern-panel" class="patternPanel hidden">
+			<div id="north" class="tileRep north">N</div>
+			<div id="west" class="tileRep west">W</div>
+			<div id="floor" class="tileRep floor">F</div>
+			<div id="east" class="tileRep east">E</div>
+			<div id="ceil" class="tileRep ceiling">C</div>
+			<div id="south" class="tileRep south">S</div>
+			<label for="package-options">Texture Options</label>
+			<select id="package-options">
+				<option value="null">None</option>
+			</select>
+			<button id="apply-pattern" class="greyed">apply</button>
+		</div>
+		<div class="coordinateInfoBox hidden" id="coordinate-info-box">
+			<label for="coordinate-info">Coordinates:</label>
+			<input type="text" id="coordinate-info" readonly></input><br>
+			<label for="north-info">North Wall:</label>
+			<input type="text" id="north-info" readonly value="Null"></input><br>
+			<label for="east-info">East Wall:</label>
+			<input type="text" id="east-info" readonly value="Null"></input><br>
+			<label for="south-info">South Wall:</label>
+			<input type="text" id="south-info" readonly value="Null"></input><br>
+			<label for="west-info">West Wall:</label>
+			<input type="text" id="west-info" readonly value="Null"></input><br>
+			<label for="ceiling-info">Ceiling:</label>
+			<input type="text" id="ceiling-info" readonly value="Null"></input><br>
+			<label for="floor-info">Floor:</label>
+			<input type="text" id="floor-info" readonly value="Null"></input>
+		</div>
+		<div id="selected-boxes" class="selectedBoxes hidden"></div>
+		<button id="submit">Submit</button>
+
+	</div><!-- end sidebar -->
+	
+	<div class="mainContainer unselectable">
+		<span class="title">Game Map</span><br>
+		<div class="mapCompassContainer unselectable">
+			<span class="compass unselectable" unselectable="on">N</span><br>
+			<span class="compass middle unselectable" unselectable="on">W</span>
+			<div class="mapContainer unselectable" unselectable="on">
+				<div class="ghost-select"><span></span></div>
+				<canvas id="map" width="10000" height="10000"></canvas>
+			</div>
+			<span class="compass middle unselectable" unselectable="on">E</span><br>
+			<span class="compass unselectable" unselectable="on">S</span>
+		</div>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="edgy.js"></script>
+<script type="text/javascript" src="mapgen.js"></script>
+</html>

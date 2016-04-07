@@ -51,7 +51,7 @@ export class Engine {
 	constructor(id:string) {
 		// set up object reference 
 		var e = this;
-        
+
 		// initialize our player  
 		e.myPlayer = new player.Player();
         
@@ -130,7 +130,6 @@ export class Engine {
 	
 		// character stuff
 		e.myCharacters = <JSON>{};
-		
 		e.loadBoxes();
 		e.displayBoxes = [];
 		
@@ -166,7 +165,6 @@ export class Engine {
 		
 		// TODO ensure draw gets called after load boxes
 		e.draw();
-		//console.log(pack);	
 	}
 	
 	loadBoxes() {
@@ -191,10 +189,11 @@ export class Engine {
 				if (e.boxes[x] === undefined) {
 					e.boxes[x] = [];
 				}
-				
-				e.boxes[x].push(box)
+		
+				e.boxes[x][y] = box;
 			}
 		}
+		console.log(e.boxes);
 	}
 	
 	draw() {
@@ -399,7 +398,6 @@ export class Engine {
 		if (playerBox == -1)
 			e.zAnimB = true;
 		e.displayBoxes = [];
-		
 		switch(facing) {
 			case "north":
 			 var getBox = function(i:number,w:number){return e.boxes[myX+w][myY - i];};
@@ -410,6 +408,7 @@ export class Engine {
 			break;
 			case "east":
 			 var getBox = function(i:number,w:number){return e.boxes[myX + i][myY+w];};
+			 
 			 var isThere = function(i:number,w:number){
 				 return (e.boxes[myX+i] !== undefined && e.boxes[myX+i][myY+w] !== undefined);};
 			 var left = "north";
@@ -423,6 +422,7 @@ export class Engine {
 			 var right = "west";
 			break;
 			case "west":
+
 			 var getBox = function(i:number,w:number){return e.boxes[myX - i][myY-w];};
 			 var isThere = function(i:number,w:number){
 				 return (e.boxes[myX-i] !== undefined && e.boxes[myX-i][myY-w] !== undefined);};
@@ -557,7 +557,7 @@ export class Engine {
 		var h = +pack[pattern][surfaceType]["h_raw"];
 		var zScale = Math.pow(2,z+e.zAnim);
 		var scenePush = 0;
-		var diff;
+		var diff = 0;
 
 		if (push) {
             if(e.slide < 0) {
@@ -581,7 +581,7 @@ export class Engine {
 				setRectangle(e.gl, (e.cw/2-(e.tileSizeRef/(zScale)))+e.slide+scenePush, 
 							 e.ch/2-((e.tileSizeRef)/(zScale)), 
 							 2*e.tileSizeRef/zScale, 
-							 (e.tileSizeRef+diff+8)/(zScale*2), e.rectangle);
+							 (e.tileSizeRef+diff)/(zScale*2), e.rectangle);
 				break;
 			case "floor_center":
 				diff = ((h-(w/4))/h)*e.tileSizeRef;
@@ -748,7 +748,6 @@ export class Engine {
 		var e = this;
 		if (e.zAnim != 0 || e.slide != 0)
 			return;
-		// KEEP KEYCODE, it doesn't break in chrome or with caps
 		switch(keyEvent.keyCode) {
 			case 87:
 			 	if (e.checkWall()) {
