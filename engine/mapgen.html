@@ -100,8 +100,25 @@ void main() {
 			</select>
 			<button id="apply-pattern" class="greyed">apply</button>
 		</div>
-		<div id="selected-boxes" class="selectedBoxes"></div>
+		<div class="coordinateInfoBox">
+			<label for="coordinate-info">Coordinates:</label>
+			<input type="text" id="coordinate-info" readonly></input><br>
+			<label for="north-info">North Wall:</label>
+			<input type="text" id="north-info" readonly value="Null"></input><br>
+			<label for="east-info">East Wall:</label>
+			<input type="text" id="east-info" readonly value="Null"></input><br>
+			<label for="south-info">South Wall:</label>
+			<input type="text" id="south-info" readonly value="Null"></input><br>
+			<label for="west-info">West Wall:</label>
+			<input type="text" id="west-info" readonly value="Null"></input><br>
+			<label for="ceiling-info">Ceiling:</label>
+			<input type="text" id="ceiling-info" readonly value="Null"></input><br>
+			<label for="floor-info">Floor:</label>
+			<input type="text" id="floor-info" readonly value="Null"></input>
+		</div>
+		<div id="selected-boxes" class="selectedBoxes hidden"></div>
 		
+
 	</div><!-- end sidebar -->
 	
 	<div class="mainContainer unselectable">
