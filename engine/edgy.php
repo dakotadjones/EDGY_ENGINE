@@ -58,14 +58,15 @@ void main() {
     <div id="debug"></div>
     </div>
 </body>
+<script type="text/javascript">
+    var map_json;
 <?php
 if (isset($_POST["map"]) && isset($_POST["packType"]) && isset($_POST["pack"])) {
-echo "<script type=\"text/javascript\">";
-    echo "var map_json=".$_POST["map"].";\n";
+    echo "map_json=".$_POST["map"].";\n";
     echo "var pack_type=\"".$_POST["packType"]."\";\n";
     echo "var pack_name=\"".$_POST["pack"]."\";";
-echo "</script>";
 }
 ?>
+</script>
 <script type="text/javascript" src="edgy.js"></script>
 </html>

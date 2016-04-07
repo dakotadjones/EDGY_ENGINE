@@ -965,7 +965,7 @@ function run() {
 var pack;
 if (document.getElementById("gameport")) {
     var SRC, MAPSRC, map;
-    if (map_json !== undefined) {
+    if (typeof map_json != 'undefined') {
         if (pack_type == "up") {
             SRC = 'uploads/';
         }
