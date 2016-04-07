@@ -19,7 +19,10 @@ var selectedWallColor = "#5c2427";
 ctx.strokeStyle = gridColor;
 ctx.lineWidth = 2;
 var square = 20;
+
+// user defined
 var devPackChosen;
+var uploadPackName;
 
 var map; // JSON containing your new map :) 
 
@@ -95,17 +98,19 @@ function getDevOptions() {
 
 function savePack(filename) {
 	// should have the new "pack" object now, overwrite it in the file so that the engine can use it later
+	/*
 	var json = JSON.stringify(pack);
 	var encoded = btoa(json);
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST','scripts/savepack.php',true);
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	xhr.send('json=' + encoded + "&filename=" + filename);
-	hideChoices("#choose", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options")})
+	*/
+	hideChoices("#choose", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options"); showChoices("#coordinate-info-box")})
 }
 
 function drawBaseMap(width, height) {
-	if (map === undefined) { map = {"player":{"x":1,"y":1,"facing":"east"}, "characters":[]}; }
+	if (map === undefined) { map = {"player":{"x":1,"y":1,"facing":"east"}, "characters":[]}; }	
 	for (var h = 1; h <= height; h++) {
 		for (var w = 1; w <= width; w++) {
 			var coord = w.toString()+","+h.toString();
@@ -384,6 +389,7 @@ $("#upload-your-own").click( function() {
 
 $("#parse").click( function() {
 	hideChoices("#upload-custom", function() { showChoices("#map-options");});
+	uploadPackName = $("#uploaded-file-json").val().split('.')[0];
 	var json = $("#uploaded-file-json").val();
 	var png = $("#uploaded-file-png").val();
 	var request = new XMLHttpRequest();	
@@ -425,7 +431,7 @@ $("#move-player").click(function() {
 $("#developer-choices").on("click", "button", function() {
 	devPackChosen = $(this).attr('id');
 	hideChoices("#choose");
-	hideChoices("#developer-choices", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options")});
+	hideChoices("#developer-choices", function() {showChoices("#tile-pattern-panel"); showChoices("#map-options"); showChoices("#coordinate-info-box")});
 	
 	var request = new XMLHttpRequest();
 	request.onload = locationRequestListener;
@@ -517,4 +523,24 @@ $("#apply-pattern").click(function() {
 			if (wallsToDraw.length > 0) { drawWalls(x, y, wallsToDraw, selectedWallColor);}
 		}
 	}
+});
+
+$("#submit").click( function() {
+	
+	for (var i = 0; i <= $("#map-width").val(); i++ ){
+		for (var j = 0; j <= $("#map-height").val(); j++) {
+			var coord = i.toString()+","+j.toString();
+			if (!map.hasOwnProperty(coord)) { map[coord] = {"ceil":null,"floor":null,"north":null,"south":null,"east":null,"west":null}; } 
+		}
+	}
+
+	$("#map-json").val(JSON.stringify(map));
+	if (devPackChosen !== undefined) {
+		$("#user-or-dev").val("dev");
+		$("#package-name").val(devPackChosen);
+	} else if (uploadPackName !== undefined) {
+		$("#user-or-dev").val("up");
+		$("#package-name").val(uploadPackName);
+	}
+	$("#map-form").submit();
 });

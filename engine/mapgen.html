@@ -49,6 +49,11 @@ void main() {
 <body id="map-generator">
 	<div class="sidebar">
 		<h1>EDGY Map Generator</h1>
+		<form id="map-form" action="edgy.php" method="post">
+			<input type="hidden" id="map-json" name="map"/>
+			<input type="hidden" id="user-or-dev" name="packType"/>
+			<input type="hidden" id="package-name" name="pack"/>
+		</form>
 		<div id="map-options" class="hidden">
 		 	Enter custom map width and height<br>
 			<input id="map-width" type="text"/> X <input id="map-height" type="text"/><br>
@@ -100,7 +105,7 @@ void main() {
 			</select>
 			<button id="apply-pattern" class="greyed">apply</button>
 		</div>
-		<div class="coordinateInfoBox">
+		<div class="coordinateInfoBox hidden" id="coordinate-info-box">
 			<label for="coordinate-info">Coordinates:</label>
 			<input type="text" id="coordinate-info" readonly></input><br>
 			<label for="north-info">North Wall:</label>
@@ -117,7 +122,7 @@ void main() {
 			<input type="text" id="floor-info" readonly value="Null"></input>
 		</div>
 		<div id="selected-boxes" class="selectedBoxes hidden"></div>
-		
+		<button id="submit">Submit</button>
 
 	</div><!-- end sidebar -->
 	

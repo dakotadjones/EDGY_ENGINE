@@ -2,9 +2,20 @@
 var pack;
 
 if (document.getElementById("gameport")) {
-	var SRC = 'assets/painted_pack';
-	var MAPSRC = 'assets/map_courtyard_painted.json'	
-	var map;
+	var SRC,MAPSRC,map;
+	if (map_json !== undefined) {
+		if (pack_type == "up") {
+			SRC = 'uploads/';
+		} else {
+			SRC = 'assets/';
+		} 
+		SRC = SRC + pack_name;
+		map = map_json;
+	} else {
+		SRC = 'assets/package';
+		MAPSRC = 'assets/map_courtyard_grass.json'
+	}	
+
 	var edgy;
 	
 	// run program when everything loads
@@ -17,10 +28,12 @@ if (document.getElementById("gameport")) {
 	request.open("get", SRC + '.json', true);
 	request.send();
 	
-	var mapRequest = new XMLHttpRequest();
-	mapRequest.onload = mapRequestListener;
-	mapRequest.overrideMimeType("application/json");
-	mapRequest.open("get", MAPSRC, true);
-	mapRequest.send();
+	if (MAPSRC !== undefined) {
+		var mapRequest = new XMLHttpRequest();
+		mapRequest.onload = mapRequestListener;
+		mapRequest.overrideMimeType("application/json");
+		mapRequest.open("get", MAPSRC, true);
+		mapRequest.send();
+	}
 } 
 

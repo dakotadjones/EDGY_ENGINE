@@ -11,6 +11,7 @@ display: block;
 }
 
 .sidebar {
+position:relative;
 float:left;
 background-color:black;
 color:white;
@@ -44,6 +45,10 @@ padding:0 13px 5px 10px;
 
 #choose  {
 font-family:"Lucida Console";
+}
+
+.sidebar {
+	font-size:.9em;
 }
 
 .sidebar > * {
@@ -82,6 +87,7 @@ margin-right:5px;
 #map-generator h1 {
 font-family:"Lucida Sans Unicode";
 text-transform: uppercase;
+font-size:1.3em;
 }
 
 .title {
@@ -228,15 +234,15 @@ background:black;
 .patternPanel {
 margin:15px 0;
 position:relative;
-height:300px;
+height:225px;
 width:100%;
 }
 
 .tileRep {
 position:absolute;
 padding:1px;
-height:75px;
-width:75px;
+height:55px;
+width:55px;
 color:black;
 background-color:white;
 }
@@ -249,23 +255,23 @@ border: solid white 1px;
 }
 
 .north, .floor, .south {
-left:78px;
+left:58px;
 }
 
 .east {
-left: 156px;
+left: 116px;
 }
 
 .ceiling {
-left:234px;
+left:174px;
 }
 
 .south {
-top:156px;
+top:116px;
 }
 
 .east, .west, .ceiling, .floor {
-top:78px;
+top:58px;
 }
 
 .selectedTile {
@@ -310,7 +316,11 @@ width:100px;
 }
 
 .coordinateInfoBox input {
+font-family:monospace;	
+}
 
-font-family:monospace;
-	
+#submit {
+position:absolute;
+right: 20px;
+bottom:5px;
 }
