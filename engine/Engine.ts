@@ -45,6 +45,7 @@ export class Engine {
 	fpsElement:HTMLElement;
 	theoryFPSTime:number;
 	theoryFPSAvg:Array<number>;
+	fpsRecord:HTMLInputElement;
 	
 	debugElement:HTMLElement;
 		
@@ -141,6 +142,7 @@ export class Engine {
 		e.fpsElement=document.getElementById("fps_counter");
 		e.theoryFPSTime=0;
 		e.theoryFPSAvg=[];
+		e.fpsRecord = <HTMLInputElement>document.getElementById("fps-record");
 		
 		//debug stuff
 		e.debugElement=document.getElementById("debug");
@@ -215,6 +217,7 @@ export class Engine {
 			}
 			e.debug("Theoretical FPS:");
 			e.debugAdd((1000/(sum/e.theoryFPSAvg.length)).toString());
+			e.fpsRecord.value = e.fpsRecord.value + "," + (1000/(sum/e.theoryFPSAvg.length)).toString(); 
 			e.theoryFPSAvg = [];
 		 }
 		
