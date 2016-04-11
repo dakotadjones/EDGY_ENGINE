@@ -62,6 +62,7 @@ function uploadPng() {
                 data: form_data, // Setting the data attribute of ajax with file_data
                 type: 'post',
 				complete: function(data) { 
+					console.log(data);
 					$("#uploaded-file-png").val(data.responseText);
 					if ($("#uploaded-file-json").val().length) { $("#parse").show(); }
 				}
