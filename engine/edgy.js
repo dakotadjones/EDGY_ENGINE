@@ -1,24 +1,3 @@
-/*
- * Version 1.0
- * The box module keeps track of a basic map unit
- * The game map will be drawn using boxes
- * Each box has:
- * 	- 2 walls
- * 	- a floor
- *  - a ceiling
- * Each of the parts of a box can be represented using 1 (dungeon area) or 3 tiles (outside area)
- * Walls are always just 1 tile
- *
- * Box initial structure:
- * {
- * 	"ceiling":{},
- * 	"floor":{},
- * 	"north":{},
- * 	"east":{},
- * 	"south":{}
- * }
- * So, a box is just a bunch of textures that is rendered based on the user's view of it
- */
 var utils;
 (function (utils) {
     var Box = (function () {
@@ -102,9 +81,6 @@ var utils;
     })();
     utils.Character = Character;
 })(utils || (utils = {}));
-/*
- * Shader class that creates the programs for specified WebGL context
- */
 var utils;
 (function (utils) {
     var Shader = (function () {
@@ -199,10 +175,6 @@ var player;
     })();
     player.Player = Player;
 })(player || (player = {}));
-/// <reference path="Shader.ts" />
-/// <reference path="Box.ts" />
-/// <reference path="Player.ts" />
-/// <reference path="Character.ts" />
 var engine;
 (function (engine) {
     var Engine = (function () {
@@ -626,6 +598,16 @@ var engine;
             var packObj = pack;
             if (thing) {
                 packObj = pack["thing"];
+                if (!packObj.hasOwnProperty(pattern))
+                    return;
+                if (!packObj[pattern].hasOwnProperty(surfaceType))
+                    return;
+            }
+            else {
+                if (!packObj.hasOwnProperty(pattern))
+                    return;
+                if (!packObj[pattern].hasOwnProperty(surfaceType))
+                    return;
             }
             var x = packObj[pattern][surfaceType]["x"];
             var y = packObj[pattern][surfaceType]["y"];
@@ -635,6 +617,10 @@ var engine;
         };
         Engine.prototype.drawSurface = function (z, pattern, surfaceType, push) {
             var e = this;
+            if (!pack.hasOwnProperty(pattern))
+                return;
+            if (!pack[pattern].hasOwnProperty(surfaceType))
+                return;
             e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
             e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
@@ -711,6 +697,10 @@ var engine;
         };
         Engine.prototype.drawCharacter = function (z, pattern, perspective, leftRightCenter, scale, push) {
             var e = this;
+            if (!pack["thing"].hasOwnProperty(pattern))
+                return;
+            if (!pack["thing"][pattern].hasOwnProperty(perspective))
+                return;
             e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
             e.gl.uniform1f(e.alphaUniform, e.tileOpacity);
             e.gl.bindBuffer(e.gl.ARRAY_BUFFER, e.positionBuffer);
@@ -907,7 +897,6 @@ function setRectangle(gl, x, y, width, height, buffer) {
     buffer[11] = y2;
     gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
 }
-/// <reference path="Engine.ts" />
 function locationRequestListener() {
     var packJson = JSON.parse(this.responseText);
     getTextureLocations(packJson);
@@ -963,7 +952,6 @@ function getTextureLocations(pixel_locs) {
 function run() {
     edgy = new engine.Engine("gameport");
 }
-/// <reference path="helpers.ts" />
 var pack;
 if (document.getElementById("gameport")) {
     var SRC, MAPSRC, map;
@@ -978,7 +966,7 @@ if (document.getElementById("gameport")) {
         map = map_json;
     }
     else {
-        SRC = 'assets/package';
+        SRC = 'assets/painted_pack';
         MAPSRC = 'assets/map_courtyard_grass.json';
     }
     var edgy;

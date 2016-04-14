@@ -537,6 +537,15 @@ export class Engine {
 		var packObj = pack;
 		if (thing) {
 			packObj = pack["thing"];
+			if (!packObj.hasOwnProperty(pattern))
+				return;
+			if (!packObj[pattern].hasOwnProperty(surfaceType))
+				return;
+		}else{
+			if (!packObj.hasOwnProperty(pattern))
+				return;
+			if (!packObj[pattern].hasOwnProperty(surfaceType))
+				return;
 		}
 		var x = packObj[pattern][surfaceType]["x"];
 		var y = packObj[pattern][surfaceType]["y"];
@@ -548,6 +557,12 @@ export class Engine {
 	
 	drawSurface(z:number, pattern:string, surfaceType:string, push:boolean) {
 		var e = this;
+		
+		if (!pack.hasOwnProperty(pattern))
+			return;
+		if (!pack[pattern].hasOwnProperty(surfaceType))
+			return;
+		
 		// lookup uniforms
 		// set the resolution
 		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
@@ -671,6 +686,12 @@ export class Engine {
 	
 	drawCharacter(z:number, pattern:string, perspective:string, leftRightCenter:string, scale:number, push:boolean) {
 		var e = this;
+		
+		if (!pack["thing"].hasOwnProperty(pattern))
+			return;
+		if (!pack["thing"][pattern].hasOwnProperty(perspective))
+			return;
+		
 		// lookup uniforms
 		// set the resolution
 		e.gl.uniform2f(e.resolutionLocation, e.cw, e.ch);
