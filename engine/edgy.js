@@ -966,7 +966,7 @@ if (document.getElementById("gameport")) {
         map = map_json;
     }
     else {
-        SRC = 'assets/painted_pack';
+        SRC = 'assets/package';
         MAPSRC = 'assets/map_courtyard_grass.json';
     }
     var edgy;
