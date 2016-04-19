@@ -37,7 +37,13 @@ export class Engine {
 	maxCharacterHeight:number;
 	myCharacters:JSON;
 
+	// winning position 
+	firstWinCoords:string; // 1, 1
+	secondWinCoords:string; // 9,7
+	winFacing:string; // west
+
 	// Frames Per Second for developer reference
+	/*
 	fpsFrames:number;
 	fpsTime:number;
 	fpsTimeLast:number;
@@ -45,10 +51,9 @@ export class Engine {
 	fpsElement:HTMLElement;
 	theoryFPSTime:number;
 	theoryFPSAvg:Array<number>;
-	fpsRecord:HTMLInputElement;
-	
-	debugElement:HTMLElement;
-		
+	//fpsRecord:HTMLInputElement;
+	//debugElement:HTMLElement;
+	*/	
 	constructor(id:string) {
 		// set up object reference 
 		var e = this;
@@ -135,6 +140,7 @@ export class Engine {
 		e.displayBoxes = [];
 		
 		//fps stuff
+		/*
 		e.fpsFrames=0;
 		e.fpsTime=0;
 		e.fpsTimeLast=0;
@@ -142,11 +148,16 @@ export class Engine {
 		e.fpsElement=document.getElementById("fps_counter");
 		e.theoryFPSTime=0;
 		e.theoryFPSAvg=[];
-		e.fpsRecord = <HTMLInputElement>document.getElementById("fps-record");
+		//e.fpsRecord = <HTMLInputElement>document.getElementById("fps-record");
 		
 		//debug stuff
-		e.debugElement=document.getElementById("debug");
-
+		//e.debugElement=document.getElementById("debug");
+	    */
+		// win coords
+		e.firstWinCoords = "1,1";
+		e.secondWinCoords = "9,7";
+		e.winFacing = "west";
+		
 		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
 		// initialize the smooth scale 
@@ -195,13 +206,13 @@ export class Engine {
 				e.boxes[x][y] = box;
 			}
 		}
-		console.log(e.boxes);
 	}
 	
 	draw() {
 		var e = this;
 		
 		//fps
+		/*
 		e.fpsTime = new Date().getTime();
 		e.fpsTimeCounter += e.fpsTime - e.fpsTimeLast;
 		e.fpsTimeLast = e.fpsTime;
@@ -215,12 +226,12 @@ export class Engine {
 			for(var i=0;i<e.theoryFPSAvg.length;i++){
 				sum += e.theoryFPSAvg[i];
 			}
-			e.debug("Theoretical FPS:");
-			e.debugAdd((1000/(sum/e.theoryFPSAvg.length)).toString());
-			e.fpsRecord.value = e.fpsRecord.value + "," + (1000/(sum/e.theoryFPSAvg.length)).toString(); 
+			//e.debug("Theoretical FPS:");
+			//e.debugAdd((1000/(sum/e.theoryFPSAvg.length)).toString());
+			//e.fpsRecord.value = e.fpsRecord.value + "," + (1000/(sum/e.theoryFPSAvg.length)).toString(); 
 			e.theoryFPSAvg = [];
 		 }
-		
+		*/
 		var xy = e.getPlayerPosition();
 		var x = xy[0];
 		var y = xy[1];
@@ -255,7 +266,7 @@ export class Engine {
 			e.slide -= e.cw/10;
 		}
 		
-		e.theoryFPSAvg.push((new Date().getTime())-e.theoryFPSTime);
+		//e.theoryFPSAvg.push((new Date().getTime())-e.theoryFPSTime);
 		
 		requestAnimationFrame(this.draw.bind(this));
 	}
@@ -374,7 +385,6 @@ export class Engine {
 			
 			var character = e.getCharacter(box.x,box.y);
 			if (character && (!e.slide || push)) {
-				// TODO draw characters correctly when turning
 				var characterPattern = character.getName();
 				var characterPerspective = e.getPlayerPerspective(facing, character.getFacing());
 				e.setUpTexture(characterPattern, characterPerspective, true);
@@ -841,6 +851,9 @@ export class Engine {
                 }
 				break;
 		}
+		if ((e.myPlayer.getCoordinates().join(',') == e.firstWinCoords || e.myPlayer.getCoordinates().join(',') == e.secondWinCoords) && e.myPlayer.getFacing() == "west") {
+			document.getElementById("note").innerHTML = "You Found It!<br>Please take the survey below<br><a href='http://goo.gl/forms/PxMSc4sS1L'>http://goo.gl/forms/PxMSc4sS1L</a>";
+		}
 	}
 	
 	checkWall(behind:boolean=false) {
@@ -883,7 +896,7 @@ export class Engine {
 			return null;
 		return this.myCharacters[coord];
 	}
-	
+	/*
 	debug(output:string){
 		var e = this;
 		e.debugElement.innerHTML=output;
@@ -892,6 +905,7 @@ export class Engine {
 		var e = this;
 		e.debugElement.innerHTML=e.debugElement.innerHTML + "<br>" + output;
 	}
+	*/
 		
 } // end engine 
 } // end module

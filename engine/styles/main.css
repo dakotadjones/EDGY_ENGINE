@@ -2,12 +2,25 @@ html,body {
 height:100%;
 width:100%;
 margin:0;
+background-color:black;
+text-align:center;
 }
 
 canvas {
 background-color:black;
-margin:50px auto;
+margin:40px auto;
 display: block;
+}
+
+h1 {
+color:white;
+font-family:"Lucida Console", Monaco, monospace;
+margin-bottom:5px;
+}
+
+a {
+text-decoration: none;
+color:white;
 }
 
 .sidebar {
@@ -324,3 +337,4 @@ position:absolute;
 right: 20px;
 bottom:5px;
 }
+

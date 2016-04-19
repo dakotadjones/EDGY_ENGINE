@@ -48,8 +48,7 @@ void main() {
 
 <body>
     <canvas id="gameport" height="450" width="800" style="background-color:black"></canvas>
-    <input type="hidden" id="fps-record"/>
-    <div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 60px; left: 300px; color: white;
+    <!--<div id="fps_counter" style="position: absolute; z-index: 1000; display: block; top: 60px; left: 300px; color: white;
                                  width: 50px; text-align: center; height: 18px; background-color: #111111; font-size: 14px;
                                  color: grey; border-radius: 18px;">FPS</div>
     
@@ -57,7 +56,7 @@ void main() {
                                  width: 250px; text-align: center; height: auto; background-color: #111111; font-size: 14px;
                                  border-radius: 8px;">Debug Screen
     <div id="debug"></div>
-    </div>
+    </div>-->
 </body>
 <script type="text/javascript">
     var map_json;

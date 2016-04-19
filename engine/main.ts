@@ -13,8 +13,8 @@ if (document.getElementById("gameport")) {
 		SRC = SRC + pack_name;
 		map = map_json;
 	} else {
-		SRC = 'assets/package';
-		MAPSRC = 'assets/map_courtyard_grass.json'
+		SRC = 'assets/forest';
+		MAPSRC = 'assets/game.json'
 	}	
 
 	var edgy;
