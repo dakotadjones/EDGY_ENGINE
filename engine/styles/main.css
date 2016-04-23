@@ -22,6 +22,12 @@ font-family:"Lucida Console", Monaco, monospace;
 margin-bottom:5px;
 }
 
+#note {
+margin:0;
+padding-top:20px;
+}
+
+
 a {
 text-decoration: none;
 color:white;
