@@ -22,8 +22,47 @@ width:100%;
 }
 
 .divider {
-height:10px;
+height:5px;
 width:100%;
+background-color:rgb(99,210,151);
+margin:10px 0;
+}
+
+.show {
+opacity:0;
+}
+
+.redDivider {
+position:absolute;
+background-color:red;
+height:7px;
+width:303px;
+bottom:466px;
+margin:auto;
+right:0;
+left:0;
+}
+
+.yellowDivider {
+position:absolute;
+background-color:yellow;
+height:7px;
+width:607px;
+left:0;
+right:0;
+margin:auto;
+bottom:310px;
+}
+
+.orangeDivider {
+position:absolute;
+background-color:orange;
+height:7px;
+width:1214px;
+bottom:0;
+left:0;
+right:0;
+margin:auto;
 }
 
 #slideNum {
@@ -40,4 +79,84 @@ color:white;
 position:absolute;
 bottom:0;
 right:0;
+}
+
+.fullText{
+font-family:"Lucida Console", Monaco, monospace;
+font-size:2em;
+}
+
+.mainText {
+font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+font-size:4em;
+margin-top:0;
+}
+
+.centered {
+text-align:center;
+}
+
+.leftHalf, .rightHalf {
+width:50%;
+height:100%;
+padding:5%;
+-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+box-sizing: border-box;         /* Opera/IE 8+ */
+display:inline-block;
+}
+
+.leftHalf {
+background-color:white;
+color:black;
+float:left;
+}
+
+.rightHalf {
+position:relative;
+right:-1px;
+background-color:black;
+color:white;
+float:right;
+text-align:center;
+}
+
+.expContainer {
+position:relative;
+height:548px;
+width:1214px;
+margin:auto;
+}
+
+.expContainer img {
+position:absolute;
+right:0;
+left:0;
+margin:auto;
+}
+
+.centered div {
+display:inline-block;
+}
+
+.vert-center {
+position:relative;
+top:50%;
+transform:translateY(-50%);
+}
+
+.slide0, .slide1, .slide4, .slide5, .slide10, .slide11,.slide13,
+.slide14, .slide15, .slide16, .slide17, .slide18  {
+background-color:black;
+color:white;
+}
+
+.slide2, .slide3, .slide12 {
+background-color:white;
+color:black;
+}
+
+.slide6,.slide7,.slide8,.slide9 {
+background-color:rgb(99,210,151);
+color:black;
 }
