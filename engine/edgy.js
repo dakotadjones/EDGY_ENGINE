@@ -208,6 +208,7 @@ var engine;
     var Engine = (function () {
         function Engine(id) {
             var e = this;
+            console.log("Edgy running...");
             e.myPlayer = new player.Player();
             this.id = id;
             this.texturePack = new Image();
@@ -252,9 +253,6 @@ var engine;
             e.myCharacters = {};
             e.loadBoxes();
             e.displayBoxes = [];
-            e.firstWinCoords = "1,1";
-            e.secondWinCoords = "9,7";
-            e.winFacing = "west";
             document.addEventListener("keydown", function (evt) { e.readInput(evt); });
             e.zAnim = 0;
             e.zAnimB = false;
@@ -826,9 +824,6 @@ var engine;
                         e.myPlayer.setFacing("east");
                     }
                     break;
-            }
-            if ((e.myPlayer.getCoordinates().join(',') == e.firstWinCoords || e.myPlayer.getCoordinates().join(',') == e.secondWinCoords) && e.myPlayer.getFacing() == "west") {
-                document.getElementById("note").innerHTML = "You Found It!<br>Please take the survey below<br><a href='http://goo.gl/forms/PxMSc4sS1L'>http://goo.gl/forms/PxMSc4sS1L</a>";
             }
         };
         Engine.prototype.checkWall = function (behind) {

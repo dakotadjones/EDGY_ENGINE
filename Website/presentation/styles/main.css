@@ -1,0 +1,355 @@
+html,body {
+height:100%;
+width:100%;
+margin:0;
+}
+
+body:not(#map-generator) {
+background-color:black;
+text-align:center;
+}
+
+
+canvas {
+position:absolute;
+background-color:black;
+margin:auto;
+top:0;
+bottom:0;
+right:0;
+left:0;
+display: block;
+}
+
+h1 {
+color:white;
+font-family:"Lucida Console", Monaco, monospace;
+margin-bottom:5px;
+}
+
+#note {
+margin:0;
+padding-top:20px;
+}
+
+
+a {
+text-decoration: none;
+color:white;
+}
+
+.sidebar {
+position:relative;
+float:left;
+background-color:black;
+color:white;
+padding-left:20px;
+height:100%;
+width:400px;
+}
+
+.cute {
+display:inline-block;
+font-family:"Courier New";
+background-color:#ED686E; 
+border:none;
+height:30px;
+padding:0 10px;
+line-height:30px;
+border-style:solid;
+border-width:0 3px 5px 0;
+border-color:#8F383C;
+color:white;
+margin:0;
+margin:10px 0 10px 0px;
+}
+
+.cute:hover {
+background-color:#BD5055;
+box-shadow: inset 0 0 0 1px #BD5055,inset 0 5px 30px #8F383C;
+border:none;
+padding:0 13px 5px 10px;
+}
+
+#choose  {
+font-family:"Lucida Console";
+}
+
+.sidebar {
+	font-size:.9em;
+}
+
+.sidebar > * {
+font-family:"Lucida Console", Monaco, monospace;
+}
+
+#map-generator button {
+font-family:"Courier New";
+height:30px;
+padding:0 10px;
+line-height:30px;
+border-style:solid;
+border-width:0 3px 5px 0;
+background-color:#ED686E;
+border-color:#8F383C;
+color:white;
+margin:0;
+margin:10px 0 10px 0px;
+}
+
+
+#map-generator button:hover {
+box-shadow: inset 0 0 0 1px #BD5055,inset 0 5px 30px #8F383C;
+border:none;
+padding:0 13px 15px 10px;
+}
+
+#upload-custom img {
+position:relative;
+height:20px;
+width:20px;
+top:5px;
+margin-right:5px;
+}
+
+#map-generator h1 {
+font-family:"Lucida Sans Unicode";
+text-transform: uppercase;
+font-size:1.3em;
+}
+
+.title {
+display:block;
+font-family:"Lucida Sans Unicode";
+}
+
+.hidden {
+display:none;
+}
+
+input[type=text]:read-only {
+background-color:black;
+color:white;
+border:none;
+}
+
+.indicator {
+height:150px;
+width:270px;
+background-image:url('progress.gif');
+background-size:cover;
+display:none;
+}
+
+input[type=text]:not([readonly]) {
+width:25px;    
+margin-top:5px;
+}
+
+.compass {
+display:inline-block;
+height:20px;
+font-family:"Times New Roman", Times, serif;
+font-weight: bold;
+}
+
+.mapCompassContainer {
+position:relative;
+height:600px;
+}
+
+.mapContainer {
+margin:20px;
+position:relative;
+display:inline-block;
+overflow:scroll;
+height:500px;
+width:666px;
+background-color:LightGrey;
+}
+
+::-webkit-scrollbar {
+width:5px;
+height:5px;
+}
+
+::-webkit-scrollbar-track {
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+background:LightGrey;
+}
+
+
+::-webkit-scrollbar-thumb {
+background: #ED686E; 
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+background: #ED686E; 
+}
+
+.middle {
+position:relative;
+top:-50%;
+margin-top:10px;
+}
+
+.mainContainer {
+min-width:770px;
+text-align:center;
+float:right;
+/* Firefox */
+width: -moz-calc(100% - 440px);
+/* WebKit */
+width: -webkit-calc(100% - 440px);
+/* Opera */
+width: -o-calc(100% - 440px);
+/* Standard */
+width: calc(100% - 440px);
+padding-top:10px;
+}
+
+#map-generator canvas {
+display:inline-block;
+background-color:LightGrey;
+margin:0;
+}
+
+/*select*/
+.ghost-select {
+pointer-events: none;
+top:0;
+left:0;
+height:0;
+width:0;
+display: none;
+z-index: 9000;
+position:absolute !important;
+cursor: default !important;
+}
+
+.ghost-active {
+display: block !important;
+}
+
+.ghost-select > span {
+background-color: rgba(239, 28, 190, 0.6);
+border: 1px solid #b20e8c;
+width: 100%;
+height: 100%;
+float: left;
+}
+
+.unselectable {
+user-select: none;
+-moz-user-select: none;
+-khtml-user-select: none;
+-webkit-user-select: none;
+-o-user-select: none;
+} 
+
+.selectedBoxes {
+height:100px;
+width:100%;
+overflow-y: scroll;
+font-size:.75em;
+}
+
+.sidebar ::-webkit-scrollbar-track {
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+background:black;
+}
+
+.patternPanel {
+margin:15px 0;
+position:relative;
+height:225px;
+width:100%;
+}
+
+.tileRep {
+position:absolute;
+padding:1px;
+height:55px;
+width:55px;
+color:black;
+background-color:white;
+}
+
+.tileRep:hover:not(.selectedTile) {
+color:white;
+padding:0;
+background-color:black;
+border: solid white 1px;
+}
+
+.north, .floor, .south {
+left:58px;
+}
+
+.east {
+left: 116px;
+}
+
+.ceiling {
+left:174px;
+}
+
+.south {
+top:116px;
+}
+
+.east, .west, .ceiling, .floor {
+top:58px;
+}
+
+.selectedTile {
+	background-color:#FEFF86;
+}
+
+.selectedTile:hover {
+	background-color:yellow;
+}
+
+.patternPanel label {
+	position:absolute;
+	bottom:30px;
+}
+
+#package-options {
+	width:200px;
+	height:25px;
+	position:absolute;
+	bottom:0;
+}
+
+#apply-pattern {
+	position:absolute;
+	bottom:-10px;
+	left:220px;
+}
+
+button.greyed {
+background-color:#787878!important;
+border-color:#303030!important;
+}
+
+button.greyed:hover {
+box-shadow: inset 0 0 0 1px #303030,inset 0 5px 30px #303030!important;
+}
+
+.coordinateInfoBox label {
+display:inline-block;
+font-size:.7em;
+width:100px;
+}
+
+.coordinateInfoBox input {
+font-family:monospace;	
+}
+
+#submit {
+position:absolute;
+right: 20px;
+bottom:5px;
+}
+

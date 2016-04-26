@@ -57,7 +57,7 @@ export class Engine {
 	constructor(id:string) {
 		// set up object reference 
 		var e = this;
-
+		console.log("Edgy running...");
 		// initialize our player  
 		e.myPlayer = new player.Player();
         
@@ -154,10 +154,11 @@ export class Engine {
 		//e.debugElement=document.getElementById("debug");
 	    */
 		// win coords
+		/*
 		e.firstWinCoords = "1,1";
 		e.secondWinCoords = "9,7";
 		e.winFacing = "west";
-		
+		*/
 		document.addEventListener("keydown", function(evt){e.readInput(evt)});
 		
 		// initialize the smooth scale 
@@ -851,9 +852,11 @@ export class Engine {
                 }
 				break;
 		}
+		/*
 		if ((e.myPlayer.getCoordinates().join(',') == e.firstWinCoords || e.myPlayer.getCoordinates().join(',') == e.secondWinCoords) && e.myPlayer.getFacing() == "west") {
 			document.getElementById("note").innerHTML = "You Found It!<br>Please take the survey below<br><a href='http://goo.gl/forms/PxMSc4sS1L'>http://goo.gl/forms/PxMSc4sS1L</a>";
 		}
+		*/
 	}
 	
 	checkWall(behind:boolean=false) {

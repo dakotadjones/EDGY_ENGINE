@@ -2,7 +2,16 @@ html,body {
 height:100%;
 width:100%;
 margin:0;
-background-color:#000;
+}
+
+canvas {
+position:absolute;
+margin:auto;
+top:0;
+bottom:0;
+right:0;
+left:0;
+z-index:1000;
 }
 
 .prezContainer {
@@ -11,7 +20,6 @@ top:50%;
 left:50%;
 height:90%;
 width:90%;
-background-color:white;
 transform:translate(-50%, -50%);
 }
 
@@ -151,12 +159,12 @@ background-color:black;
 color:white;
 }
 
-.slide2, .slide3, .slide12 {
+.slide2, .slide3, .slide12, .slide19, .slide20, .slide21, .slide22,  {
 background-color:white;
 color:black;
 }
 
-.slide6,.slide7,.slide8,.slide9 {
+.slide6,.slide7,.slide8,.slide9,.slide23,.slide24,.slide25 {
 background-color:rgb(99,210,151);
 color:black;
 }
