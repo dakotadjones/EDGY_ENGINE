@@ -90,8 +90,8 @@ right:0;
 }
 
 .fullText{
-font-family:"Lucida Console", Monaco, monospace;
-font-size:1.8em;
+font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+font-size:1.4em;
 }
 
 .mainText {
@@ -164,7 +164,7 @@ background-color:white;
 color:black;
 }
 
-.slide6,.slide7,.slide8,.slide9,.slide23,.slide24,.slide25 {
+.slide6,.slide7,.slide8,.slide9,.slide23,.slide24,.slide25,.slide26 {
 background-color:rgb(99,210,151);
 color:black;
 }
