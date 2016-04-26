@@ -1,5 +1,6 @@
 // presentation.js
 var demoSlide = 18;
+var endSlide = 26;
 var alreadyLoaded = false;
 
 function show() {
@@ -17,13 +18,13 @@ function slideDividers() {
 }
 
 function loadSlide(slideNum) {
-	if (parseInt(slideNum) < demoSlide || parseInt(slideNum) > demoSlide) {
+	if (parseInt(slideNum) != demoSlide && parseInt(slideNum) != endSlide) {
 		if (alreadyLoaded) { $("#game").hide(); $("#slideContainer").show(); }
 		$("#slideContainer").load("slides/slide"+slideNum+".html").removeClass().addClass("slide"+slideNum);
 		$(document.body).css("background-color", $(".slide"+slideNum).css("background-color"));
 		$("#slideNum").css("background-color", $(".slide"+slideNum).css("background-color"));
 		$("#slideNum").css("color", $(".slide"+slideNum).css("color"));
-	} else if (parseInt(slideNum) == demoSlide) {
+	} else {
 		$("#slideContainer").hide();
 		if (!alreadyLoaded) {
 			$("#gameContainer").load("edgy.html #game", function() {
