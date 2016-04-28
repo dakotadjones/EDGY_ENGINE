@@ -356,21 +356,21 @@ export class Engine {
 			if (z != zCopy) {
  				zCopy = z;
 				e.zChanged = true;
-				e.tileOpacity = .4;
+				e.tileOpacity = .1;
 				if (e.zAnim > 0 && z == -1) {
-						e.tileOpacity = .4 * e.zAnim;
+						e.tileOpacity = .1 * e.zAnim;
 				} else if (e.zAnim > 0 && z == e.drawDistance-1) {
-						e.tileOpacity = .4 + (1 * e.zAnim);
+						e.tileOpacity = .1 + (1 * e.zAnim);
 				}
 				else if (e.zAnim < 0 && z == 0) {
-						e.tileOpacity = .4 * 1+e.zAnim;
+						e.tileOpacity = .1 * 1+e.zAnim;
 				} else if (e.zAnim < 0 && z == e.drawDistance) {
 						e.tileOpacity = 1 + e.zAnim;
 				}
 				e.setUpTexture("black", "front_center");
 				e.drawSquare(push);
 			}
-
+			
 			for (var j = 0; j <= relSurfaces.length; j++) {
 
 				var rsurface = relSurfaces[j];

@@ -13,8 +13,8 @@ if (document.getElementById("gameport")) {
 		SRC = SRC + pack_name;
 		map = map_json;
 	} else {
-		SRC = 'assets/forest';
-		MAPSRC = 'assets/game.json'
+		SRC = 'assets/museum';
+		MAPSRC = 'assets/museum_map.json'
 	}	
 
 	var edgy;

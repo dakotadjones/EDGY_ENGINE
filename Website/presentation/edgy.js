@@ -414,15 +414,15 @@ var engine;
                 if (z != zCopy) {
                     zCopy = z;
                     e.zChanged = true;
-                    e.tileOpacity = .4;
+                    e.tileOpacity = .1;
                     if (e.zAnim > 0 && z == -1) {
-                        e.tileOpacity = .4 * e.zAnim;
+                        e.tileOpacity = .1 * e.zAnim;
                     }
                     else if (e.zAnim > 0 && z == e.drawDistance - 1) {
-                        e.tileOpacity = .4 + (1 * e.zAnim);
+                        e.tileOpacity = .1 + (1 * e.zAnim);
                     }
                     else if (e.zAnim < 0 && z == 0) {
-                        e.tileOpacity = .4 * 1 + e.zAnim;
+                        e.tileOpacity = .1 * 1 + e.zAnim;
                     }
                     else if (e.zAnim < 0 && z == e.drawDistance) {
                         e.tileOpacity = 1 + e.zAnim;
@@ -961,8 +961,8 @@ if (document.getElementById("gameport")) {
         map = map_json;
     }
     else {
-        SRC = 'assets/forest';
-        MAPSRC = 'assets/game.json';
+        SRC = 'assets/museum';
+        MAPSRC = 'assets/museum_map.json';
     }
     var edgy;
     var request = new XMLHttpRequest();
